@@ -1,14 +1,14 @@
-#file-list {
+.FileList {
   list-style-type: none;
   margin: 0;
   padding: 0;
 
-  .file-tab {
+  &__Tab {
     background: #424e5c;
     border: 1px solid black;
     color: white;
 
-    &.active {
+    &--active {
       background: #5e6d7f;
       font-weight: bold;
     }

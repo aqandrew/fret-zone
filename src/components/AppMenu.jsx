@@ -3,7 +3,7 @@ import React from 'react';
 import './AppMenu.scss';
 
 const AppMenu = () => (
-  <nav id="app-menu">
+  <nav className="AppMenu">
     <button>View</button>
   </nav>
 );

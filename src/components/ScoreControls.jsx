@@ -4,7 +4,7 @@ import CheckboxButton from './CheckboxButton';
 import './ScoreControls.scss';
 
 const ScoreControls = ({ activeFile }) => (
-  <div id="score-controls">
+  <div className="ScoreControls">
     <div>{activeFile.name}</div>
     <div>
       <div>

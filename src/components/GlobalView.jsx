@@ -2,6 +2,6 @@ import React from 'react';
 
 import './GlobalView.scss';
 
-const GlobalView = () => <div id="global-view">I'm the Global View!</div>;
+const GlobalView = () => <div className="GlobalView">I'm the Global View!</div>;
 
 export default GlobalView;

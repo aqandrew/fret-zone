@@ -6,13 +6,13 @@ import './FileList.scss';
 const FileList = ({ files }) => {
   const renderFiles = () =>
     files.map(file => (
-      <li key={file.id} className="file-tab">
+      <li key={file.id} className="FileList__Tab">
         {file.name}
         <button>Close</button>
       </li>
     ));
 
-  return <ol id="file-list">{renderFiles()}</ol>;
+  return <ol className="FileList">{renderFiles()}</ol>;
 };
 
 export default FileList;

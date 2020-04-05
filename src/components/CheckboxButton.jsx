@@ -5,7 +5,7 @@ const CheckboxButton = ({ buttonTitle }) => {
   const inputId = slugify(buttonTitle, { lower: true });
 
   return (
-    <div>
+    <div className="CheckboxButton">
       <input type="checkbox" id={inputId} />
       <label htmlFor={inputId}>{buttonTitle}</label>
     </div>

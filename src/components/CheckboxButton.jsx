@@ -1,11 +1,15 @@
 import React from 'react';
+import slugify from 'slugify';
 
-const CheckboxButton = ({ buttonTitle }) => (
-  <div>
-    {/* TODO Slugify buttonTitle for id */}
-    <input type="checkbox" id={buttonTitle} />
-    <label htmlFor={buttonTitle}>{buttonTitle}</label>
-  </div>
-);
+const CheckboxButton = ({ buttonTitle }) => {
+  const inputId = slugify(buttonTitle, { lower: true });
+
+  return (
+    <div>
+      <input type="checkbox" id={inputId} />
+      <label htmlFor={inputId}>{buttonTitle}</label>
+    </div>
+  );
+};
 
 export default CheckboxButton;

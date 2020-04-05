@@ -1,7 +1,9 @@
 import React from 'react';
 
+import './AppMenu.css';
+
 const AppMenu = () => (
-  <nav>
+  <nav id="app-menu">
     <button>View</button>
   </nav>
 );

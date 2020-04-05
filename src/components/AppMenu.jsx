@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './AppMenu.css';
+import './AppMenu.scss';
 
 const AppMenu = () => (
   <nav id="app-menu">

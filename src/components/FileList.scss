@@ -1,0 +1,28 @@
+#file-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  .file-tab {
+    background: #424e5c;
+    border: 1px solid black;
+    color: white;
+
+    &.active {
+      background: #5e6d7f;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background: #4a5768;
+
+      button {
+        visibility: visible;
+      }
+    }
+
+    button {
+      visibility: hidden;
+    }
+  }
+}

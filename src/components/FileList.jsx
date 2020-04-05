@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './FileList.css';
+import './FileList.scss';
 
 // TODO Add active style with NavLink
 const FileList = ({ files }) => {

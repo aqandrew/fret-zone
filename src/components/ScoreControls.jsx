@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CheckboxButton from './CheckboxButton';
-import './ScoreControls.css';
+import './ScoreControls.scss';
 
 const ScoreControls = ({ activeFile }) => (
   <div id="score-controls">

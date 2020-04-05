@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // TODO Alphabetize imports w/ESLint
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
-import ScoreControls from './components/ScoreControls';
+import CheckboxButton from './components/CheckboxButton';
 import EditionPalette from './components/EditionPalette';
 import Document from './components/Document';
 import Inspector from './components/Inspector';
@@ -11,21 +11,52 @@ import GlobalView from './components/GlobalView';
 import './App.scss';
 
 function App() {
+  const [editionPaletteShown, setEditionPaletteShown] = useState(true);
+  const [globalViewShown, setGlobalViewShown] = useState(true);
+  const [inspectorShown, setInspectorShown] = useState(true);
+
   // TODO Put fileList in Redux store
   const dummyFileList = [{ id: 0, name: 'Stairway to Heaven' }];
 
   return (
     <div className="App">
       <AppMenu />
-      <ScoreControls activeFile={dummyFileList[0]} />
+      <div className="App__ScoreControls">
+        <div>{dummyFileList[0].name}</div>
+        <div>
+          <div>
+            <CheckboxButton
+              buttonTitle="Show/Hide Edition Palette"
+              isChecked={editionPaletteShown}
+              setChecked={setEditionPaletteShown}
+            />
+            <CheckboxButton
+              buttonTitle="Show/Hide Global View"
+              isChecked={globalViewShown}
+              setChecked={setGlobalViewShown}
+            />
+            <CheckboxButton
+              buttonTitle="Show/Hide Inspector"
+              isChecked={inspectorShown}
+              setChecked={setInspectorShown}
+            />
+          </div>
+          {/* TODO Zoom control */}
+          {/* TODO Document view select */}
+          {/* TODO Undo/redo */}
+          {/* TODO Print */}
+          {/* TODO PlaybackControls */}
+          {/* TODO Buttons for fretboard/keyboard/drum view */}
+        </div>
+      </div>
       <FileList files={dummyFileList} />
       <div id="main-content">
         <div id="center-content">
-          <EditionPalette />
+          {editionPaletteShown && <EditionPalette />}
           <Document />
-          <Inspector />
+          {inspectorShown && <Inspector />}
         </div>
-        <GlobalView />
+        {globalViewShown && <GlobalView />}
       </div>
     </div>
   );

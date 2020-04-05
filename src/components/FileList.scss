@@ -5,7 +5,9 @@
 
   &__Tab {
     background: #424e5c;
-    border: 1px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    // TODO Add right border for :not(:last-child) when there are multiple tabs open
     color: white;
 
     &--active {

@@ -50,8 +50,8 @@ function App() {
         </div>
       </div>
       <FileList files={dummyFileList} />
-      <div id="main-content">
-        <div id="center-content">
+      <div className="App__Content--Main">
+        <div className="App__Content--Center">
           {editionPaletteShown && <EditionPalette />}
           <Document />
           {inspectorShown && <Inspector />}

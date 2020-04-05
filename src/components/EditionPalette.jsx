@@ -1,7 +1,9 @@
 import React from 'react';
 
+import './EditionPalette.scss';
+
 const EditionPalette = () => (
-  <div>
+  <div id="edition-palette">
     I'm the Edition Palette!
     {/* TODO GlobalOptions */}
     {/* TODO BarOptions */}

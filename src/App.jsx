@@ -8,6 +8,7 @@ import EditionPalette from './components/EditionPalette';
 import Document from './components/Document';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
+import './App.scss';
 
 function App() {
   // TODO Put fileList in Redux store
@@ -18,10 +19,14 @@ function App() {
       <AppMenu />
       <ScoreControls activeFile={dummyFileList[0]} />
       <FileList files={dummyFileList} />
-      <Document />
-      <EditionPalette />
-      <Inspector />
-      <GlobalView />
+      <div id="main-content">
+        <div id="center-content">
+          <EditionPalette />
+          <Document />
+          <Inspector />
+        </div>
+        <GlobalView />
+      </div>
     </div>
   );
 }

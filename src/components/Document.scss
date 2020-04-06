@@ -1,0 +1,9 @@
+.Document {
+  width: 100%;
+  overflow: scroll;
+  background: #4e5158;
+
+  &__Page {
+    background: white;
+  }
+}

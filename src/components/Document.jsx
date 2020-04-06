@@ -1,5 +1,11 @@
 import React from 'react';
 
-const Document = () => <div className="Document">I'm the Document!</div>;
+import './Document.scss';
+
+const Document = () => (
+  <div className="Document">
+    <div className="Document__Page">I'm the Document!</div>
+  </div>
+);
 
 export default Document;

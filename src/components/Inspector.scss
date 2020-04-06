@@ -2,4 +2,16 @@
   width: 250px;
   background: #373b42;
   border-left: 1px solid black;
+  // TODO Expand and scroll within when content is taller than height, without making the whole page longer
+
+  &__ViewSelect {
+    display: flex;
+  }
+
+  &__Heading {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #a9c2d8;
+  }
 }

@@ -16,10 +16,10 @@
 
   &:hover {
     cursor: default;
+  }
 
-    &:not(&--IsActive) {
-      background: #4a5768;
-    }
+  &:not(&--IsActive):hover {
+    background: #4a5768;
   }
 
   &--IsActive {

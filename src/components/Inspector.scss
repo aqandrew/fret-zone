@@ -19,13 +19,10 @@
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
+    user-select: none;
 
     &:not(:last-child) {
       border-right: 1px solid #373b42;
-    }
-
-    &:hover {
-      cursor: default;
     }
 
     &:not(&--IsActive):hover {

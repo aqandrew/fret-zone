@@ -2,7 +2,7 @@ import React from 'react';
 
 import './FileList.scss';
 
-// TODO Add active style with NavLink
+// TODO Should this be a series of NavLinks?
 const FileList = ({ files, activeFileName, setActiveFileName }) => {
   const renderFiles = () =>
     files.map(file => {
@@ -17,7 +17,11 @@ const FileList = ({ files, activeFileName, setActiveFileName }) => {
         <li
           key={file.id}
           className={tabClassName}
-          onClick={() => setActiveFileName(file.name)}
+          onClick={event => {
+            if (!(event.target instanceof HTMLButtonElement)) {
+              setActiveFileName(file.name);
+            }
+          }}
         >
           {file.name}
           <button className="FileList__CloseButton">Close</button>

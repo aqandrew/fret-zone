@@ -11,23 +11,19 @@ import GlobalView from './components/GlobalView';
 import './App.scss';
 
 function App() {
-  const [activeFileName, setActiveFileName] = useState('');
-  const [editionPaletteShown, setEditionPaletteShown] = useState(true);
-  const [globalViewShown, setGlobalViewShown] = useState(true);
-  const [inspectorShown, setInspectorShown] = useState(true);
-  const [documentTitle, setDocumentTitle] = useState('');
-  const [documentArtist, setDocumentArtist] = useState('');
-
   // TODO Put fileList in Redux store
   const dummyFileList = [
     { id: 0, name: 'untitled' },
     { id: 1, name: 'Stairway to Heaven' },
     { id: 2, name: 'Through the Fire and Flames' }
   ];
-  // TODO This useEffect may be preventing active file from changing when clicking a FileListTab
-  useEffect(() => {
-    setActiveFileName(dummyFileList[0].name);
-  }, [dummyFileList]);
+
+  const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
+  const [editionPaletteShown, setEditionPaletteShown] = useState(true);
+  const [globalViewShown, setGlobalViewShown] = useState(true);
+  const [inspectorShown, setInspectorShown] = useState(true);
+  const [documentTitle, setDocumentTitle] = useState('');
+  const [documentArtist, setDocumentArtist] = useState('');
 
   return (
     <div className="App">

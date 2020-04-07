@@ -11,6 +11,7 @@
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     text-align: center;
+    user-select: none;
 
     &:not(:last-child) {
       border-right: 1px solid black;

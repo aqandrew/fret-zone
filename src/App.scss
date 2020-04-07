@@ -3,6 +3,10 @@
   display: flex;
   flex-direction: column;
   color: white;
+  font-size: 12px;
+  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
   &__ScoreControls {
     background: #2a2a2a;
@@ -11,7 +15,6 @@
   &__ActiveFileName {
     color: #898989;
     text-align: center;
-    font-size: 12px;
     padding-top: 2px;
   }
 

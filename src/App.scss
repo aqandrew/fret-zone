@@ -17,12 +17,15 @@
 
   &__Content {
     &--Main {
+      // TODO Find less hacky solution than { height: 0 } for making Document scrollable without making page taller
+      height: 0;
       flex: 1;
       display: flex;
       flex-direction: column;
     }
 
     &--Center {
+      height: inherit;
       flex: 1;
       display: flex;
       justify-content: space-between;

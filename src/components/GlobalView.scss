@@ -1,4 +1,13 @@
 .GlobalView {
   background: #2f333a;
   border-top: 1px solid black;
+
+  &__Heading {
+    padding-left: 54px;
+  }
+
+  &__Button--AddTrack {
+    position: absolute;
+    left: 4px;
+  }
 }

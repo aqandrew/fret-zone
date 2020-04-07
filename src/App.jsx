@@ -14,6 +14,8 @@ function App() {
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
+  const [documentTitle, setDocumentTitle] = useState('');
+  const [documentArtist, setDocumentArtist] = useState('');
 
   // TODO Put fileList in Redux store
   const dummyFileList = [{ id: 0, name: 'Stairway to Heaven' }];
@@ -53,8 +55,16 @@ function App() {
       <div className="App__Content--Main">
         <div className="App__Content--Center">
           {editionPaletteShown && <EditionPalette />}
-          <Document />
-          {inspectorShown && <Inspector />}
+          <Document
+            documentTitle={documentTitle}
+            documentArtist={documentArtist}
+          />
+          {inspectorShown && (
+            <Inspector
+              setDocumentTitle={setDocumentTitle}
+              setDocumentArtist={setDocumentArtist}
+            />
+          )}
         </div>
         {globalViewShown && <GlobalView />}
       </div>

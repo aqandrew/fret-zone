@@ -4,7 +4,16 @@
   background: #4e5158;
 
   &__Page {
+    padding-top: 1in;
     background: white;
     color: black;
+  }
+
+  &__Title,
+  &__Artist {
+    margin-top: 0;
+    text-align: center;
+    // TODO Store document font families in Stylesheet
+    font-family: 'Times New Roman', Times, serif;
   }
 }

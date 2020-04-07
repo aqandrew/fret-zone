@@ -33,7 +33,7 @@ function App() {
     <div className="App">
       <AppMenu />
       <div className="App__ScoreControls">
-        <div className="App__ActiveFileName">{dummyFileList[0].name}</div>
+        <div className="App__ActiveFileName">{activeFileName}</div>
         <div>
           <div>
             <CheckboxButton

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // TODO Alphabetize imports w/ESLint
 import AppMenu from './components/AppMenu';
@@ -11,6 +11,7 @@ import GlobalView from './components/GlobalView';
 import './App.scss';
 
 function App() {
+  const [activeFileName, setActiveFileName] = useState('');
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
@@ -18,7 +19,15 @@ function App() {
   const [documentArtist, setDocumentArtist] = useState('');
 
   // TODO Put fileList in Redux store
-  const dummyFileList = [{ id: 0, name: 'untitled' }];
+  const dummyFileList = [
+    { id: 0, name: 'untitled' },
+    { id: 1, name: 'Stairway to Heaven' },
+    { id: 2, name: 'Through the Fire and Flames' }
+  ];
+  // TODO This useEffect may be preventing active file from changing when clicking a FileListTab
+  useEffect(() => {
+    setActiveFileName(dummyFileList[0].name);
+  }, [dummyFileList]);
 
   return (
     <div className="App">
@@ -51,7 +60,11 @@ function App() {
           {/* TODO Buttons for fretboard/keyboard/drum view */}
         </div>
       </div>
-      <FileList files={dummyFileList} />
+      <FileList
+        files={dummyFileList}
+        activeFileName={activeFileName}
+        setActiveFileName={setActiveFileName}
+      />
       <div className="App__Content--Main">
         <div className="App__Content--Center">
           {editionPaletteShown && <EditionPalette />}

@@ -1,32 +1,40 @@
 .FileList {
-  list-style-type: none;
+  display: flex;
   margin: 0;
   padding: 0;
+  list-style-type: none;
 
   &__Tab {
+    flex: 1;
+    position: relative;
     background: #424e5c;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
-    // TODO Add right border for :not(:last-child) when there are multiple tabs open
     text-align: center;
 
-    &--active {
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
+
+    &--IsActive {
       background: #5e6d7f;
       font-weight: bold;
     }
 
     &:hover {
-      background: #4a5768;
-
       button {
         visibility: visible;
       }
     }
 
-    button {
-      visibility: hidden;
-      position: absolute;
-      right: 2px;
+    &:not(&--IsActive):hover {
+      background: #4a5768;
     }
+  }
+
+  &__CloseButton {
+    visibility: hidden;
+    position: absolute;
+    right: 2px;
   }
 }

@@ -8,7 +8,7 @@ import EditionPalette from './components/EditionPalette';
 import Document from './components/Document';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
-import Modal from './components/Modal';
+import AddTrackModal from './components/AddTrackModal';
 import './App.scss';
 
 function App() {
@@ -83,26 +83,8 @@ function App() {
           <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
         )}
       </div>
-      {/* TODO Move this modal to separate file/component */}
-      <Modal
-        modalTitle="Add Track"
-        show={showAddTrackModal}
-        onCancel={closeAddTrackModal}
-        onConfirm={() => {
-          console.log('TODO Add clean guitar track');
-          closeAddTrackModal();
-        }}
-      >
-        {/* TODO Change this to a list-select input */}
-        <input
-          type="radio"
-          id="AddTrack__Guitar--Electric--Clean"
-          defaultChecked
-        />
-        <label htmlFor="AddTrack__Guitar--Electric--Clean">
-          Electric Guitar - Clean
-        </label>
-      </Modal>
+      {/* TODO Define track-adding function here in App component, so AppMenu can access it too */}
+      <AddTrackModal show={showAddTrackModal} onClose={closeAddTrackModal} />
     </div>
   );
 }

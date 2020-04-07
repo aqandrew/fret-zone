@@ -8,6 +8,7 @@ import EditionPalette from './components/EditionPalette';
 import Document from './components/Document';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
+import Modal from './components/Modal';
 import './App.scss';
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
   const [inspectorShown, setInspectorShown] = useState(true);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
+  const [showAddTrackModal, setShowAddTrackModal] = useState(false);
+
+  const closeAddTrackModal = () => setShowAddTrackModal(false);
 
   return (
     <div className="App">
@@ -75,8 +79,30 @@ function App() {
             />
           )}
         </div>
-        {globalViewShown && <GlobalView />}
+        {globalViewShown && (
+          <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
+        )}
       </div>
+      {/* TODO Move this modal to separate file/component */}
+      <Modal
+        modalTitle="Add Track"
+        show={showAddTrackModal}
+        onCancel={closeAddTrackModal}
+        onConfirm={() => {
+          console.log('TODO Add clean guitar track');
+          closeAddTrackModal();
+        }}
+      >
+        {/* TODO Change this to a list-select input */}
+        <input
+          type="radio"
+          id="AddTrack__Guitar--Electric--Clean"
+          defaultChecked
+        />
+        <label htmlFor="AddTrack__Guitar--Electric--Clean">
+          Electric Guitar - Clean
+        </label>
+      </Modal>
     </div>
   );
 }

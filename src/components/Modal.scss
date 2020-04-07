@@ -1,0 +1,26 @@
+.Modal {
+  // TODO Set width based on content
+  width: 500px;
+  // TODO Set top margin dynamically based on ScoreControls' height
+  margin: 72px auto 0;
+  padding: 12px;
+  background: #414450;
+  // TODO Animate modal entrance
+
+  &__Backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  // TODO Share this style with InspectorHeading
+  &__Heading {
+    margin-top: 0;
+    font-size: 14px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #a9c2d8;
+  }
+}

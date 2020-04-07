@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // TODO Alphabetize imports w/ESLint
 import AppMenu from './components/AppMenu';

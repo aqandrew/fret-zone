@@ -5,12 +5,16 @@
   list-style-type: none;
 
   &__Tab {
+    height: 22px;
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     background: #424e5c;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
-    text-align: center;
+    font-size: 12px;
     user-select: none;
 
     &:not(:last-child) {

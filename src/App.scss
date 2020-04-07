@@ -8,6 +8,11 @@
     background: #2a2a2a;
   }
 
+  &__ActiveFileName {
+    color: #898989;
+    text-align: center;
+  }
+
   &__Content {
     &--Main {
       flex: 1;

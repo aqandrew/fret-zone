@@ -8,6 +8,7 @@
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     // TODO Add right border for :not(:last-child) when there are multiple tabs open
+    text-align: center;
 
     &--active {
       background: #5e6d7f;
@@ -24,6 +25,8 @@
 
     button {
       visibility: hidden;
+      position: absolute;
+      right: 2px;
     }
   }
 }

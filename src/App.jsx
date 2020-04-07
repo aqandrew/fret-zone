@@ -18,13 +18,13 @@ function App() {
   const [documentArtist, setDocumentArtist] = useState('');
 
   // TODO Put fileList in Redux store
-  const dummyFileList = [{ id: 0, name: 'Stairway to Heaven' }];
+  const dummyFileList = [{ id: 0, name: 'untitled' }];
 
   return (
     <div className="App">
       <AppMenu />
       <div className="App__ScoreControls">
-        <div>{dummyFileList[0].name}</div>
+        <div className="App__ActiveFileName">{dummyFileList[0].name}</div>
         <div>
           <div>
             <CheckboxButton

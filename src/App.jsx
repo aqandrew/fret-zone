@@ -27,8 +27,6 @@ function App() {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
-  const closeAddTrackModal = () => setShowAddTrackModal(false);
-
   return (
     <div className="App">
       <AppMenu />
@@ -83,8 +81,10 @@ function App() {
           <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
         )}
       </div>
-      {/* TODO Define track-adding function here in App component, so AppMenu can access it too */}
-      <AddTrackModal show={showAddTrackModal} onClose={closeAddTrackModal} />
+      <AddTrackModal
+        show={showAddTrackModal}
+        onClose={() => setShowAddTrackModal(false)}
+      />
     </div>
   );
 }

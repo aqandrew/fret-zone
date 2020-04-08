@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Modal.scss';
 
-const Modal = ({ children, modalTitle, show, onCancel, onConfirm }) => {
+const Modal = ({ children, modalTitle, show, onClose, onConfirm }) => {
   return show ? (
     // Even though the backdrop doesn't obscure the rest of the screen,
     // it prevents clicks outside until the modal is closed
@@ -11,10 +11,16 @@ const Modal = ({ children, modalTitle, show, onCancel, onConfirm }) => {
         <h2 className="Modal__Heading">{modalTitle}</h2>
         {children}
         <div className="Modal__Footer">
-          <button className="Modal__FooterButton--Cancel" onClick={onCancel}>
+          <button className="Modal__FooterButton--Cancel" onClick={onClose}>
             Cancel
           </button>
-          <button className="Modal__FooterButton--Confirm" onClick={onConfirm}>
+          <button
+            className="Modal__FooterButton--Confirm"
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+          >
             OK
           </button>
         </div>

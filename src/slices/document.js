@@ -16,5 +16,5 @@ const documentSlice = createSlice({
 });
 
 export const { addTrack } = documentSlice.actions;
-export const tracksSelector = state => state.tracks;
+export const tracksSelector = state => state.document.tracks;
 export default documentSlice.reducer;

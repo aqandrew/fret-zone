@@ -9,6 +9,7 @@ import Document from './components/Document';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
 import AddTrackModal from './components/AddTrackModal';
+
 import './App.scss';
 
 function App() {

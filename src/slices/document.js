@@ -5,7 +5,7 @@ export const initialState = {
 };
 
 const documentSlice = createSlice({
-  name: 'tracks',
+  name: 'document',
   initialState,
   reducers: {
     addTrack: (state, { payload }) => {

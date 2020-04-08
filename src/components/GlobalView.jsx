@@ -10,7 +10,7 @@ const GlobalView = ({ openAddTrackModal }) => {
 
   const renderTrackControls = () =>
     tracks.map((track, index) => {
-      return <div key={index}>{track}</div>;
+      return <div key={index}>{track.name}</div>;
     });
 
   return (

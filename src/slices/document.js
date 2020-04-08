@@ -11,7 +11,7 @@ const documentSlice = createSlice({
     addTrack: (state, { payload }) => {
       state.tracks.push(payload);
     }
-    // TODO Define deleteTrack and dispatch it within GlobalView
+    // TODO Define deleteTrack and dispatch it within AppMenu via button, or GlobalView via right-click
   }
 });
 

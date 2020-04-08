@@ -7,7 +7,7 @@ import Modal from './Modal';
 
 const AddTrackModal = ({ show, onClose }) => {
   const dispatch = useDispatch();
-  const defaultTrackToAdd = 'Electric Guitar - Clean';
+  const defaultTrackToAdd = { name: 'Electric Guitar - Clean' };
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackToAdd);
 
   return (
@@ -21,14 +21,14 @@ const AddTrackModal = ({ show, onClose }) => {
       <input
         type="radio"
         id="AddTrack__Guitar--Electric--Clean"
-        value={defaultTrackToAdd}
-        checked={trackToAdd === defaultTrackToAdd}
+        value={defaultTrackToAdd.name}
+        checked={trackToAdd.name === defaultTrackToAdd.name}
         onChange={event => {
           setTrackToAdd(event.target.value);
         }}
       />
       <label htmlFor="AddTrack__Guitar--Electric--Clean">
-        {defaultTrackToAdd}
+        {defaultTrackToAdd.name}
       </label>
     </Modal>
   );

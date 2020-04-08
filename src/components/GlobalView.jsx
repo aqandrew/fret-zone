@@ -14,6 +14,7 @@ const GlobalView = ({ openAddTrackModal }) => (
       </button>
       <span className="GlobalView__Heading">Tracks</span>
     </div>
+    {/* TODO Display all tracks using tracksSelector */}
     <div className="GlobalView__Controls--Bottom">
       <span className="GlobalView__Heading">Master</span>
     </div>

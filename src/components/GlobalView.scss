@@ -2,6 +2,19 @@
   background: #2f333a;
   border-top: 1px solid black;
 
+  &__Controls {
+    display: flex;
+    align-items: center;
+
+    &--Top {
+      height: 20px;
+    }
+
+    &--Bottom {
+      height: 24px;
+    }
+  }
+
   &__Heading {
     padding-left: 54px;
   }
@@ -9,5 +22,29 @@
   &__Button--AddTrack {
     position: absolute;
     left: 4px;
+  }
+}
+
+.TrackControl {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  background: #373b42;
+
+  &--IsActive {
+    background: #4d525b;
+
+    &:hover {
+      background: #50545e;
+    }
+  }
+
+  &:not(&--IsActive):hover {
+    background: #434850;
+  }
+
+  &__TrackNumber {
+    margin-right: 4px;
+    color: #97a0ac;
   }
 }

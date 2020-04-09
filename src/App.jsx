@@ -21,6 +21,8 @@ function App() {
   ];
 
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
+  // TODO What if there are no tracks?
+  const [selectedTrackIndex, setSelectedTrackIndex] = useState(0);
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
@@ -79,7 +81,11 @@ function App() {
           )}
         </div>
         {globalViewShown && (
-          <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
+          <GlobalView
+            selectedTrackIndex={selectedTrackIndex}
+            setSelectedTrackIndex={setSelectedTrackIndex}
+            openAddTrackModal={() => setShowAddTrackModal(true)}
+          />
         )}
       </div>
       <AddTrackModal

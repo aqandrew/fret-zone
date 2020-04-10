@@ -15,11 +15,12 @@ import './App.scss';
 function App() {
   // TODO Put fileList in Redux store
   const dummyFileList = [
-    { id: 0, name: 'untitled' },
-    { id: 1, name: 'Stairway to Heaven' },
-    { id: 2, name: 'Through the Fire and Flames' }
+    { id: 0, name: '' }
+    // { id: 1, name: 'Stairway to Heaven' },
+    // { id: 2, name: 'Through the Fire and Flames' }
   ];
 
+  // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
   // TODO What if there are no tracks?
   const [selectedTrackIndex, setSelectedTrackIndex] = useState(0);
@@ -34,7 +35,9 @@ function App() {
     <div className="App">
       <AppMenu />
       <div className="App__ScoreControls">
-        <div className="App__ActiveFileName">{activeFileName}</div>
+        <div className="App__ActiveFileName">
+          {activeFileName || 'untitled'}
+        </div>
         <div>
           <div>
             <CheckboxButton

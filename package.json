@@ -13,7 +13,8 @@
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
-    "slugify": "^1.4.0"
+    "slugify": "^1.4.0",
+    "uuid": "^7.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

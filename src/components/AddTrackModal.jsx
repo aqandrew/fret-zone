@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import { addTrack } from '../slices/document';
 
@@ -10,13 +11,18 @@ const AddTrackModal = ({ show, onClose }) => {
   const defaultTrackToAdd = { name: 'Electric Guitar - Clean' };
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackToAdd);
 
+  const confirmAddTrack = () => {
+    dispatch(addTrack(uuidv4(), trackToAdd));
+    // TODO If this is the first track being added, add a new measure
+    // TODO Once the new track is added, set is as the currently selected track
+  };
+
   return (
     <Modal
       modalTitle="Add Track"
       show={show}
       onClose={onClose}
-      // TODO Newly added track must be selected upon creation
-      onConfirm={() => dispatch(addTrack(trackToAdd))}
+      onConfirm={confirmAddTrack}
     >
       {/* TODO Change this to a list-select input */}
       <input

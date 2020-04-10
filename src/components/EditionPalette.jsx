@@ -4,6 +4,7 @@ import RadioButton from './RadioButton';
 
 import './EditionPalette.scss';
 
+// TODO Populate props based on selected measure/note
 const EditionPalette = () => (
   <div className="EditionPalette">
     {/* TODO GlobalOptions */}

@@ -15,6 +15,7 @@ const AddTrackModal = ({ show, onClose }) => {
       modalTitle="Add Track"
       show={show}
       onClose={onClose}
+      // TODO Newly added track must be selected upon creation
       onConfirm={() => dispatch(addTrack(trackToAdd))}
     >
       {/* TODO Change this to a list-select input */}

@@ -2,6 +2,8 @@
   display: flex;
   margin: 0;
   padding: 0;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
   list-style-type: none;
 
   &__Tab {
@@ -12,8 +14,6 @@
     align-items: center;
     position: relative;
     background: #424e5c;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
     user-select: none;
 
     &:not(:last-child) {
@@ -36,9 +36,26 @@
     }
   }
 
-  &__CloseButton {
-    visibility: hidden;
-    position: absolute;
-    right: 2px;
+  &__Button {
+    &--Close {
+      visibility: hidden;
+      position: absolute;
+      right: 2px;
+    }
+
+    // TODO Share these styles w/FileList__Tab to avoid repetition
+    &--AddTab {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 7px 2px;
+      background: #424e5c;
+      font-weight: bold;
+      user-select: none;
+
+      &:hover {
+        background: #4a5768;
+      }
+    }
   }
 }

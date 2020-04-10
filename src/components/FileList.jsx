@@ -23,13 +23,19 @@ const FileList = ({ files, activeFileName, setActiveFileName }) => {
             }
           }}
         >
-          {file.name}
-          <button className="FileList__CloseButton">Close</button>
+          {file.name || 'untitled'}
+          <button className="FileList__Button--Close">Close</button>
         </li>
       );
     });
 
-  return <ol className="FileList">{renderFiles()}</ol>;
+  return (
+    <ol className="FileList">
+      {renderFiles()}
+      {/* TODO On click, open context menu for selecting New/Open */}
+      <li className="FileList__Button--AddTab">+</li>
+    </ol>
+  );
 };
 
 export default FileList;

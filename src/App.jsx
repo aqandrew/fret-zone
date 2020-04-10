@@ -72,6 +72,7 @@ function App() {
           <Document
             documentTitle={documentTitle}
             documentArtist={documentArtist}
+            selectedTrackIndex={selectedTrackIndex}
           />
           {inspectorShown && (
             <Inspector

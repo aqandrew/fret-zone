@@ -8,7 +8,7 @@
     width: 8.5in;
     height: 11in;
     margin: 0 auto;
-    padding-top: 1in;
+    padding: 1in 0.25in 0.25in;
     background: white;
     color: black;
   }
@@ -19,5 +19,14 @@
     text-align: center;
     // TODO Store document font families in Stylesheet
     font-family: 'Times New Roman', Times, serif;
+  }
+
+  .Measure {
+    display: inline-flex;
+    flex-direction: column;
+
+    &__Input {
+      width: 14px;
+    }
   }
 }

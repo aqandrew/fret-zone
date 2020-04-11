@@ -12,7 +12,7 @@ const AddTrackModal = ({ show, onClose }) => {
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackToAdd);
 
   const confirmAddTrack = () => {
-    dispatch(addTrack(uuidv4(), trackToAdd));
+    dispatch(addTrack({ id: uuidv4(), ...trackToAdd }));
     // TODO If this is the first track being added, add a new measure
     // TODO Once the new track is added, set is as the currently selected track
   };

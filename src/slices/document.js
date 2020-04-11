@@ -13,9 +13,9 @@ const documentSlice = createSlice({
   name: 'document',
   initialState,
   reducers: {
-    addTrack: (state, { newTrackId, payload }) => {
-      state.tracks.byId[newTrackId] = { id: newTrackId, ...payload };
-      state.tracks.allIds.push(newTrackId);
+    addTrack: (state, { payload }) => {
+      state.tracks.byId[payload.id] = { ...payload };
+      state.tracks.allIds.push(payload.id);
     }
     // TODO Define deleteTrack and dispatch it within AppMenu via button, or GlobalView via right-click
     // addMeasure: (state, { trackId, newMeasureId, ...payload }) => {

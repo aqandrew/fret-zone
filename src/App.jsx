@@ -37,6 +37,7 @@ const App = () => {
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
+  // TODO Can currentTrack (tracks[selectedTrackIndex]) be declared here?
 
   const renderBarCurrentDuration = () => {
     if (tracks.length && measures.length) {
@@ -66,7 +67,7 @@ const App = () => {
     return null;
   };
 
-  return (
+  return tracks.length ? (
     <div className="App">
       <AppMenu />
       <div className="TopBar">
@@ -104,7 +105,8 @@ const App = () => {
               className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
               title="Bar position"
             >
-              {selectedMeasureNumber}/{measures.length}
+              {selectedMeasureNumber}/
+              {tracks[selectedTrackIndex].measures.length}
             </div>
             {/* TODO Click to toggle incomplete duration vs. remaining duration */}
             <div
@@ -152,7 +154,7 @@ const App = () => {
         onClose={() => setShowAddTrackModal(false)}
       />
     </div>
-  );
+  ) : null;
 };
 
 export default App;

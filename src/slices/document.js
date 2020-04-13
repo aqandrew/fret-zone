@@ -4,25 +4,32 @@ export const initialState = {
   tracks: {
     byId: {},
     allIds: []
+  },
+  measures: {
+    byId: {},
+    allIds: []
   }
-  // measures: [],
   // notes: []
 };
 
 const documentSlice = createSlice({
   name: 'document',
   initialState,
+  // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
   reducers: {
     addTrack: (state, { payload }) => {
       state.tracks.byId[payload.id] = { ...payload };
       state.tracks.allIds.push(payload.id);
-    }
+    },
     // TODO Define deleteTrack and dispatch it within AppMenu via button, or GlobalView via right-click
-    // addMeasure: (state, { trackId, newMeasureId, ...payload }) => {
-    //   state.tracks.byId[trackId].measures.push(newMeasureId);
-    //   state.measures.byId[newMeasureId] = { id: newMeasureId, ...payload };
-    //   state.measures.allIds.push(newMeasureId);
-    // },
+    addMeasure: (state, { payload }) => {
+      let { trackId, ...payloadWithoutTrackId } = payload;
+      let newMeasureId = payload.id;
+
+      state.tracks.byId[trackId].measures.push(newMeasureId);
+      state.measures.byId[newMeasureId] = { ...payloadWithoutTrackId };
+      state.measures.allIds.push(newMeasureId);
+    }
     // addNote: (state, { measureId, newNoteId, ...payload }) => {
     //   state.measures.byId[measureId].notes.push(newNoteId);
     //   state.notes.byId[newNoteId] = { id: newNoteId, ...payload };
@@ -31,12 +38,15 @@ const documentSlice = createSlice({
   }
 });
 
-export const { addTrack } = documentSlice.actions;
+export const { addTrack, addMeasure } = documentSlice.actions;
 export const tracksSelector = state =>
   state.document.tracks.allIds.map(
     trackId => state.document.tracks.byId[trackId]
   );
-// https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
+export const measuresSelector = state =>
+  state.document.measures.allIds.map(
+    measureId => state.document.measures.byId[measureId]
+  );
 // export const measuresInTrackSelector = (state, trackId) =>
 //   state.document.tracks.byId[trackId].measures.map(
 //     measureId => state.document.measures.byId[measureId]

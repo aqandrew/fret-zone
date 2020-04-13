@@ -3,22 +3,48 @@ import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import { addTrack } from '../slices/document';
+import { addMeasure } from '../slices/document';
 
 import Modal from './Modal';
 
 const AddTrackModal = ({ show, onClose }) => {
   const dispatch = useDispatch();
-  const defaultTrackToAdd = {
+  const defaultTrackOptions = {
     fullName: 'Electric Guitar - Clean',
     abbreviatedName: 'el.guit.',
-    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
+    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+    measures: []
   };
-  const [trackToAdd, setTrackToAdd] = useState(defaultTrackToAdd);
+  // TODO Should this default object live here or elsewhere?
+  const defaultMeasureOptions = {
+    timeSignature: {
+      beatsPerMeasure: 4,
+      beatUnit: 4
+    },
+    keySignature: {
+      tonic: 'C',
+      isMajor: true
+    },
+    notes: []
+  };
+
+  const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
 
   const confirmAddTrack = () => {
-    dispatch(addTrack({ id: uuidv4(), ...trackToAdd }));
-    // TODO If this is the first track being added, add a new measure
-    // TODO Once the new track is added, set is as the currently selected track
+    let newTrackId = uuidv4();
+
+    dispatch(addTrack({ id: newTrackId, ...trackToAdd }));
+
+    // If this is the first track being added, add one new measure to this track
+    dispatch(
+      addMeasure({
+        trackId: newTrackId,
+        id: uuidv4(),
+        ...defaultMeasureOptions
+      })
+    );
+    // TODO Otherwise, if there are other tracks, add a new measure to this track for each measure that already exists
+    // TODO Once the new track is added, set this as the currently selected track
   };
 
   return (
@@ -32,18 +58,18 @@ const AddTrackModal = ({ show, onClose }) => {
       <input
         type="radio"
         id="AddTrack__Guitar--Electric--Clean"
-        value={defaultTrackToAdd.fullName}
-        checked={trackToAdd.fullName === defaultTrackToAdd.fullName}
+        value={defaultTrackOptions.fullName}
+        checked={trackToAdd.fullName === defaultTrackOptions.fullName}
         onChange={event => {
           setTrackToAdd(event.target.value);
         }}
       />
       <label htmlFor="AddTrack__Guitar--Electric--Clean">
-        {defaultTrackToAdd.fullName}
+        {defaultTrackOptions.fullName}
         <br />
         Tuning:
         <ol>
-          {defaultTrackToAdd.tuning.reverse().map((string, stringIndex) => (
+          {defaultTrackOptions.tuning.reverse().map((string, stringIndex) => (
             <li key={stringIndex}>{string}</li>
           ))}
         </ol>

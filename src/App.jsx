@@ -96,6 +96,9 @@ const App = () => {
           {/* TODO Undo/redo */}
           {/* TODO Print */}
           <div className="PlaybackControls">
+            <div className="PlaybackControls__Display--CurrentTrack">
+              TODO Show current track
+            </div>
             {/* TODO Click to open "Go to" modal */}
             <div
               className="PlaybackControls__Display PlaybackControls__Display--BarPosition"

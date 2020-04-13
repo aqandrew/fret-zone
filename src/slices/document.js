@@ -12,6 +12,18 @@ export const initialState = {
   // notes: []
 };
 
+export const defaultMeasureOptions = {
+  timeSignature: {
+    beatsPerMeasure: 4,
+    beatUnit: 4
+  },
+  keySignature: {
+    tonic: 'C',
+    isMajor: true
+  },
+  notes: []
+};
+
 const documentSlice = createSlice({
   name: 'document',
   initialState,

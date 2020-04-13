@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
-import { tracksSelector } from '../slices/document';
-import { measuresSelector } from '../slices/document';
+import {
+  addMeasure,
+  defaultMeasureOptions,
+  measuresSelector,
+  tracksSelector
+} from '../slices/document';
 
 import './Document.scss';
 
 const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
+  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
 
   const handleKeyPress = event => {
+    // TODO Can this variable be moved to outermost scope?
+    //   Since it's used by renderSelectedTrackNotation too
+    const selectedTrack = tracks[selectedTrackIndex];
+
     switch (event.key) {
       case 'ArrowRight':
         // TODO If the currently focused Measure is NOT last, focus the next column of inputs
-        // TODO Otherwise, add a measure to selectedTrack
-        console.log('TODO Add a measure to selectedTrack');
+        // Otherwise, add a measure to selectedTrack
+        dispatch(
+          addMeasure({
+            trackId: selectedTrack.id,
+            id: uuidv4(),
+            ...defaultMeasureOptions
+          })
+        );
         break;
       default:
         break;

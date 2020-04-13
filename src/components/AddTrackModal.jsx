@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addTrack } from '../slices/document';
-import { addMeasure } from '../slices/document';
+import {
+  addMeasure,
+  addTrack,
+  defaultMeasureOptions
+} from '../slices/document';
 
 import Modal from './Modal';
 
@@ -14,18 +17,6 @@ const AddTrackModal = ({ show, onClose }) => {
     abbreviatedName: 'el.guit.',
     tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
     measures: []
-  };
-  // TODO Should this default object live here or elsewhere?
-  const defaultMeasureOptions = {
-    timeSignature: {
-      beatsPerMeasure: 4,
-      beatUnit: 4
-    },
-    keySignature: {
-      tonic: 'C',
-      isMajor: true
-    },
-    notes: []
   };
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);

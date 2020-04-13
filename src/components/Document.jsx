@@ -27,24 +27,31 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
 
   // TODO Add support for multitrack view
   const renderSelectedTrackNotation = () =>
-    tracks.length
-      ? [...Array(measureCount)].map((emptyElement, measureNum) => (
+    tracks.length ? (
+      <div className="TrackNotation">
+        <span className="TrackNotation__TrackName--Abbreviated">
+          {tracks[selectedTrackIndex].abbreviatedName}
+        </span>
+        {[...Array(measureCount)].map((emptyMeasureElement, measureNum) => (
           <div className="Measure" key={measureNum}>
-            {[...Array(STRING_COUNT)].map((e, stringNum) => (
-              <input
-                className="Measure__Input"
-                type="text"
-                value={stringNum}
-                onChange={event => {
-                  console.log('you typed a number:', event.target.value);
-                }}
-                onKeyDown={handleKeyPress}
-                key={stringNum}
-              />
-            ))}
+            {tracks[selectedTrackIndex].tuning.map(
+              (stringTuning, stringNum) => (
+                <input
+                  className="Measure__Input"
+                  type="text"
+                  value={stringNum}
+                  onChange={event => {
+                    console.log('you typed a number:', event.target.value);
+                  }}
+                  onKeyDown={handleKeyPress}
+                  key={stringNum}
+                />
+              )
+            )}
           </div>
-        ))
-      : null;
+        ))}
+      </div>
+    ) : null;
 
   return (
     <div className="Document">

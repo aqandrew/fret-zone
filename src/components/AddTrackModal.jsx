@@ -8,7 +8,11 @@ import Modal from './Modal';
 
 const AddTrackModal = ({ show, onClose }) => {
   const dispatch = useDispatch();
-  const defaultTrackToAdd = { name: 'Electric Guitar - Clean' };
+  const defaultTrackToAdd = {
+    fullName: 'Electric Guitar - Clean',
+    abbreviatedName: 'el.guit.',
+    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
+  };
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackToAdd);
 
   const confirmAddTrack = () => {
@@ -28,14 +32,21 @@ const AddTrackModal = ({ show, onClose }) => {
       <input
         type="radio"
         id="AddTrack__Guitar--Electric--Clean"
-        value={defaultTrackToAdd.name}
-        checked={trackToAdd.name === defaultTrackToAdd.name}
+        value={defaultTrackToAdd.fullName}
+        checked={trackToAdd.fullName === defaultTrackToAdd.fullName}
         onChange={event => {
           setTrackToAdd(event.target.value);
         }}
       />
       <label htmlFor="AddTrack__Guitar--Electric--Clean">
-        {defaultTrackToAdd.name}
+        {defaultTrackToAdd.fullName}
+        <br />
+        Tuning:
+        <ol>
+          {defaultTrackToAdd.tuning.reverse().map((string, stringIndex) => (
+            <li key={stringIndex}>{string}</li>
+          ))}
+        </ol>
       </label>
     </Modal>
   );

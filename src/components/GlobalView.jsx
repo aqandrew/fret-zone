@@ -35,6 +35,8 @@ const GlobalView = ({
         </button>
         <span className="GlobalView__Heading">Tracks</span>
       </div>
+      {/* TODO Turn this into an <ol>,
+      because only GlobalView cares about trackIndex, and can determine it by itself */}
       {renderTrackControls()}
       <div className="GlobalView__Controls GlobalView__Controls--Bottom">
         <span className="GlobalView__Heading">Master</span>

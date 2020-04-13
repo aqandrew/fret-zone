@@ -8,14 +8,34 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  &__ScoreControls {
+  .TopBar {
     background: #2a2a2a;
+
+    &__ActiveFileName {
+      color: #898989;
+      text-align: center;
+      padding-top: 2px;
+    }
   }
 
-  &__ActiveFileName {
-    color: #898989;
-    text-align: center;
-    padding-top: 2px;
+  .ScoreControls {
+    display: flex;
+    justify-content: space-between;
+
+    &__ButtonContainer {
+      display: flex;
+    }
+  }
+
+  .PlaybackControls {
+    &__Display {
+      background: #191c21;
+      user-select: none;
+
+      &:hover {
+        background: #2f333d;
+      }
+    }
   }
 
   &__Content {

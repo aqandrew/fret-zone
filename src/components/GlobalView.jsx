@@ -59,7 +59,7 @@ const TrackControl = ({ track, index, isSelected, setSelectedTrackIndex }) => {
       onClick={() => setSelectedTrackIndex(index)}
     >
       <span className="TrackControl__TrackNumber">{index + 1}.</span>
-      {track.name}
+      {track.fullName}
     </div>
   );
 };

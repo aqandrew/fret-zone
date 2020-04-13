@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { tracksSelector } from '../slices/document';
+import { measuresSelector } from '../slices/document';
 
 import './Document.scss';
 
 const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
   const tracks = useSelector(tracksSelector);
-
-  // TODO Put measureCount in Redux store, owned by individual track
-  // TODO Put STRING_COUNT in Redux store, owned by individual track
-  const [measureCount, setMeasureCount] = useState(1);
-  const STRING_COUNT = 6;
+  const measures = useSelector(measuresSelector);
 
   const handleKeyPress = event => {
     switch (event.key) {
       case 'ArrowRight':
-        // TODO If the currently focused Measure is NOT last, focus the next row of inputs
-        // Otherwise, increase the number of measures
-        setMeasureCount(measureCount + 1);
+        // TODO If the currently focused Measure is NOT last, focus the next column of inputs
+        // TODO Otherwise, add a measure to selectedTrack
+        console.log('TODO Add a measure to selectedTrack');
         break;
       default:
         break;
@@ -26,16 +23,22 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
   };
 
   // TODO Add support for multitrack view
-  const renderSelectedTrackNotation = () =>
-    tracks.length ? (
-      <div className="TrackNotation">
-        <span className="TrackNotation__TrackName--Abbreviated">
-          {tracks[selectedTrackIndex].abbreviatedName}
-        </span>
-        {[...Array(measureCount)].map((emptyMeasureElement, measureNum) => (
-          <div className="Measure" key={measureNum}>
-            {tracks[selectedTrackIndex].tuning.map(
-              (stringTuning, stringNum) => (
+  const renderSelectedTrackNotation = () => {
+    const selectedTrack = tracks[selectedTrackIndex];
+
+    if (tracks.length && measures.length) {
+      const measuresInSelectedTrack = selectedTrack.measures.map(measureId =>
+        measures.find(someMeasure => someMeasure.id === measureId)
+      );
+
+      return (
+        <div className="TrackNotation">
+          <span className="TrackNotation__TrackName--Abbreviated">
+            {selectedTrack.abbreviatedName}
+          </span>
+          {measuresInSelectedTrack.map((measure, measureNum) => (
+            <div className="Measure" key={measureNum}>
+              {selectedTrack.tuning.map((stringTuning, stringNum) => (
                 <input
                   className="Measure__Input"
                   type="text"
@@ -46,12 +49,15 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
                   onKeyDown={handleKeyPress}
                   key={stringNum}
                 />
-              )
-            )}
-          </div>
-        ))}
-      </div>
-    ) : null;
+              ))}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div className="Document">

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 // TODO Alphabetize imports w/ESLint
+import { tracksSelector } from './slices/document';
+import { measuresSelector } from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
 import CheckboxButton from './components/CheckboxButton';
@@ -12,7 +15,10 @@ import AddTrackModal from './components/AddTrackModal';
 
 import './App.scss';
 
-function App() {
+const App = () => {
+  const tracks = useSelector(tracksSelector);
+  const measures = useSelector(measuresSelector);
+
   // TODO Put fileList in Redux store
   const dummyFileList = [
     { id: 0, name: '' }
@@ -22,6 +28,7 @@ function App() {
 
   // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
+  const [selectedMeasureNumber, setSelectedMeasureNumber] = useState(1);
   // TODO What if there are no tracks?
   const [selectedTrackIndex, setSelectedTrackIndex] = useState(0);
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
@@ -31,15 +38,43 @@ function App() {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
+  const renderBarCurrentDuration = () => {
+    if (tracks.length && measures.length) {
+      const selectedMeasure = measures.find(
+        measure =>
+          measure.id ===
+          tracks[selectedTrackIndex].measures[selectedMeasureNumber - 1]
+      );
+
+      // TODO Calculate currentBarDuration based on notes in bar
+      let currentBarDuration = 0;
+      let currentBarMaximumDuration =
+        (selectedMeasure.timeSignature.beatUnit / 4) *
+        selectedMeasure.timeSignature.beatsPerMeasure;
+
+      // TODO Display minimum 1 decimal place, and up to 4 decimal places,
+      //   rounded, not truncated
+      //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
+      //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
+      return (
+        currentBarDuration.toFixed(1) +
+        ':' +
+        currentBarMaximumDuration.toFixed(1)
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="App">
       <AppMenu />
-      <div className="App__ScoreControls">
-        <div className="App__ActiveFileName">
+      <div className="TopBar">
+        <div className="TopBar__ActiveFileName">
           {activeFileName || 'untitled'}
         </div>
-        <div>
-          <div>
+        <div className="ScoreControls">
+          <div className="ScoreControls__ButtonContainer">
             <CheckboxButton
               buttonTitle="Show/Hide Edition Palette"
               isChecked={editionPaletteShown}
@@ -60,8 +95,25 @@ function App() {
           {/* TODO Document view select */}
           {/* TODO Undo/redo */}
           {/* TODO Print */}
-          {/* TODO PlaybackControls */}
-          {/* TODO Buttons for fretboard/keyboard/drum view */}
+          <div className="PlaybackControls">
+            {/* TODO Click to open "Go to" modal */}
+            <div
+              className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
+              title="Bar position"
+            >
+              {selectedMeasureNumber}/{measures.length}
+            </div>
+            {/* TODO Click to toggle incomplete duration vs. remaining duration */}
+            <div
+              className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
+              title="Bar current duration"
+            >
+              {renderBarCurrentDuration()}
+            </div>
+          </div>
+          <div className="ScoreControls__ButtonContainer">
+            {/* TODO Buttons for fretboard/keyboard/drum view */}
+          </div>
         </div>
       </div>
       <FileList
@@ -98,6 +150,6 @@ function App() {
       />
     </div>
   );
-}
+};
 
 export default App;

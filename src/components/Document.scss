@@ -21,6 +21,18 @@
     font-family: 'Times New Roman', Times, serif;
   }
 
+  .TrackNotation {
+    &__TrackName {
+      &--Abbreviated {
+        // TODO Set margin dynamically, e.g. as percentage
+        // Or use { vertical-align: center; } on flex parent
+        margin-bottom: -5em;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+      }
+    }
+  }
+
   .Measure {
     display: inline-flex;
     flex-direction: column;

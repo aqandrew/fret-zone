@@ -23,10 +23,20 @@
     position: absolute;
     left: 4px;
   }
+
+  &__Content {
+    display: flex;
+  }
+
+  &__TrackControls {
+    width: 535px;
+    border-right: 1px solid #2f333a;
+  }
 }
 
 .TrackControl {
-  height: 22px;
+  height: 24px;
+  border-bottom: 1px solid #373b42;
   display: flex;
   align-items: center;
   background: #373b42;
@@ -43,8 +53,44 @@
     background: #434850;
   }
 
+  &__ColorTab {
+    height: 100%;
+    width: 4px;
+    margin-right: 4px;
+    // TODO Store background-color in track store
+    background: #d88b72;
+  }
+
   &__TrackNumber {
     margin-right: 4px;
     color: #97a0ac;
+  }
+}
+
+.MeasureTable {
+  flex: 1;
+  overflow-x: auto;
+
+  &__Row {
+    height: 24px;
+    border-bottom: 1px solid #2f333a;
+    display: flex;
+    align-items: center;
+  }
+
+  &__Cell {
+    height: 100%;
+    width: 24px;
+    // TODO Store background-color in track store
+    background: #d98b6f;
+
+    &:not(:last-child) {
+      border-right: 1px solid #2f333a;
+    }
+
+    // TODO SASS-lighten by set amount
+    &:hover {
+      background: #f3cabb;
+    }
   }
 }

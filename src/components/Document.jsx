@@ -32,6 +32,7 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
             ...defaultMeasureOptions
           })
         );
+        // TODO Add measures to all other tracks too
         break;
       default:
         break;

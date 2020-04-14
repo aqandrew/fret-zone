@@ -19,5 +19,6 @@ const uiSlice = createSlice({
 });
 
 export const { selectTrack, selectMeasure } = uiSlice.actions;
+export const selectedTrackIndexSelector = state => state.ui.selectedTrackIndex;
 
 export default uiSlice.reducer;

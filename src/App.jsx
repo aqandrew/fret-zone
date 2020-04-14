@@ -67,94 +67,102 @@ const App = () => {
     return null;
   };
 
-  return tracks.length ? (
-    <div className="App">
-      <AppMenu />
-      <div className="TopBar">
-        <div className="TopBar__ActiveFileName">
-          {activeFileName || 'untitled'}
+  if (tracks.length) {
+    const selectedTrack = tracks[selectedTrackIndex];
+
+    return (
+      <div className="App">
+        <AppMenu />
+        <div className="TopBar">
+          <div className="TopBar__ActiveFileName">
+            {activeFileName || 'untitled'}
+          </div>
+          <div className="ScoreControls">
+            <div className="ScoreControls__ButtonContainer">
+              <CheckboxButton
+                buttonTitle="Show/Hide Edition Palette"
+                isChecked={editionPaletteShown}
+                setChecked={setEditionPaletteShown}
+              />
+              <CheckboxButton
+                buttonTitle="Show/Hide Global View"
+                isChecked={globalViewShown}
+                setChecked={setGlobalViewShown}
+              />
+              <CheckboxButton
+                buttonTitle="Show/Hide Inspector"
+                isChecked={inspectorShown}
+                setChecked={setInspectorShown}
+              />
+            </div>
+            {/* TODO Zoom control */}
+            {/* TODO Document view select */}
+            {/* TODO Undo/redo */}
+            {/* TODO Print */}
+            <div className="PlaybackControls">
+              <div
+                className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"
+                title="Current track (Click to change)"
+              >
+                {selectedTrackIndex + 1}. {selectedTrack.fullName}
+              </div>
+              {/* TODO Click to open "Go to" modal */}
+              <div
+                className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
+                title="Bar position"
+              >
+                {selectedMeasureNumber}/{selectedTrack.measures.length}
+              </div>
+              {/* TODO Click to toggle incomplete duration vs. remaining duration */}
+              <div
+                className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
+                title="Bar current duration"
+              >
+                {renderBarCurrentDuration()}
+              </div>
+            </div>
+            <div className="ScoreControls__ButtonContainer">
+              {/* TODO Buttons for fretboard/keyboard/drum view */}
+            </div>
+          </div>
         </div>
-        <div className="ScoreControls">
-          <div className="ScoreControls__ButtonContainer">
-            <CheckboxButton
-              buttonTitle="Show/Hide Edition Palette"
-              isChecked={editionPaletteShown}
-              setChecked={setEditionPaletteShown}
+        <FileList
+          files={dummyFileList}
+          activeFileName={activeFileName}
+          setActiveFileName={setActiveFileName}
+        />
+        <div className="App__Content--Main">
+          <div className="App__Content--Center">
+            {editionPaletteShown && <EditionPalette />}
+            <Document
+              documentTitle={documentTitle}
+              documentArtist={documentArtist}
+              selectedTrackIndex={selectedTrackIndex}
             />
-            <CheckboxButton
-              buttonTitle="Show/Hide Global View"
-              isChecked={globalViewShown}
-              setChecked={setGlobalViewShown}
-            />
-            <CheckboxButton
-              buttonTitle="Show/Hide Inspector"
-              isChecked={inspectorShown}
-              setChecked={setInspectorShown}
-            />
+            {inspectorShown && (
+              <Inspector
+                setDocumentTitle={setDocumentTitle}
+                setDocumentArtist={setDocumentArtist}
+              />
+            )}
           </div>
-          {/* TODO Zoom control */}
-          {/* TODO Document view select */}
-          {/* TODO Undo/redo */}
-          {/* TODO Print */}
-          <div className="PlaybackControls">
-            <div className="PlaybackControls__Display--CurrentTrack">
-              TODO Show current track
-            </div>
-            {/* TODO Click to open "Go to" modal */}
-            <div
-              className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
-              title="Bar position"
-            >
-              {selectedMeasureNumber}/
-              {tracks[selectedTrackIndex].measures.length}
-            </div>
-            {/* TODO Click to toggle incomplete duration vs. remaining duration */}
-            <div
-              className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
-              title="Bar current duration"
-            >
-              {renderBarCurrentDuration()}
-            </div>
-          </div>
-          <div className="ScoreControls__ButtonContainer">
-            {/* TODO Buttons for fretboard/keyboard/drum view */}
-          </div>
-        </div>
-      </div>
-      <FileList
-        files={dummyFileList}
-        activeFileName={activeFileName}
-        setActiveFileName={setActiveFileName}
-      />
-      <div className="App__Content--Main">
-        <div className="App__Content--Center">
-          {editionPaletteShown && <EditionPalette />}
-          <Document
-            documentTitle={documentTitle}
-            documentArtist={documentArtist}
-            selectedTrackIndex={selectedTrackIndex}
-          />
-          {inspectorShown && (
-            <Inspector
-              setDocumentTitle={setDocumentTitle}
-              setDocumentArtist={setDocumentArtist}
+          {globalViewShown && (
+            <GlobalView
+              selectedTrackIndex={selectedTrackIndex}
+              setSelectedTrackIndex={setSelectedTrackIndex}
+              openAddTrackModal={() => setShowAddTrackModal(true)}
             />
           )}
         </div>
-        {globalViewShown && (
-          <GlobalView
-            selectedTrackIndex={selectedTrackIndex}
-            setSelectedTrackIndex={setSelectedTrackIndex}
-            openAddTrackModal={() => setShowAddTrackModal(true)}
-          />
-        )}
+        <AddTrackModal
+          show={showAddTrackModal}
+          onClose={() => setShowAddTrackModal(false)}
+        />
       </div>
-      <AddTrackModal
-        show={showAddTrackModal}
-        onClose={() => setShowAddTrackModal(false)}
-      />
-    </div>
-  ) : null;
+    );
+  }
+
+  return null;
 };
 
 export default App;

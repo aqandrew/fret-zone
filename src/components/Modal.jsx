@@ -11,14 +11,18 @@ const Modal = ({ children, modalTitle, show, onClose, onConfirm }) => {
         <h2 className="Modal__Heading">{modalTitle}</h2>
         {children}
         <div className="Modal__Footer">
-          <button className="Modal__FooterButton--Cancel" onClick={onClose}>
+          <button
+            className="Modal__FooterButton--Cancel"
+            onClick={() => onClose(null)}
+          >
             Cancel
           </button>
           <button
             className="Modal__FooterButton--Confirm"
             onClick={() => {
-              onConfirm();
-              onClose();
+              let modalResult = onConfirm();
+
+              onClose(modalResult);
             }}
           >
             OK

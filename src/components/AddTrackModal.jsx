@@ -33,6 +33,7 @@ const AddTrackModal = ({ show, onClose }) => {
     let numMeasuresToAdd = tracks.length === 0 ? 1 : tracks[0].measures.length;
 
     // TODO This for-loop may not be the best approach if we want the ability to undo adding a track
+    // Adding an action for batch-adding several measures may be better
     for (let i = 0; i < numMeasuresToAdd; i++) {
       dispatch(
         addMeasure({
@@ -43,7 +44,7 @@ const AddTrackModal = ({ show, onClose }) => {
       );
     }
 
-    // TODO Once the new track is added, set this as the currently selected track
+    return newTrackId;
   };
 
   return (

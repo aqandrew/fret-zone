@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // TODO Alphabetize imports w/ESLint
+import { selectTrack } from './slices/ui';
 import { tracksSelector } from './slices/document';
 import { measuresSelector } from './slices/document';
 import AppMenu from './components/AppMenu';
@@ -16,6 +17,7 @@ import AddTrackModal from './components/AddTrackModal';
 import './App.scss';
 
 const App = () => {
+  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
 
@@ -156,7 +158,13 @@ const App = () => {
         </div>
         <AddTrackModal
           show={showAddTrackModal}
-          onClose={() => setShowAddTrackModal(false)}
+          onClose={newTrackId => {
+            setShowAddTrackModal(false);
+
+            if (newTrackId) {
+              dispatch(selectTrack(tracks.length));
+            }
+          }}
         />
       </div>
     );

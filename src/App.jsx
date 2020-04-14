@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // TODO Alphabetize imports w/ESLint
-import { selectTrack, selectedTrackIndexSelector } from './slices/ui';
+import {
+  selectTrack,
+  selectedTrackIndexSelector,
+  selectedMeasureNumberSelector
+} from './slices/ui';
 import { tracksSelector } from './slices/document';
 import { measuresSelector } from './slices/document';
 import AppMenu from './components/AppMenu';
@@ -21,6 +25,7 @@ const App = () => {
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
@@ -31,7 +36,6 @@ const App = () => {
 
   // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
-  const [selectedMeasureNumber, setSelectedMeasureNumber] = useState(1);
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);

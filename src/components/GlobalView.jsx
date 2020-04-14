@@ -1,16 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { selectTrack, selectedTrackIndexSelector } from '../slices/ui';
 import { tracksSelector } from '../slices/document';
 
 import './GlobalView.scss';
 
-const GlobalView = ({
-  selectedTrackIndex,
-  setSelectedTrackIndex,
-  openAddTrackModal
-}) => {
+const GlobalView = ({ openAddTrackModal }) => {
+  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
+  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
 
   const renderTrackControls = () =>
     tracks.map((track, index) => (
@@ -18,7 +17,7 @@ const GlobalView = ({
         track={track}
         index={index}
         isSelected={index === selectedTrackIndex}
-        setSelectedTrackIndex={setSelectedTrackIndex}
+        setSelectedTrackIndex={trackIndex => dispatch(selectTrack(trackIndex))}
         key={index}
       />
     ));

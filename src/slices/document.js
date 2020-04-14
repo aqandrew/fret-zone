@@ -29,11 +29,17 @@ const documentSlice = createSlice({
   initialState,
   // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
   reducers: {
+    // TODO This crashes the app when using Redux Dev Tools' dispatch console
+    // resetDocument: state => {
+    //   // state = initialState;
+    //   state.tracks = initialState.tracks;
+    //   state.measures = initialState.measures;
+    // },
     addTrack: (state, { payload }) => {
       state.tracks.byId[payload.id] = { ...payload };
       state.tracks.allIds.push(payload.id);
     },
-    // TODO Define deleteTrack and dispatch it within AppMenu via button, or GlobalView via right-click
+    // deleteTrack: (state, { payload }) => {},
     addMeasure: (state, { payload }) => {
       let { trackId, ...payloadWithoutTrackId } = payload;
       let newMeasureId = payload.id;
@@ -42,6 +48,7 @@ const documentSlice = createSlice({
       state.measures.byId[newMeasureId] = { ...payloadWithoutTrackId };
       state.measures.allIds.push(newMeasureId);
     }
+    // TODO Define deleteMeasure so that state can be cleared in Redux DevTools
     // addNote: (state, { measureId, newNoteId, ...payload }) => {
     //   state.measures.byId[measureId].notes.push(newNoteId);
     //   state.notes.byId[newNoteId] = { id: newNoteId, ...payload };

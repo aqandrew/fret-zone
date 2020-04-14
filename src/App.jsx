@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // TODO Alphabetize imports w/ESLint
-import { selectTrack } from './slices/ui';
+import { selectTrack, selectedTrackIndexSelector } from './slices/ui';
 import { tracksSelector } from './slices/document';
 import { measuresSelector } from './slices/document';
 import AppMenu from './components/AppMenu';
@@ -20,6 +20,7 @@ const App = () => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
@@ -31,15 +32,12 @@ const App = () => {
   // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
   const [selectedMeasureNumber, setSelectedMeasureNumber] = useState(1);
-  // TODO What if there are no tracks?
-  const [selectedTrackIndex, setSelectedTrackIndex] = useState(0);
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
-  // TODO Can currentTrack (tracks[selectedTrackIndex]) be declared here?
 
   const renderBarCurrentDuration = () => {
     if (tracks.length && measures.length) {
@@ -149,11 +147,7 @@ const App = () => {
             )}
           </div>
           {globalViewShown && (
-            <GlobalView
-              selectedTrackIndex={selectedTrackIndex}
-              setSelectedTrackIndex={setSelectedTrackIndex}
-              openAddTrackModal={() => setShowAddTrackModal(true)}
-            />
+            <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
           )}
         </div>
         <AddTrackModal

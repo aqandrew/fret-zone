@@ -1,7 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectTrack, selectedTrackIndexSelector } from '../slices/ui';
+import {
+  selectTrack,
+  selectedTrackIndexSelector,
+  selectMeasure,
+  selectedMeasureNumberSelector
+} from '../slices/ui';
 import { tracksSelector } from '../slices/document';
 
 import './GlobalView.scss';
@@ -26,7 +31,7 @@ const GlobalView = ({ openAddTrackModal }) => {
     tracks.map((track, index) => (
       <MeasureTableRow
         track={track}
-        index={index}
+        trackIndex={index}
         setSelectedTrackIndex={trackIndex => dispatch(selectTrack(trackIndex))}
         key={index}
       />
@@ -84,16 +89,36 @@ const TrackControl = ({ track, index, isSelected, setSelectedTrackIndex }) => {
   );
 };
 
-const MeasureTableRow = ({ track, index, setSelectedTrackIndex }) => {
+const MeasureTableRow = ({ track, trackIndex, setSelectedTrackIndex }) => {
+  const dispatch = useDispatch();
+  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+
   return (
     <div className="MeasureTable__Row">
-      {track.measures.map(measureId => (
-        <div
-          className="MeasureTable__Cell"
-          onClick={() => setSelectedTrackIndex(index)}
-          key={measureId}
-        ></div>
-      ))}
+      {track.measures.map((measureId, measureIndex) => {
+        let cellClassName = 'MeasureTable__Cell';
+
+        // TODO Make tracks and measures either BOTH zero-indexed or BOTH one-indexed
+        // TODO Refactor using classnames utility
+        if (
+          trackIndex === selectedTrackIndex &&
+          measureIndex === selectedMeasureNumber - 1
+        ) {
+          cellClassName += ` ${cellClassName}--IsSelected`;
+        }
+
+        return (
+          <div
+            className={cellClassName}
+            onClick={() => {
+              setSelectedTrackIndex(trackIndex);
+              dispatch(selectMeasure(measureIndex + 1));
+            }}
+            key={measureId}
+          ></div>
+        );
+      })}
     </div>
   );
 };

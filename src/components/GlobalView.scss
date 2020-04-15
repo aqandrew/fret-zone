@@ -92,5 +92,17 @@
     &:hover {
       background: #f3cabb;
     }
+
+    &--IsSelected {
+      &::after {
+        content: ' ';
+        display: block;
+        margin: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 2px;
+        background: black;
+      }
+    }
   }
 }

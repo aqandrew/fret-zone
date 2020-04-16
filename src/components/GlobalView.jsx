@@ -12,31 +12,16 @@ import { tracksSelector } from '../slices/document';
 import './GlobalView.scss';
 
 const GlobalView = ({ openAddTrackModal }) => {
-  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
-  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
-
-  // TODO To reduce repetition, there should probably be a selectTrack dispatch wrapper function defined in the component scope
 
   const renderTrackControls = () =>
     tracks.map((track, index) => (
-      <TrackControl
-        track={track}
-        index={index}
-        isSelected={index === selectedTrackIndex}
-        setSelectedTrackIndex={trackIndex => dispatch(selectTrack(trackIndex))}
-        key={index}
-      />
+      <TrackControl track={track} index={index} key={index} />
     ));
 
   const renderMeasureTable = () =>
     tracks.map((track, index) => (
-      <MeasureTableRow
-        track={track}
-        trackIndex={index}
-        setSelectedTrackIndex={trackIndex => dispatch(selectTrack(trackIndex))}
-        key={index}
-      />
+      <MeasureTableRow track={track} trackIndex={index} key={index} />
     ));
 
   return (
@@ -71,18 +56,21 @@ const GlobalView = ({ openAddTrackModal }) => {
   );
 };
 
-const TrackControl = ({ track, index, isSelected, setSelectedTrackIndex }) => {
+const TrackControl = ({ track, index }) => {
+  const dispatch = useDispatch();
+  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+
   let trackControlClassName = 'TrackControl';
 
   // TODO Refactor using classnames utility
-  if (isSelected) {
+  if (index === selectedTrackIndex) {
     trackControlClassName += ` ${trackControlClassName}--IsActive`;
   }
 
   return (
     <div
       className={trackControlClassName}
-      onClick={() => setSelectedTrackIndex(index)}
+      onClick={() => dispatch(selectTrack(index))}
     >
       <div className="TrackControl__ColorTab"></div>
       <span className="TrackControl__TrackNumber">{index + 1}.</span>
@@ -91,7 +79,7 @@ const TrackControl = ({ track, index, isSelected, setSelectedTrackIndex }) => {
   );
 };
 
-const MeasureTableRow = ({ track, trackIndex, setSelectedTrackIndex }) => {
+const MeasureTableRow = ({ track, trackIndex }) => {
   const dispatch = useDispatch();
   const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
@@ -112,9 +100,8 @@ const MeasureTableRow = ({ track, trackIndex, setSelectedTrackIndex }) => {
         return (
           <div
             className={cellClassName}
-            // TODO Having a dispatch wrapper function next to a regular dispatch call is odd; these should be standardized
             onClick={() => {
-              setSelectedTrackIndex(trackIndex);
+              dispatch(selectTrack(trackIndex));
               dispatch(selectMeasure(measureIndex + 1));
             }}
             key={measureId}

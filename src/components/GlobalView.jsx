@@ -16,6 +16,8 @@ const GlobalView = ({ openAddTrackModal }) => {
   const tracks = useSelector(tracksSelector);
   const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
 
+  // TODO To reduce repetition, there should probably be a selectTrack dispatch wrapper function defined in the component scope
+
   const renderTrackControls = () =>
     tracks.map((track, index) => (
       <TrackControl
@@ -38,7 +40,7 @@ const GlobalView = ({ openAddTrackModal }) => {
     ));
 
   return (
-    // TODO Redefine HTML structure as follows:
+    // TODO Redefine HTML structure as follows, for correct horizontal scrolling behavior:
     // .GlobalView { display: flex; }
     //   .TrackControls
     //      .TrackControls__Header
@@ -99,7 +101,6 @@ const MeasureTableRow = ({ track, trackIndex, setSelectedTrackIndex }) => {
       {track.measures.map((measureId, measureIndex) => {
         let cellClassName = 'MeasureTable__Cell';
 
-        // TODO Make tracks and measures either BOTH zero-indexed or BOTH one-indexed
         // TODO Refactor using classnames utility
         if (
           trackIndex === selectedTrackIndex &&
@@ -111,6 +112,7 @@ const MeasureTableRow = ({ track, trackIndex, setSelectedTrackIndex }) => {
         return (
           <div
             className={cellClassName}
+            // TODO Having a dispatch wrapper function next to a regular dispatch call is odd; these should be standardized
             onClick={() => {
               setSelectedTrackIndex(trackIndex);
               dispatch(selectMeasure(measureIndex + 1));

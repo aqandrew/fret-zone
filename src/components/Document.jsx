@@ -17,8 +17,6 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
   const measures = useSelector(measuresSelector);
 
   const handleKeyPress = event => {
-    // TODO Can this variable be moved to outermost scope?
-    //   Since it's used by renderSelectedTrackNotation too
     const selectedTrack = tracks[selectedTrackIndex];
 
     switch (event.key) {
@@ -39,7 +37,6 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
     }
   };
 
-  // TODO Add support for multitrack view
   const renderSelectedTrackNotation = () => {
     const selectedTrack = tracks[selectedTrackIndex];
 

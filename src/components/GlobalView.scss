@@ -7,154 +7,157 @@ $measure-cell-width: 24px;
   background: #2f333a;
   border-top: 1px solid black;
 
-  &__Controls {
-    display: flex;
-    align-items: center;
-
-    &--Top {
-      height: $header-height;
-    }
-
-    &--Bottom {
-      height: $footer-height;
-    }
-  }
-
-  &__Heading {
-    padding-left: 54px;
-  }
-
-  &__Button--AddTrack {
-    position: absolute;
-    left: 4px;
-  }
-
   .TrackControls {
     width: 535px;
     border-right: 1px solid #2f333a;
-  }
-}
 
-.TrackControl {
-  height: 24px;
-  border-bottom: 1px solid #373b42;
-  display: flex;
-  align-items: center;
-  background: #373b42;
+    &__Header,
+    &__Footer {
+      display: flex;
+      align-items: center;
+      user-select: none;
+    }
 
-  &--IsActive {
-    background: #4d525b;
+    &__Header {
+      height: $header-height;
+    }
 
-    &:hover {
-      background: #50545e;
+    &__Footer {
+      height: $footer-height;
+    }
+
+    &__Button--AddTrack {
+      position: absolute;
+      left: 4px;
+    }
+
+    &__Heading {
+      padding-left: 54px;
     }
   }
 
-  &:not(&--IsActive):hover {
-    background: #434850;
-  }
-
-  &__ColorTab {
-    height: 100%;
-    width: 4px;
-    margin-right: 4px;
-    // TODO Store background-color in track store
-    background: #d88b72;
-  }
-
-  &__TrackNumber {
-    margin-right: 4px;
-    color: #97a0ac;
-  }
-}
-
-.MeasureTable {
-  flex: 1;
-  overflow-x: auto;
-
-  &__Header {
-    height: $header-height;
-  }
-
-  &__MeasureNumber {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 1px;
-    height: 100%;
-    width: $measure-cell-width;
-    font-size: 10px;
-    user-select: none;
-
-    &:hover {
-      background: #505d67;
-    }
-
-    &:not(:first-child):not(:nth-child(4n)) {
-      color: #2f333a;
-
-      &:hover {
-        color: white;
-      }
-    }
-
-    &--IsSelected {
-      &::after {
-        content: ' ';
-        display: block;
-        position: absolute;
-        margin-top: -8px;
-        border-top: 4px solid #6191d2;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-      }
-
-      &:hover::after {
-        border-top-color: white;
-      }
-    }
-  }
-
-  &__Footer {
-    height: $footer-height;
-  }
-
-  &__Row {
+  .TrackControl {
     height: 24px;
-    border-bottom: 1px solid #2f333a;
+    border-bottom: 1px solid #373b42;
     display: flex;
     align-items: center;
+    background: #373b42;
+    user-select: none;
+
+    &--IsActive {
+      background: #4d525b;
+
+      &:hover {
+        background: #50545e;
+      }
+    }
+
+    &:not(&--IsActive):hover {
+      background: #434850;
+    }
+
+    &__ColorTab {
+      height: 100%;
+      width: 4px;
+      margin-right: 4px;
+      // TODO Store background-color in track store
+      background: #d88b72;
+    }
+
+    &__TrackNumber {
+      margin-right: 4px;
+      color: #97a0ac;
+    }
   }
 
-  &__Cell {
-    height: 100%;
-    width: $measure-cell-width;
-    // TODO Store background-color in track store
-    background: #d98b6f;
+  .MeasureTable {
+    flex: 1;
+    overflow-x: auto;
 
-    &:not(:last-child) {
-      border-right: 1px solid #2f333a;
+    &__Header {
+      height: $header-height;
     }
 
-    // TODO For empty or rest-only measures:
-    //   default background #3b3d43
-    //   hover background #5d626c
-    // TODO For measures with non-rest notes:
-    //   saturate original color by 12.89%
-    //   and lighten by 16.67%
-    &:hover {
-      background: #f3cabb;
+    &__MeasureNumber {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 1px;
+      height: 100%;
+      width: $measure-cell-width;
+      font-size: 10px;
+      user-select: none;
+
+      &:hover {
+        background: #505d67;
+      }
+
+      &:not(:first-child):not(:nth-child(4n)) {
+        color: #2f333a;
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      &--IsSelected {
+        &::after {
+          content: ' ';
+          display: block;
+          position: absolute;
+          margin-top: -8px;
+          border-top: 4px solid #6191d2;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+        }
+
+        &:hover::after {
+          border-top-color: white;
+        }
+      }
     }
 
-    &--IsSelected {
-      &::after {
-        content: ' ';
-        display: block;
-        margin: 4px;
-        width: 16px;
-        height: 16px;
-        border-radius: 2px;
-        background: black;
+    &__Footer {
+      height: $footer-height;
+    }
+
+    &__Row {
+      height: 24px;
+      border-bottom: 1px solid #2f333a;
+      display: flex;
+      align-items: center;
+    }
+
+    &__Cell {
+      height: 100%;
+      width: $measure-cell-width;
+      // TODO Store background-color in track store
+      background: #d98b6f;
+
+      &:not(:last-child) {
+        border-right: 1px solid #2f333a;
+      }
+
+      // TODO For empty or rest-only measures:
+      //   default background #3b3d43
+      //   hover background #5d626c
+      // TODO For measures with non-rest notes:
+      //   saturate original color by 12.89%
+      //   and lighten by 16.67%
+      &:hover {
+        background: #f3cabb;
+      }
+
+      &--IsSelected {
+        &::after {
+          content: ' ';
+          display: block;
+          margin: 4px;
+          width: 16px;
+          height: 16px;
+          border-radius: 2px;
+          background: black;
+        }
       }
     }
   }

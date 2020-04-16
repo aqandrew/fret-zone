@@ -11,13 +11,13 @@ import {
 
 import './Document.scss';
 
-const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
+const Document = ({ documentTitle, documentArtist, selectedTrackNumber }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
 
   const handleKeyPress = event => {
-    const selectedTrack = tracks[selectedTrackIndex];
+    const selectedTrack = tracks[selectedTrackNumber];
 
     switch (event.key) {
       case 'ArrowRight':
@@ -38,7 +38,7 @@ const Document = ({ documentTitle, documentArtist, selectedTrackIndex }) => {
   };
 
   const renderSelectedTrackNotation = () => {
-    const selectedTrack = tracks[selectedTrackIndex];
+    const selectedTrack = tracks[selectedTrackNumber];
 
     if (tracks.length && measures.length) {
       const measuresInSelectedTrack = selectedTrack.measures.map(measureId =>

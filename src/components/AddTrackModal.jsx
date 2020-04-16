@@ -69,9 +69,11 @@ const AddTrackModal = ({ show, onClose }) => {
         <br />
         Tuning:
         <ol>
-          {defaultTrackOptions.tuning.reverse().map((string, stringIndex) => (
-            <li key={stringIndex}>{string}</li>
-          ))}
+          {defaultTrackOptions.tuning
+            .reverse()
+            .map((stringTuning, stringNumber) => (
+              <li key={stringNumber}>{stringTuning}</li>
+            ))}
         </ol>
       </label>
     </Modal>

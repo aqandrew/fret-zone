@@ -88,7 +88,12 @@
       border-right: 1px solid #2f333a;
     }
 
-    // TODO SASS-lighten by set amount
+    // TODO For empty or rest-only measures:
+    //   default background #3b3d43
+    //   hover background #5d626c
+    // TODO For measures with non-rest notes:
+    //   saturate original color by 12.89%
+    //   and lighten by 16.67%
     &:hover {
       background: #f3cabb;
     }

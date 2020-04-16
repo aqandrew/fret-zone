@@ -32,19 +32,19 @@ const GlobalView = ({ openAddTrackModal }) => {
   return (
     <div className="GlobalView">
       <div className="TrackControls">
-        <div className="GlobalView__Controls GlobalView__Controls--Top">
+        <div className="TrackControls__Header">
           <button
-            className="GlobalView__Button--AddTrack"
+            className="TrackControls__Button--AddTrack"
             title="Add Track"
             onClick={openAddTrackModal}
           >
             +
           </button>
-          <span className="GlobalView__Heading">Tracks</span>
+          <span className="TrackControls__Heading">Tracks</span>
         </div>
         {renderTrackControls()}
-        <div className="GlobalView__Controls GlobalView__Controls--Bottom">
-          <span className="GlobalView__Heading">Master</span>
+        <div className="TrackControls__Footer">
+          <span className="TrackControls__Heading">Master</span>
         </div>
       </div>
       <div className="MeasureTable">

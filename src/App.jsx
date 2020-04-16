@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // TODO Alphabetize imports w/ESLint
 import {
   selectTrack,
-  selectedTrackIndexSelector,
+  selectedTrackNumberSelector,
   selectedMeasureNumberSelector
 } from './slices/ui';
 import { tracksSelector } from './slices/document';
@@ -24,7 +24,7 @@ const App = () => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
-  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   // TODO Put fileList in Redux store
@@ -48,7 +48,7 @@ const App = () => {
       const selectedMeasure = measures.find(
         measure =>
           measure.id ===
-          tracks[selectedTrackIndex].measures[selectedMeasureNumber - 1]
+          tracks[selectedTrackNumber].measures[selectedMeasureNumber - 1]
       );
 
       // TODO Calculate currentBarDuration based on notes in bar
@@ -72,7 +72,7 @@ const App = () => {
   };
 
   if (tracks.length) {
-    const selectedTrack = tracks[selectedTrackIndex];
+    const selectedTrack = tracks[selectedTrackNumber];
 
     return (
       <div className="App">
@@ -108,7 +108,7 @@ const App = () => {
                 className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"
                 title="Current track (Click to change)"
               >
-                {selectedTrackIndex + 1}. {selectedTrack.fullName}
+                {selectedTrackNumber + 1}. {selectedTrack.fullName}
               </div>
               {/* TODO Click to open "Go to" modal */}
               <div
@@ -141,7 +141,7 @@ const App = () => {
             <Document
               documentTitle={documentTitle}
               documentArtist={documentArtist}
-              selectedTrackIndex={selectedTrackIndex}
+              selectedTrackNumber={selectedTrackNumber}
             />
             {inspectorShown && (
               <Inspector

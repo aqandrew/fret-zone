@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   selectTrack,
-  selectedTrackIndexSelector,
+  selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector
 } from '../slices/ui';
@@ -15,13 +15,17 @@ const GlobalView = ({ openAddTrackModal }) => {
   const tracks = useSelector(tracksSelector);
 
   const renderTrackControls = () =>
-    tracks.map((track, index) => (
-      <TrackControl track={track} index={index} key={index} />
+    tracks.map((track, trackNumber) => (
+      <TrackControl track={track} trackNumber={trackNumber} key={trackNumber} />
     ));
 
   const renderMeasureTable = () =>
-    tracks.map((track, index) => (
-      <MeasureTableRow track={track} trackIndex={index} key={index} />
+    tracks.map((track, TrackNumber) => (
+      <MeasureTableRow
+        track={track}
+        trackNumber={TrackNumber}
+        key={TrackNumber}
+      />
     ));
 
   return (
@@ -56,43 +60,43 @@ const GlobalView = ({ openAddTrackModal }) => {
   );
 };
 
-const TrackControl = ({ track, index }) => {
+const TrackControl = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
-  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
 
   let trackControlClassName = 'TrackControl';
 
   // TODO Refactor using classnames utility
-  if (index === selectedTrackIndex) {
+  if (trackNumber === selectedTrackNumber) {
     trackControlClassName += ` ${trackControlClassName}--IsActive`;
   }
 
   return (
     <div
       className={trackControlClassName}
-      onClick={() => dispatch(selectTrack(index))}
+      onClick={() => dispatch(selectTrack(trackNumber))}
     >
       <div className="TrackControl__ColorTab"></div>
-      <span className="TrackControl__TrackNumber">{index + 1}.</span>
+      <span className="TrackControl__TrackNumber">{trackNumber + 1}.</span>
       {track.fullName}
     </div>
   );
 };
 
-const MeasureTableRow = ({ track, trackIndex }) => {
+const MeasureTableRow = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
-  const selectedTrackIndex = useSelector(selectedTrackIndexSelector);
+  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   return (
     <div className="MeasureTable__Row">
-      {track.measures.map((measureId, measureIndex) => {
+      {track.measures.map((measureId, measureNumber) => {
         let cellClassName = 'MeasureTable__Cell';
 
         // TODO Refactor using classnames utility
         if (
-          trackIndex === selectedTrackIndex &&
-          measureIndex === selectedMeasureNumber - 1
+          trackNumber === selectedTrackNumber &&
+          measureNumber === selectedMeasureNumber - 1
         ) {
           cellClassName += ` ${cellClassName}--IsSelected`;
         }
@@ -101,8 +105,8 @@ const MeasureTableRow = ({ track, trackIndex }) => {
           <div
             className={cellClassName}
             onClick={() => {
-              dispatch(selectTrack(trackIndex));
-              dispatch(selectMeasure(measureIndex + 1));
+              dispatch(selectTrack(trackNumber));
+              dispatch(selectMeasure(measureNumber + 1));
             }}
             key={measureId}
           ></div>

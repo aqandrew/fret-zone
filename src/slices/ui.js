@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-  selectedTrackIndex: 0,
+  selectedTrackNumber: 0,
   selectedMeasureNumber: 1
 };
 
@@ -10,7 +10,7 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     selectTrack: (state, { payload }) => {
-      state.selectedTrackIndex = payload;
+      state.selectedTrackNumber = payload;
     },
     selectMeasure: (state, { payload }) => {
       state.selectedMeasureNumber = payload;
@@ -19,7 +19,8 @@ const uiSlice = createSlice({
 });
 
 export const { selectTrack, selectMeasure } = uiSlice.actions;
-export const selectedTrackIndexSelector = state => state.ui.selectedTrackIndex;
+export const selectedTrackNumberSelector = state =>
+  state.ui.selectedTrackNumber;
 export const selectedMeasureNumberSelector = state =>
   state.ui.selectedMeasureNumber;
 

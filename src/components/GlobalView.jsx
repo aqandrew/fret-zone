@@ -13,6 +13,7 @@ import './GlobalView.scss';
 
 const GlobalView = ({ openAddTrackModal }) => {
   const tracks = useSelector(tracksSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
@@ -29,32 +30,45 @@ const GlobalView = ({ openAddTrackModal }) => {
     ));
 
   return (
-    // TODO Redefine HTML structure as follows, for correct horizontal scrolling behavior:
-    // .GlobalView { display: flex; }
-    //   .TrackControls
-    //      .TrackControls__Header
-    //      .TrackControl
-    //      .TrackControl
-    //      ...
-    //      .TrackControls__Footer
-    //   .MeasureTable
     <div className="GlobalView">
-      <div className="GlobalView__Controls GlobalView__Controls--Top">
-        <button
-          className="GlobalView__Button--AddTrack"
-          title="Add Track"
-          onClick={openAddTrackModal}
-        >
-          +
-        </button>
-        <span className="GlobalView__Heading">Tracks</span>
+      <div className="TrackControls">
+        <div className="GlobalView__Controls GlobalView__Controls--Top">
+          <button
+            className="GlobalView__Button--AddTrack"
+            title="Add Track"
+            onClick={openAddTrackModal}
+          >
+            +
+          </button>
+          <span className="GlobalView__Heading">Tracks</span>
+        </div>
+        {renderTrackControls()}
+        <div className="GlobalView__Controls GlobalView__Controls--Bottom">
+          <span className="GlobalView__Heading">Master</span>
+        </div>
       </div>
-      <div className="GlobalView__Content">
-        <div className="GlobalView__TrackControls">{renderTrackControls()}</div>
-        <div className="MeasureTable">{renderMeasureTable()}</div>
-      </div>
-      <div className="GlobalView__Controls GlobalView__Controls--Bottom">
-        <span className="GlobalView__Heading">Master</span>
+      <div className="MeasureTable">
+        <div className="MeasureTable__Header">
+          {/* TODO Is tracks[0] the right track to use for reference? */}
+          {tracks[0].measures.map((measure, measureNumber) => {
+            let measureNumberClassName = 'MeasureTable__MeasureNumber';
+
+            // TODO Refactor using classnames utility
+            if (measureNumber === selectedMeasureNumber - 1) {
+              measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
+            }
+
+            return (
+              <div className={measureNumberClassName} key={measureNumber}>
+                {measureNumber + 1}
+              </div>
+            );
+          })}
+        </div>
+        {renderMeasureTable()}
+        <div className="MeasureTable__Footer">
+          {/* TODO Show section names */}
+        </div>
       </div>
     </div>
   );

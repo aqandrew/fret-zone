@@ -12,6 +12,7 @@ import { tracksSelector } from '../slices/document';
 import './GlobalView.scss';
 
 const GlobalView = ({ openAddTrackModal }) => {
+  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
@@ -59,7 +60,11 @@ const GlobalView = ({ openAddTrackModal }) => {
             }
 
             return (
-              <div className={measureNumberClassName} key={measureNumber}>
+              <div
+                className={measureNumberClassName}
+                onClick={() => dispatch(selectMeasure(measureNumber + 1))}
+                key={measureNumber}
+              >
                 {measureNumber + 1}
               </div>
             );

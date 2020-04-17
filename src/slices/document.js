@@ -29,17 +29,27 @@ const documentSlice = createSlice({
   initialState,
   // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
   reducers: {
-    // TODO This crashes the app when using Redux Dev Tools' dispatch console
+    // TODO This still crashes the app when using Redux Dev Tools' dispatch console
     // resetDocument: state => {
-    //   // state = initialState;
-    //   state.tracks = initialState.tracks;
-    //   state.measures = initialState.measures;
+    //   // Delete all properties without assigning to empty object
+    //   for (const id in state.tracks.byId) {
+    //     delete state.tracks.byId[id];
+    //   }
+
+    //   state.tracks.allIds.splice(0, state.tracks.allIds.length);
+
+    //   for (const id in state.measures.byId) {
+    //     delete state.measures.byId[id];
+    //   }
+
+    //   state.measures.allIds.splice(0, state.measures.allIds.length);
     // },
     addTrack: (state, { payload }) => {
       state.tracks.byId[payload.id] = { ...payload };
       state.tracks.allIds.push(payload.id);
     },
     // deleteTrack: (state, { payload }) => {},
+    // TODO Add measure for all tracks
     addMeasure: (state, { payload }) => {
       let { trackId, ...payloadWithoutTrackId } = payload;
       let newMeasureId = payload.id;
@@ -47,8 +57,24 @@ const documentSlice = createSlice({
       state.tracks.byId[trackId].measures.push(newMeasureId);
       state.measures.byId[newMeasureId] = { ...payloadWithoutTrackId };
       state.measures.allIds.push(newMeasureId);
+    },
+    // TODO Delete measure at this measure number for all tracks
+    deleteMeasure: (state, { payload }) => {
+      let { trackId } = payload;
+      let measureId = payload.id;
+
+      state.tracks.byId[trackId].measures.splice(
+        state.tracks.byId[trackId].measures.findIndex(
+          measure => measure.id === measureId
+        ),
+        1
+      );
+      delete state.measures.byId[measureId];
+      state.measures.allIds.splice(
+        state.measures.allIds.findIndex(id => id === measureId),
+        1
+      );
     }
-    // TODO Define deleteMeasure so that state can be cleared in Redux DevTools
     // addNote: (state, { measureId, newNoteId, ...payload }) => {
     //   state.measures.byId[measureId].notes.push(newNoteId);
     //   state.notes.byId[newNoteId] = { id: newNoteId, ...payload };
@@ -57,7 +83,7 @@ const documentSlice = createSlice({
   }
 });
 
-export const { addTrack, addMeasure } = documentSlice.actions;
+export const { addTrack, addMeasure, deleteMeasure } = documentSlice.actions;
 export const tracksSelector = state =>
   state.document.tracks.allIds.map(
     trackId => state.document.tracks.byId[trackId]

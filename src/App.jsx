@@ -12,6 +12,7 @@ import {
 import {
   addMeasure,
   deleteMeasure,
+  deleteTrack,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector
@@ -59,6 +60,7 @@ const App = () => {
         const selectedTrack = tracks[selectedTrackNumber];
 
         switch (event.key) {
+          // Advance note/measure
           case 'ArrowRight':
             // TODO If the currently focused measure is NOT last,
             // TODO   If currently selected note is NOT last,
@@ -73,6 +75,7 @@ const App = () => {
               })
             );
             break;
+          // Delete measure
           case '-':
             if (event.ctrlKey && selectedTrack.measures.length > 1) {
               if (selectedMeasureNumber > 0) {
@@ -85,6 +88,22 @@ const App = () => {
                   id: measures[selectedMeasureNumber].id
                 })
               );
+            }
+            break;
+          // Delete track
+          // TODO Account for non-macOS devices
+          case '®':
+            if (event.altKey && event.metaKey) {
+              // TODO Open confirmation dialog
+
+              if (
+                selectedTrackNumber === tracks.length - 1 &&
+                tracks.length > 1
+              ) {
+                dispatch(selectTrack(selectedTrackNumber - 1));
+              }
+
+              dispatch(deleteTrack(selectedTrack.id));
             }
             break;
           default:
@@ -128,106 +147,105 @@ const App = () => {
       );
     }
 
-    return null;
+    return '0.0:1.0';
   };
 
-  if (tracks.length) {
-    const selectedTrack = tracks[selectedTrackNumber];
-
-    return (
-      <div className="App" onKeyDown={onKeyDown}>
-        <AppMenu />
-        <div className="TopBar">
-          <div className="TopBar__ActiveFileName">
-            {activeFileName || 'untitled'}
+  return (
+    <div className="App" onKeyDown={onKeyDown}>
+      <AppMenu />
+      <div className="TopBar">
+        <div className="TopBar__ActiveFileName">
+          {activeFileName || 'untitled'}
+        </div>
+        <div className="ScoreControls">
+          <div className="ScoreControls__ButtonContainer">
+            <CheckboxButton
+              buttonTitle="Show/Hide Edition Palette"
+              isChecked={editionPaletteShown}
+              setChecked={setEditionPaletteShown}
+            />
+            <CheckboxButton
+              buttonTitle="Show/Hide Global View"
+              isChecked={globalViewShown}
+              setChecked={setGlobalViewShown}
+            />
+            <CheckboxButton
+              buttonTitle="Show/Hide Inspector"
+              isChecked={inspectorShown}
+              setChecked={setInspectorShown}
+            />
           </div>
-          <div className="ScoreControls">
-            <div className="ScoreControls__ButtonContainer">
-              <CheckboxButton
-                buttonTitle="Show/Hide Edition Palette"
-                isChecked={editionPaletteShown}
-                setChecked={setEditionPaletteShown}
-              />
-              <CheckboxButton
-                buttonTitle="Show/Hide Global View"
-                isChecked={globalViewShown}
-                setChecked={setGlobalViewShown}
-              />
-              <CheckboxButton
-                buttonTitle="Show/Hide Inspector"
-                isChecked={inspectorShown}
-                setChecked={setInspectorShown}
-              />
+          {/* TODO Zoom control */}
+          {/* TODO Document view select */}
+          {/* TODO Undo/redo */}
+          {/* TODO Print */}
+          <div className="PlaybackControls">
+            <div
+              className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"
+              title="Current track (Click to change)"
+            >
+              {tracks.length
+                ? `${selectedTrackNumber + 1}. ${
+                    tracks[selectedTrackNumber].fullName
+                  }`
+                : ''}
             </div>
-            {/* TODO Zoom control */}
-            {/* TODO Document view select */}
-            {/* TODO Undo/redo */}
-            {/* TODO Print */}
-            <div className="PlaybackControls">
-              <div
-                className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"
-                title="Current track (Click to change)"
-              >
-                {selectedTrackNumber + 1}. {selectedTrack.fullName}
-              </div>
-              {/* TODO Click to open "Go to" modal */}
-              <div
-                className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
-                title="Bar position"
-              >
-                {selectedMeasureNumber + 1}/{selectedTrack.measures.length}
-              </div>
-              {/* TODO Click to toggle incomplete duration vs. remaining duration */}
-              <div
-                className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
-                title="Bar current duration"
-              >
-                {renderBarCurrentDuration()}
-              </div>
+            {/* TODO Click to open "Go to" modal */}
+            <div
+              className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
+              title="Bar position"
+            >
+              {selectedMeasureNumber + 1}/
+              {tracks.length ? tracks[selectedTrackNumber].measures.length : 0}
             </div>
-            <div className="ScoreControls__ButtonContainer">
-              {/* TODO Buttons for fretboard/keyboard/drum view */}
+            {/* TODO Click to toggle incomplete duration vs. remaining duration */}
+            <div
+              className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
+              title="Bar current duration"
+            >
+              {renderBarCurrentDuration()}
             </div>
+          </div>
+          <div className="ScoreControls__ButtonContainer">
+            {/* TODO Buttons for fretboard/keyboard/drum view */}
           </div>
         </div>
-        <FileList
-          files={dummyFileList}
-          activeFileName={activeFileName}
-          setActiveFileName={setActiveFileName}
-        />
-        <div className="App__Content--Main">
-          <div className="App__Content--Center">
-            {editionPaletteShown && <EditionPalette />}
-            <Document
-              documentTitle={documentTitle}
-              documentArtist={documentArtist}
+      </div>
+      <FileList
+        files={dummyFileList}
+        activeFileName={activeFileName}
+        setActiveFileName={setActiveFileName}
+      />
+      <div className="App__Content--Main">
+        <div className="App__Content--Center">
+          {editionPaletteShown && <EditionPalette />}
+          <Document
+            documentTitle={documentTitle}
+            documentArtist={documentArtist}
+          />
+          {inspectorShown && (
+            <Inspector
+              setDocumentTitle={setDocumentTitle}
+              setDocumentArtist={setDocumentArtist}
             />
-            {inspectorShown && (
-              <Inspector
-                setDocumentTitle={setDocumentTitle}
-                setDocumentArtist={setDocumentArtist}
-              />
-            )}
-          </div>
-          {globalViewShown && (
-            <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
           )}
         </div>
-        <AddTrackModal
-          show={showAddTrackModal}
-          onClose={newTrackId => {
-            setShowAddTrackModal(false);
-
-            if (newTrackId) {
-              dispatch(selectTrack(tracks.length));
-            }
-          }}
-        />
+        {globalViewShown && (
+          <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
+        )}
       </div>
-    );
-  }
+      <AddTrackModal
+        show={showAddTrackModal}
+        onClose={newTrackId => {
+          setShowAddTrackModal(false);
 
-  return null;
+          if (newTrackId) {
+            dispatch(selectTrack(tracks.length));
+          }
+        }}
+      />
+    </div>
+  );
 };
 
 export default App;

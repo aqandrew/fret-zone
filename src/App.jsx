@@ -186,7 +186,6 @@ const App = () => {
             <Document
               documentTitle={documentTitle}
               documentArtist={documentArtist}
-              selectedTrackNumber={selectedTrackNumber}
             />
             {inspectorShown && (
               <Inspector

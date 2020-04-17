@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 // TODO Alphabetize imports w/ESLint
 import {
@@ -7,8 +8,12 @@ import {
   selectedTrackNumberSelector,
   selectedMeasureNumberSelector
 } from './slices/ui';
-import { tracksSelector } from './slices/document';
-import { measuresSelector } from './slices/document';
+import {
+  addMeasure,
+  defaultMeasureOptions,
+  measuresSelector,
+  tracksSelector
+} from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
 import CheckboxButton from './components/CheckboxButton';
@@ -43,6 +48,46 @@ const App = () => {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
+  const onKeyDown = useCallback(
+    event => {
+      if (
+        event.target.tagName !== 'INPUT' ||
+        event.target.classList.contains('Measure__Input')
+      ) {
+        const selectedTrack = tracks[selectedTrackNumber];
+
+        switch (event.key) {
+          case 'ArrowRight':
+            // TODO If the currently focused measure is NOT last,
+            // TODO   If currently selected note is NOT last,
+            // TODO     Select the next note
+            // TODO   Otherwise, select the next measure
+            // Otherwise, add a measure to selectedTrack
+            dispatch(
+              addMeasure({
+                trackId: selectedTrack.id,
+                id: uuidv4(),
+                ...defaultMeasureOptions
+              })
+            );
+            // TODO Add measures to all other tracks too
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [dispatch, tracks, selectedTrackNumber]
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onKeyDown]);
+
   const renderBarCurrentDuration = () => {
     if (tracks.length && measures.length) {
       const selectedMeasure = measures.find(
@@ -75,7 +120,7 @@ const App = () => {
     const selectedTrack = tracks[selectedTrackNumber];
 
     return (
-      <div className="App">
+      <div className="App" onKeyDown={onKeyDown}>
         <AppMenu />
         <div className="TopBar">
           <div className="TopBar__ActiveFileName">

@@ -1,13 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 
-import {
-  addMeasure,
-  defaultMeasureOptions,
-  measuresSelector,
-  tracksSelector
-} from '../slices/document';
+import { measuresSelector, tracksSelector } from '../slices/document';
 
 import './Document.scss';
 
@@ -15,27 +9,6 @@ const Document = ({ documentTitle, documentArtist, selectedTrackNumber }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
-
-  const handleKeyPress = event => {
-    const selectedTrack = tracks[selectedTrackNumber];
-
-    switch (event.key) {
-      case 'ArrowRight':
-        // TODO If the currently focused Measure is NOT last, focus the next column of inputs
-        // Otherwise, add a measure to selectedTrack
-        dispatch(
-          addMeasure({
-            trackId: selectedTrack.id,
-            id: uuidv4(),
-            ...defaultMeasureOptions
-          })
-        );
-        // TODO Add measures to all other tracks too
-        break;
-      default:
-        break;
-    }
-  };
 
   const renderSelectedTrackNotation = () => {
     const selectedTrack = tracks[selectedTrackNumber];
@@ -60,7 +33,6 @@ const Document = ({ documentTitle, documentArtist, selectedTrackNumber }) => {
                   onChange={event => {
                     console.log('you typed a number:', event.target.value);
                   }}
-                  onKeyDown={handleKeyPress}
                   key={stringNum}
                 />
               ))}

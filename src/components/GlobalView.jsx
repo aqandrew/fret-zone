@@ -14,6 +14,7 @@ import './GlobalView.scss';
 const GlobalView = ({ openAddTrackModal }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
+  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   const renderTrackControls = () =>
@@ -50,25 +51,26 @@ const GlobalView = ({ openAddTrackModal }) => {
       </div>
       <div className="MeasureTable">
         <div className="MeasureTable__Header">
-          {/* TODO Is tracks[0] the right track to use for reference? */}
-          {tracks[0].measures.map((measure, measureNumber) => {
-            let measureNumberClassName = 'MeasureTable__MeasureNumber';
+          {tracks[selectedTrackNumber].measures.map(
+            (measure, measureNumber) => {
+              let measureNumberClassName = 'MeasureTable__MeasureNumber';
 
-            // TODO Refactor using classnames utility
-            if (measureNumber === selectedMeasureNumber) {
-              measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
+              // TODO Refactor using classnames utility
+              if (measureNumber === selectedMeasureNumber) {
+                measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
+              }
+
+              return (
+                <div
+                  className={measureNumberClassName}
+                  onClick={() => dispatch(selectMeasure(measureNumber))}
+                  key={measureNumber}
+                >
+                  {measureNumber + 1}
+                </div>
+              );
             }
-
-            return (
-              <div
-                className={measureNumberClassName}
-                onClick={() => dispatch(selectMeasure(measureNumber))}
-                key={measureNumber}
-              >
-                {measureNumber + 1}
-              </div>
-            );
-          })}
+          )}
         </div>
         {renderMeasureTable()}
         <div className="MeasureTable__Footer">

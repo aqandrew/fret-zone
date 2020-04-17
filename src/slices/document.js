@@ -29,26 +29,31 @@ const documentSlice = createSlice({
   initialState,
   // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
   reducers: {
-    // TODO This still crashes the app when using Redux Dev Tools' dispatch console
-    // resetDocument: state => {
-    //   // Delete all properties without assigning to empty object
-    //   for (const id in state.tracks.byId) {
-    //     delete state.tracks.byId[id];
-    //   }
-
-    //   state.tracks.allIds.splice(0, state.tracks.allIds.length);
-
-    //   for (const id in state.measures.byId) {
-    //     delete state.measures.byId[id];
-    //   }
-
-    //   state.measures.allIds.splice(0, state.measures.allIds.length);
-    // },
+    resetDocument: state => {
+      state.tracks = initialState.tracks;
+      state.measures = initialState.measures;
+    },
     addTrack: (state, { payload }) => {
       state.tracks.byId[payload.id] = { ...payload };
       state.tracks.allIds.push(payload.id);
     },
-    // deleteTrack: (state, { payload }) => {},
+    deleteTrack: (state, { payload }) => {
+      // Delete this track's measures
+      for (const id of state.tracks.byId[payload].measures) {
+        delete state.measures.byId[id];
+        state.measures.allIds.splice(
+          state.measures.allIds.findIndex(measureId => measureId === id),
+          1
+        );
+      }
+
+      // Delete the track itself
+      delete state.tracks.byId[payload];
+      state.tracks.allIds.splice(
+        state.tracks.allIds.findIndex(trackId => trackId === payload),
+        1
+      );
+    },
     // TODO Add measure for all tracks
     addMeasure: (state, { payload }) => {
       let { trackId, ...payloadWithoutTrackId } = payload;
@@ -83,7 +88,12 @@ const documentSlice = createSlice({
   }
 });
 
-export const { addTrack, addMeasure, deleteMeasure } = documentSlice.actions;
+export const {
+  addTrack,
+  addMeasure,
+  deleteTrack,
+  deleteMeasure
+} = documentSlice.actions;
 export const tracksSelector = state =>
   state.document.tracks.allIds.map(
     trackId => state.document.tracks.byId[trackId]

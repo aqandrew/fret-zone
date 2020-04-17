@@ -51,26 +51,28 @@ const GlobalView = ({ openAddTrackModal }) => {
       </div>
       <div className="MeasureTable">
         <div className="MeasureTable__Header">
-          {tracks[selectedTrackNumber].measures.map(
-            (measure, measureNumber) => {
-              let measureNumberClassName = 'MeasureTable__MeasureNumber';
+          {tracks.length
+            ? tracks[selectedTrackNumber].measures.map(
+                (measure, measureNumber) => {
+                  let measureNumberClassName = 'MeasureTable__MeasureNumber';
 
-              // TODO Refactor using classnames utility
-              if (measureNumber === selectedMeasureNumber) {
-                measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
-              }
+                  // TODO Refactor using classnames utility
+                  if (measureNumber === selectedMeasureNumber) {
+                    measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
+                  }
 
-              return (
-                <div
-                  className={measureNumberClassName}
-                  onClick={() => dispatch(selectMeasure(measureNumber))}
-                  key={measureNumber}
-                >
-                  {measureNumber + 1}
-                </div>
-              );
-            }
-          )}
+                  return (
+                    <div
+                      className={measureNumberClassName}
+                      onClick={() => dispatch(selectMeasure(measureNumber))}
+                      key={measureNumber}
+                    >
+                      {measureNumber + 1}
+                    </div>
+                  );
+                }
+              )
+            : null}
         </div>
         {renderMeasureTable()}
         <div className="MeasureTable__Footer">

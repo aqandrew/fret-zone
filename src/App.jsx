@@ -72,6 +72,11 @@ const App = () => {
             );
             // TODO Add measures to all other tracks too
             break;
+          case '-':
+            if (event.ctrlKey) {
+              console.log('TODO Delete selected measure for all tracks');
+            }
+            break;
           default:
             break;
         }

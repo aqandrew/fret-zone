@@ -6,10 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   selectTrack,
   selectedTrackNumberSelector,
+  selectMeasure,
   selectedMeasureNumberSelector
 } from './slices/ui';
 import {
   addMeasure,
+  deleteMeasure,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector
@@ -70,11 +72,19 @@ const App = () => {
                 ...defaultMeasureOptions
               })
             );
-            // TODO Add measures to all other tracks too
             break;
           case '-':
-            if (event.ctrlKey) {
-              console.log('TODO Delete selected measure for all tracks');
+            if (event.ctrlKey && selectedTrack.measures.length > 1) {
+              if (selectedMeasureNumber > 0) {
+                dispatch(selectMeasure(selectedMeasureNumber - 1));
+              }
+
+              dispatch(
+                deleteMeasure({
+                  trackId: selectedTrack.id,
+                  id: measures[selectedMeasureNumber].id
+                })
+              );
             }
             break;
           default:
@@ -82,7 +92,7 @@ const App = () => {
         }
       }
     },
-    [dispatch, tracks, selectedTrackNumber]
+    [dispatch, tracks, selectedTrackNumber, measures, selectedMeasureNumber]
   );
 
   useEffect(() => {

@@ -48,7 +48,7 @@ const App = () => {
       const selectedMeasure = measures.find(
         measure =>
           measure.id ===
-          tracks[selectedTrackNumber].measures[selectedMeasureNumber - 1]
+          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
       );
 
       // TODO Calculate currentBarDuration based on notes in bar
@@ -115,7 +115,7 @@ const App = () => {
                 className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
                 title="Bar position"
               >
-                {selectedMeasureNumber}/{selectedTrack.measures.length}
+                {selectedMeasureNumber + 1}/{selectedTrack.measures.length}
               </div>
               {/* TODO Click to toggle incomplete duration vs. remaining duration */}
               <div

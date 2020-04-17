@@ -55,14 +55,14 @@ const GlobalView = ({ openAddTrackModal }) => {
             let measureNumberClassName = 'MeasureTable__MeasureNumber';
 
             // TODO Refactor using classnames utility
-            if (measureNumber === selectedMeasureNumber - 1) {
+            if (measureNumber === selectedMeasureNumber) {
               measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
             }
 
             return (
               <div
                 className={measureNumberClassName}
-                onClick={() => dispatch(selectMeasure(measureNumber + 1))}
+                onClick={() => dispatch(selectMeasure(measureNumber))}
                 key={measureNumber}
               >
                 {measureNumber + 1}
@@ -115,7 +115,7 @@ const MeasureTableRow = ({ track, trackNumber }) => {
         // TODO Refactor using classnames utility
         if (
           trackNumber === selectedTrackNumber &&
-          measureNumber === selectedMeasureNumber - 1
+          measureNumber === selectedMeasureNumber
         ) {
           cellClassName += ` ${cellClassName}--IsSelected`;
         }
@@ -125,7 +125,7 @@ const MeasureTableRow = ({ track, trackNumber }) => {
             className={cellClassName}
             onClick={() => {
               dispatch(selectTrack(trackNumber));
-              dispatch(selectMeasure(measureNumber + 1));
+              dispatch(selectMeasure(measureNumber));
             }}
             key={measureId}
           ></div>

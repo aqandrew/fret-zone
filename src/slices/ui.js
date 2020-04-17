@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
   selectedTrackNumber: 0,
-  selectedMeasureNumber: 1
+  selectedMeasureNumber: 0
 };
 
 const uiSlice = createSlice({

@@ -1,14 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectedTrackNumberSelector } from '../slices/ui';
 import { measuresSelector, tracksSelector } from '../slices/document';
 
 import './Document.scss';
 
-const Document = ({ documentTitle, documentArtist, selectedTrackNumber }) => {
+const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
 
   const renderSelectedTrackNotation = () => {
     const selectedTrack = tracks[selectedTrackNumber];

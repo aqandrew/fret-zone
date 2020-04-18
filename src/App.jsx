@@ -79,6 +79,16 @@ const App = () => {
             dispatch(selectMeasure(selectedMeasureNumber + 1));
 
             break;
+          // Previous note/measure
+          case 'ArrowLeft':
+            if (selectedMeasureNumber > 0) {
+              dispatch(selectMeasure(selectedMeasureNumber - 1));
+            } else {
+              // TODO If currently selected note is NOT first,
+              // TODO   Select the previous note
+            }
+
+            break;
           // Delete measure
           case '-':
             if (event.ctrlKey && selectedTrack.measures.length > 1) {

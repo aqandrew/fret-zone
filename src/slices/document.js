@@ -36,35 +36,33 @@ const documentSlice = createSlice({
     addTrack: (state, { payload }) => {
       let measureIds = payload.measures;
       let newTrackId = payload.id;
+      let isFirstTrack = state.tracks.allIds.length === 0;
 
       state.tracks.byId[newTrackId] = { ...payload };
       state.tracks.allIds.push(newTrackId);
 
-      // Add as many new measures to this track as the number of existing measures in each other track
       measureIds.forEach((newMeasureId, measureNumber) => {
-        let measureToAdd =
-          measureIds.length === 1
-            ? {
-                id: newMeasureId,
-                ...defaultMeasureOptions
-              }
-            : {
-                id: newMeasureId,
-                // TODO Alias the existing measure, because this is so ugly
-                timeSignature:
-                  state.measures.byId[
-                    state.tracks.byId[state.tracks.allIds[0]].measures[
-                      measureNumber
-                    ]
-                  ].timeSignature,
-                keySignature:
-                  state.measures.byId[
-                    state.tracks.byId[state.tracks.allIds[0]].measures[
-                      measureNumber
-                    ]
-                  ].keySignature,
-                notes: []
-              };
+        let measureToAdd;
+
+        // Add one measure with default options
+        if (isFirstTrack) {
+          measureToAdd = {
+            id: newMeasureId,
+            ...defaultMeasureOptions
+          };
+          // Otherwise, add as many new measures to this track as the number of existing measures in each other track
+        } else {
+          const existingMeasure =
+            state.measures.byId[
+              state.tracks.byId[state.tracks.allIds[0]].measures[measureNumber]
+            ];
+
+          measureToAdd = {
+            ...existingMeasure,
+            id: newMeasureId,
+            notes: []
+          };
+        }
 
         state.measures.byId[newMeasureId] = measureToAdd;
         state.measures.allIds.push(newMeasureId);

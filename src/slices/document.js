@@ -34,8 +34,41 @@ const documentSlice = createSlice({
       state.measures = initialState.measures;
     },
     addTrack: (state, { payload }) => {
-      state.tracks.byId[payload.id] = { ...payload };
-      state.tracks.allIds.push(payload.id);
+      let measureIds = payload.measures;
+      let newTrackId = payload.id;
+
+      state.tracks.byId[newTrackId] = { ...payload };
+      state.tracks.allIds.push(newTrackId);
+
+      // Add as many new measures to this track as the number of existing measures in each other track
+      measureIds.forEach((newMeasureId, measureNumber) => {
+        let measureToAdd =
+          measureIds.length === 1
+            ? {
+                id: newMeasureId,
+                ...defaultMeasureOptions
+              }
+            : {
+                id: newMeasureId,
+                // TODO Alias the existing measure, because this is so ugly
+                timeSignature:
+                  state.measures.byId[
+                    state.tracks.byId[state.tracks.allIds[0]].measures[
+                      measureNumber
+                    ]
+                  ].timeSignature,
+                keySignature:
+                  state.measures.byId[
+                    state.tracks.byId[state.tracks.allIds[0]].measures[
+                      measureNumber
+                    ]
+                  ].keySignature,
+                notes: []
+              };
+
+        state.measures.byId[newMeasureId] = measureToAdd;
+        state.measures.allIds.push(newMeasureId);
+      });
     },
     deleteTrack: (state, { payload }) => {
       // Delete this track's measures
@@ -54,7 +87,7 @@ const documentSlice = createSlice({
         1
       );
     },
-    // TODO Add measure for all tracks
+    // TODO Need IDs for a new measure in every track
     addMeasure: (state, { payload }) => {
       let { trackId, ...payloadWithoutTrackId } = payload;
       let newMeasureId = payload.id;

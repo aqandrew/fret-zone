@@ -62,18 +62,21 @@ const App = () => {
         switch (event.key) {
           // Advance note/measure
           case 'ArrowRight':
-            // TODO If the currently focused measure is NOT last,
-            // TODO   If currently selected note is NOT last,
-            // TODO     Select the next note
-            // TODO   Otherwise, select the next measure
-            // Otherwise, add a measure to selectedTrack
-            dispatch(
-              addMeasure({
-                trackId: selectedTrack.id,
-                id: uuidv4(),
-                ...defaultMeasureOptions
-              })
-            );
+            if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
+              dispatch(
+                addMeasure({
+                  trackId: selectedTrack.id,
+                  id: uuidv4(),
+                  ...defaultMeasureOptions
+                })
+              );
+            } else {
+              // TODO If currently selected note is NOT last,
+              // TODO   Select the next note
+            }
+
+            dispatch(selectMeasure(selectedMeasureNumber + 1));
+
             break;
           // Delete measure
           case '-':

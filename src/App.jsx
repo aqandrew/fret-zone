@@ -58,6 +58,7 @@ const App = () => {
         event.target.classList.contains('Measure__Input')
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
+        console.log(event);
 
         switch (event.key) {
           // Advance note/measure
@@ -92,6 +93,15 @@ const App = () => {
                 })
               );
             }
+
+            break;
+          // Add track
+          // TODO Account for non-macOS devices
+          case 'Dead':
+            if (event.code === 'KeyN' && event.altKey && event.metaKey) {
+              setShowAddTrackModal(true);
+            }
+
             break;
           // Delete track
           // TODO Account for non-macOS devices
@@ -108,6 +118,7 @@ const App = () => {
 
               dispatch(deleteTrack(selectedTrack.id));
             }
+
             break;
           default:
             break;

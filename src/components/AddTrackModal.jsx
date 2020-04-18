@@ -17,32 +17,19 @@ const AddTrackModal = ({ show, onClose }) => {
   const defaultTrackOptions = {
     fullName: 'Electric Guitar - Clean',
     abbreviatedName: 'el.guit.',
-    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
-    measures: []
+    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
   };
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
 
   const confirmAddTrack = () => {
     let newTrackId = uuidv4();
+    let measureIds =
+      tracks.length === 0
+        ? [uuidv4()]
+        : tracks[0].measures.map(measure => uuidv4());
 
-    dispatch(addTrack({ id: newTrackId, ...trackToAdd }));
-
-    // If this is the first track being added, add one new measure to this track
-    // Otherwise, if there are other tracks, add a new measure to this track for each measure that already exists
-    let numMeasuresToAdd = tracks.length === 0 ? 1 : tracks[0].measures.length;
-
-    // TODO This for-loop may not be the best approach if we want the ability to undo adding a track
-    // Adding an action for batch-adding several measures may be better
-    for (let i = 0; i < numMeasuresToAdd; i++) {
-      dispatch(
-        addMeasure({
-          trackId: newTrackId,
-          id: uuidv4(),
-          ...defaultMeasureOptions
-        })
-      );
-    }
+    dispatch(addTrack({ id: newTrackId, measures: measureIds, ...trackToAdd }));
 
     return newTrackId;
   };

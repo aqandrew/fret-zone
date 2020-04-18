@@ -9,6 +9,10 @@ const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
+    resetUi: state => {
+      state.selectedTrackNumber = initialState.selectedTrackNumber;
+      state.selectedMeasureNumber = initialState.selectedMeasureNumber;
+    },
     selectTrack: (state, { payload }) => {
       state.selectedTrackNumber = payload;
     },

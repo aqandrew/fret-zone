@@ -7,7 +7,7 @@ import {
   selectTrack,
   selectedTrackNumberSelector,
   selectMeasure,
-  selectedMeasureNumberSelector
+  selectedMeasureNumberSelector,
 } from './slices/ui';
 import {
   addMeasure,
@@ -15,7 +15,7 @@ import {
   deleteTrack,
   defaultMeasureOptions,
   measuresSelector,
-  tracksSelector
+  tracksSelector,
 } from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
@@ -37,7 +37,7 @@ const App = () => {
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
-    { id: 0, name: '' }
+    { id: 0, name: '' },
     // { id: 1, name: 'Stairway to Heaven' },
     // { id: 2, name: 'Through the Fire and Flames' }
   ];
@@ -52,7 +52,7 @@ const App = () => {
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
   const onKeyDown = useCallback(
-    event => {
+    (event) => {
       if (
         event.target.tagName !== 'INPUT' ||
         event.target.classList.contains('Measure__Input')
@@ -66,9 +66,12 @@ const App = () => {
             if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
               dispatch(
                 addMeasure({
-                  trackId: selectedTrack.id,
-                  id: uuidv4(),
-                  ...defaultMeasureOptions
+                  // Create a mapping from track IDs to new measure IDs
+                  trackMeasureIds: tracks.reduce((map, track) => {
+                    map[track.id] = uuidv4();
+                    return map;
+                  }, {}),
+                  ...defaultMeasureOptions,
                 })
               );
             } else {
@@ -99,7 +102,7 @@ const App = () => {
               dispatch(
                 deleteMeasure({
                   trackId: selectedTrack.id,
-                  id: measures[selectedMeasureNumber].id
+                  id: measures[selectedMeasureNumber].id,
                 })
               );
             }
@@ -149,7 +152,7 @@ const App = () => {
   const renderBarCurrentDuration = () => {
     if (tracks.length && measures.length) {
       const selectedMeasure = measures.find(
-        measure =>
+        (measure) =>
           measure.id ===
           tracks[selectedTrackNumber].measures[selectedMeasureNumber]
       );
@@ -260,7 +263,7 @@ const App = () => {
       </div>
       <AddTrackModal
         show={showAddTrackModal}
-        onClose={newTrackId => {
+        onClose={(newTrackId) => {
           setShowAddTrackModal(false);
 
           if (newTrackId) {

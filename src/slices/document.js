@@ -3,25 +3,25 @@ import { createSlice } from '@reduxjs/toolkit';
 export const initialState = {
   tracks: {
     byId: {},
-    allIds: []
+    allIds: [],
   },
   measures: {
     byId: {},
-    allIds: []
-  }
+    allIds: [],
+  },
   // notes: []
 };
 
 export const defaultMeasureOptions = {
   timeSignature: {
     beatsPerMeasure: 4,
-    beatUnit: 4
+    beatUnit: 4,
   },
   keySignature: {
     tonic: 'C',
-    isMajor: true
+    isMajor: true,
   },
-  notes: []
+  notes: [],
 };
 
 const documentSlice = createSlice({
@@ -29,7 +29,7 @@ const documentSlice = createSlice({
   initialState,
   // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape
   reducers: {
-    resetDocument: state => {
+    resetDocument: (state) => {
       state.tracks = initialState.tracks;
       state.measures = initialState.measures;
     },
@@ -48,7 +48,7 @@ const documentSlice = createSlice({
         if (isFirstTrack) {
           measureToAdd = {
             id: newMeasureId,
-            ...defaultMeasureOptions
+            ...defaultMeasureOptions,
           };
           // Otherwise, add as many new measures to this track as the number of existing measures in each other track
         } else {
@@ -60,7 +60,7 @@ const documentSlice = createSlice({
           measureToAdd = {
             ...existingMeasure,
             id: newMeasureId,
-            notes: []
+            notes: [],
           };
         }
 
@@ -73,7 +73,7 @@ const documentSlice = createSlice({
       for (const id of state.tracks.byId[payload].measures) {
         delete state.measures.byId[id];
         state.measures.allIds.splice(
-          state.measures.allIds.findIndex(measureId => measureId === id),
+          state.measures.allIds.findIndex((measureId) => measureId === id),
           1
         );
       }
@@ -81,18 +81,24 @@ const documentSlice = createSlice({
       // Delete the track itself
       delete state.tracks.byId[payload];
       state.tracks.allIds.splice(
-        state.tracks.allIds.findIndex(trackId => trackId === payload),
+        state.tracks.allIds.findIndex((trackId) => trackId === payload),
         1
       );
     },
-    // TODO Need IDs for a new measure in every track
     addMeasure: (state, { payload }) => {
-      let { trackId, ...payloadWithoutTrackId } = payload;
-      let newMeasureId = payload.id;
+      let { trackMeasureIds, ...payloadWithoutIdMap } = payload;
 
-      state.tracks.byId[trackId].measures.push(newMeasureId);
-      state.measures.byId[newMeasureId] = { ...payloadWithoutTrackId };
-      state.measures.allIds.push(newMeasureId);
+      // Add a new measure for each track
+      for (const trackId in trackMeasureIds) {
+        let newMeasureId = trackMeasureIds[trackId];
+
+        state.tracks.byId[trackId].measures.push(newMeasureId);
+        state.measures.byId[newMeasureId] = {
+          id: newMeasureId,
+          ...payloadWithoutIdMap,
+        };
+        state.measures.allIds.push(newMeasureId);
+      }
     },
     // TODO Delete measure at this measure number for all tracks
     deleteMeasure: (state, { payload }) => {
@@ -101,37 +107,37 @@ const documentSlice = createSlice({
 
       state.tracks.byId[trackId].measures.splice(
         state.tracks.byId[trackId].measures.findIndex(
-          measure => measure.id === measureId
+          (measure) => measure.id === measureId
         ),
         1
       );
       delete state.measures.byId[measureId];
       state.measures.allIds.splice(
-        state.measures.allIds.findIndex(id => id === measureId),
+        state.measures.allIds.findIndex((id) => id === measureId),
         1
       );
-    }
+    },
     // addNote: (state, { measureId, newNoteId, ...payload }) => {
     //   state.measures.byId[measureId].notes.push(newNoteId);
     //   state.notes.byId[newNoteId] = { id: newNoteId, ...payload };
     //   state.notes.allIds.push(newNoteId);
     // }
-  }
+  },
 });
 
 export const {
   addTrack,
   addMeasure,
   deleteTrack,
-  deleteMeasure
+  deleteMeasure,
 } = documentSlice.actions;
-export const tracksSelector = state =>
+export const tracksSelector = (state) =>
   state.document.tracks.allIds.map(
-    trackId => state.document.tracks.byId[trackId]
+    (trackId) => state.document.tracks.byId[trackId]
   );
-export const measuresSelector = state =>
+export const measuresSelector = (state) =>
   state.document.measures.allIds.map(
-    measureId => state.document.measures.byId[measureId]
+    (measureId) => state.document.measures.byId[measureId]
   );
 // export const measuresInTrackSelector = (state, trackId) =>
 //   state.document.tracks.byId[trackId].measures.map(

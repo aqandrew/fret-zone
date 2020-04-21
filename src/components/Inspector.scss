@@ -31,6 +31,10 @@
 
     &--IsActive {
       background: #6191d2;
+
+      &:hover {
+        background: #72a7ed;
+      }
     }
   }
 

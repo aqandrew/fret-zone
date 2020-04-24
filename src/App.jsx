@@ -54,8 +54,9 @@ const App = () => {
   const onKeyDown = useCallback(
     (event) => {
       if (
-        event.target.tagName !== 'INPUT' ||
-        event.target.classList.contains('Measure__Input')
+        event.currentTarget === document &&
+        (event.target.tagName !== 'INPUT' ||
+          event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
         console.log(event);

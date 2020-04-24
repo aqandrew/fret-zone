@@ -85,6 +85,7 @@ const documentSlice = createSlice({
         1
       );
     },
+    // TODO Refactor this to be used for inserting a new measure
     addMeasure: (state, { payload }) => {
       let { trackMeasureIds, ...payloadWithoutIdMap } = payload;
 
@@ -100,22 +101,17 @@ const documentSlice = createSlice({
         state.measures.allIds.push(newMeasureId);
       }
     },
-    // TODO Delete measure at this measure number for all tracks
     deleteMeasure: (state, { payload }) => {
-      let { trackId } = payload;
-      let measureId = payload.id;
+      for (const trackId of state.tracks.allIds) {
+        let measureId = state.tracks.byId[trackId].measures[payload];
 
-      state.tracks.byId[trackId].measures.splice(
-        state.tracks.byId[trackId].measures.findIndex(
-          (measure) => measure.id === measureId
-        ),
-        1
-      );
-      delete state.measures.byId[measureId];
-      state.measures.allIds.splice(
-        state.measures.allIds.findIndex((id) => id === measureId),
-        1
-      );
+        state.tracks.byId[trackId].measures.splice(payload, 1);
+        delete state.measures.byId[measureId];
+        state.measures.allIds.splice(
+          state.measures.allIds.findIndex((id) => id === measureId),
+          1
+        );
+      }
     },
     // addNote: (state, { measureId, newNoteId, ...payload }) => {
     //   state.measures.byId[measureId].notes.push(newNoteId);

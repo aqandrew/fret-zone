@@ -16,8 +16,8 @@ const Document = ({ documentTitle, documentArtist }) => {
     const selectedTrack = tracks[selectedTrackNumber];
 
     if (tracks.length && measures.length) {
-      const measuresInSelectedTrack = selectedTrack.measures.map(measureId =>
-        measures.find(someMeasure => someMeasure.id === measureId)
+      const measuresInSelectedTrack = selectedTrack.measures.map((measureId) =>
+        measures.find((someMeasure) => someMeasure.id === measureId)
       );
 
       return (
@@ -32,7 +32,7 @@ const Document = ({ documentTitle, documentArtist }) => {
                   className="Measure__Input"
                   type="text"
                   value={stringNum}
-                  onChange={event => {
+                  onChange={(event) => {
                     console.log('you typed a number:', event.target.value);
                   }}
                   key={stringNum}

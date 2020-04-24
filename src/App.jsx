@@ -99,12 +99,9 @@ const App = () => {
                 dispatch(selectMeasure(selectedMeasureNumber - 1));
               }
 
-              dispatch(
-                deleteMeasure({
-                  trackId: selectedTrack.id,
-                  id: measures[selectedMeasureNumber].id,
-                })
-              );
+              // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
+              // so this still deletes the correct measure
+              dispatch(deleteMeasure(selectedMeasureNumber));
             }
 
             break;
@@ -138,7 +135,7 @@ const App = () => {
         }
       }
     },
-    [dispatch, tracks, selectedTrackNumber, measures, selectedMeasureNumber]
+    [dispatch, tracks, selectedTrackNumber, selectedMeasureNumber]
   );
 
   useEffect(() => {

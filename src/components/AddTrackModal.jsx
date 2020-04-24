@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  addMeasure,
-  addTrack,
-  defaultMeasureOptions,
-  tracksSelector
-} from '../slices/document';
+import { addTrack, tracksSelector } from '../slices/document';
 
 import Modal from './Modal';
 
@@ -17,7 +12,7 @@ const AddTrackModal = ({ show, onClose }) => {
   const defaultTrackOptions = {
     fullName: 'Electric Guitar - Clean',
     abbreviatedName: 'el.guit.',
-    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
+    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
   };
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
@@ -27,7 +22,7 @@ const AddTrackModal = ({ show, onClose }) => {
     let measureIds =
       tracks.length === 0
         ? [uuidv4()]
-        : tracks[0].measures.map(measure => uuidv4());
+        : tracks[0].measures.map((measure) => uuidv4());
 
     dispatch(addTrack({ id: newTrackId, measures: measureIds, ...trackToAdd }));
 
@@ -47,7 +42,7 @@ const AddTrackModal = ({ show, onClose }) => {
         id="AddTrack__Guitar--Electric--Clean"
         value={defaultTrackOptions.fullName}
         checked={trackToAdd.fullName === defaultTrackOptions.fullName}
-        onChange={event => {
+        onChange={(event) => {
           setTrackToAdd(event.target.value);
         }}
       />

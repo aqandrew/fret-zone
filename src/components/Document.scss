@@ -36,9 +36,20 @@
   .Measure {
     display: inline-flex;
     flex-direction: column;
+    border-right: 1px solid black;
 
     &__Input {
       width: 14px;
+
+      &:focus {
+        outline: none;
+      }
+
+      &--IsActive {
+        border: 1px solid black;
+        border-radius: 2px;
+        background: #f7e5b7;
+      }
     }
   }
 }

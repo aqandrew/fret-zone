@@ -9,7 +9,10 @@ export const initialState = {
     byId: {},
     allIds: [],
   },
-  // notes: []
+  notes: {
+    byId: {},
+    allIds: [],
+  },
 };
 
 export const defaultMeasureOptions = {
@@ -113,11 +116,14 @@ const documentSlice = createSlice({
         );
       }
     },
-    // addNote: (state, { measureId, newNoteId, ...payload }) => {
-    //   state.measures.byId[measureId].notes.push(newNoteId);
-    //   state.notes.byId[newNoteId] = { id: newNoteId, ...payload };
-    //   state.notes.allIds.push(newNoteId);
-    // }
+    // TODO Refactor this to be used for inserting a new note
+    addNote: (state, { payload }) => {
+      let { measureId, ...note } = payload;
+
+      state.measures.byId[measureId].notes.push(note.id);
+      state.notes.byId[note.id] = { ...note };
+      state.notes.allIds.push(note.id);
+    },
   },
 });
 

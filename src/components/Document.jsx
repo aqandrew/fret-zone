@@ -1,15 +1,28 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { selectedTrackNumberSelector } from '../slices/ui';
+import {
+  selectedTrackNumberSelector,
+  // selectTrack,
+  selectedMeasureNumberSelector,
+  selectMeasure,
+  selectedStringNumberSelector,
+  selectString,
+  // selectedNoteNumberSelector,
+  // selectNote,
+} from '../slices/ui';
 import { measuresSelector, tracksSelector } from '../slices/document';
 
 import './Document.scss';
 
 const Document = ({ documentTitle, documentArtist }) => {
+  const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedStringNumber = useSelector(selectedStringNumberSelector);
+  // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
 
   const renderSelectedTrackNotation = () => {
     const selectedTrack = tracks[selectedTrackNumber];
@@ -24,19 +37,35 @@ const Document = ({ documentTitle, documentArtist }) => {
           <span className="TrackNotation__TrackName--Abbreviated">
             {selectedTrack.abbreviatedName}
           </span>
-          {measuresInSelectedTrack.map((measure, measureNum) => (
-            <div className="Measure" key={measureNum}>
-              {selectedTrack.tuning.map((stringTuning, stringNum) => (
-                <input
-                  className="Measure__Input"
-                  type="text"
-                  value={stringNum}
-                  onChange={(event) => {
-                    console.log('you typed a number:', event.target.value);
-                  }}
-                  key={stringNum}
-                />
-              ))}
+          {measuresInSelectedTrack.map((measure, measureNumber) => (
+            <div className="Measure" key={measureNumber}>
+              {selectedTrack.tuning.map((stringTuning, stringNumber) => {
+                let inputClassname = 'Measure__Input';
+
+                // TODO Refactor using classnames utility
+                if (
+                  measureNumber === selectedMeasureNumber &&
+                  stringNumber === selectedStringNumber
+                ) {
+                  inputClassname += ` ${inputClassname}--IsActive`;
+                }
+
+                return (
+                  <input
+                    className={inputClassname}
+                    type="text"
+                    value="-"
+                    onClick={() => {
+                      dispatch(selectMeasure(measureNumber));
+                      dispatch(selectString(stringNumber));
+                    }}
+                    onChange={(event) => {
+                      console.log('you typed a number:', event.target.value);
+                    }}
+                    key={stringNumber}
+                  />
+                );
+              })}
             </div>
           ))}
         </div>

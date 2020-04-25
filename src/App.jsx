@@ -8,6 +8,8 @@ import {
   selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector,
+  selectString,
+  selectedStringNumberSelector,
 } from './slices/ui';
 import {
   addMeasure,
@@ -34,6 +36,7 @@ const App = () => {
   const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedStringNumber = useSelector(selectedStringNumberSelector);
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
@@ -62,6 +65,22 @@ const App = () => {
         console.log(event);
 
         switch (event.key) {
+          case 'ArrowUp':
+            dispatch(
+              selectString(
+                selectedStringNumber === 0
+                  ? selectedTrack.tuning.length - 1
+                  : selectedStringNumber - 1
+              )
+            );
+            break;
+          case 'ArrowDown':
+            dispatch(
+              selectString(
+                (selectedStringNumber + 1) % selectedTrack.tuning.length
+              )
+            );
+            break;
           // Advance note/measure
           case 'ArrowRight':
             if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
@@ -136,7 +155,13 @@ const App = () => {
         }
       }
     },
-    [dispatch, tracks, selectedTrackNumber, selectedMeasureNumber]
+    [
+      dispatch,
+      tracks,
+      selectedTrackNumber,
+      selectedMeasureNumber,
+      selectedStringNumber,
+    ]
   );
 
   useEffect(() => {

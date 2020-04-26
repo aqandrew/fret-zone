@@ -29,43 +29,50 @@ const Document = ({ documentTitle, documentArtist }) => {
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
   // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
 
-  const renderMeasureInput = (measureNumber, note) => {
+  const renderDurationColumn = (measureNumber, note) => {
     const selectedTrack = tracks[selectedTrackNumber];
 
-    return selectedTrack.tuning.map((stringTuning, stringNumber) => {
-      let inputClassname = 'Measure__Input';
+    return (
+      <div
+        className="Measure__DurationColumn"
+        key={note ? note.id : selectedTrack.measures[measureNumber].id}
+      >
+        {selectedTrack.tuning.map((stringTuning, stringNumber) => {
+          let inputClassname = 'Measure__Input';
 
-      // TODO Refactor using classnames utility
-      if (
-        measureNumber === selectedMeasureNumber &&
-        stringNumber === selectedStringNumber
-      ) {
-        inputClassname += ` ${inputClassname}--IsActive`;
-      }
-
-      return (
-        <input
-          className={inputClassname}
-          type="text"
-          readOnly
-          value={
-            note
-              ? note.isRest
-                ? 'R'
-                : note.string === stringNumber
-                ? // TODO note.fret should probably be returned by a function that includes things like slides/vibrato
-                  note.fret
-                : '-'
-              : '-'
+          // TODO Refactor using classnames utility
+          if (
+            measureNumber === selectedMeasureNumber &&
+            stringNumber === selectedStringNumber
+          ) {
+            inputClassname += ` ${inputClassname}--IsActive`;
           }
-          onClick={() => {
-            dispatch(selectMeasure(measureNumber));
-            dispatch(selectString(stringNumber));
-          }}
-          key={stringNumber}
-        />
-      );
-    });
+
+          return (
+            <input
+              className={inputClassname}
+              type="text"
+              readOnly
+              value={
+                note
+                  ? note.isRest
+                    ? 'R'
+                    : note.string === stringNumber
+                    ? // TODO note.fret should probably be returned by a function that includes things like slides/vibrato
+                      note.fret
+                    : '-'
+                  : '-'
+              }
+              onClick={() => {
+                dispatch(selectMeasure(measureNumber));
+                dispatch(selectString(stringNumber));
+              }}
+              key={stringNumber}
+            />
+          );
+        })}
+      </div>
+    );
   };
 
   const renderSelectedTrackNotation = () => {
@@ -89,11 +96,11 @@ const Document = ({ documentTitle, documentArtist }) => {
             return (
               <div className="Measure" key={measureNumber}>
                 {notesInMeasure.map((note) =>
-                  renderMeasureInput(measureNumber, note)
+                  renderDurationColumn(measureNumber, note)
                 )}
                 {/* TODO Add (OR bar duration !== maximum) to ternary condition */}
                 {notesInMeasure.length === 0
-                  ? renderMeasureInput(measureNumber, null)
+                  ? renderDurationColumn(measureNumber, null)
                   : null}
               </div>
             );

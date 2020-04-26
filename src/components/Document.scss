@@ -35,8 +35,12 @@
 
   .Measure {
     display: inline-flex;
-    flex-direction: column;
     border-right: 1px solid black;
+
+    &__DurationColumn {
+      display: inline-flex;
+      flex-direction: column;
+    }
 
     &__Input {
       width: 14px;

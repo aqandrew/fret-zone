@@ -8,13 +8,16 @@ import {
   selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector,
+  // selectNote,
+  // selectedNoteNumberSelector,
   selectString,
   selectedStringNumberSelector,
 } from './slices/ui';
 import {
+  deleteTrack,
   addMeasure,
   deleteMeasure,
-  deleteTrack,
+  addNote,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
@@ -73,6 +76,7 @@ const App = () => {
                   : selectedStringNumber - 1
               )
             );
+
             break;
           case 'ArrowDown':
             dispatch(
@@ -80,6 +84,7 @@ const App = () => {
                 (selectedStringNumber + 1) % selectedTrack.tuning.length
               )
             );
+
             break;
           // Advance note/measure
           case 'ArrowRight':
@@ -151,6 +156,30 @@ const App = () => {
 
             break;
           default:
+            // TODO Is there a way to move this logic to Document?
+            // Set note at cursor
+            if (
+              !isNaN(event.key) &&
+              tracks.length !== 0 &&
+              measures.length !== 0
+            ) {
+              // TODO This object should not live here
+              const defaultNoteOptions = {
+                isRest: false,
+                duration: 1 / 4,
+              };
+
+              dispatch(
+                addNote({
+                  measureId: measures[selectedMeasureNumber].id,
+                  id: uuidv4(),
+                  string: selectedStringNumber,
+                  fret: parseInt(event.key),
+                  ...defaultNoteOptions,
+                })
+              );
+            }
+
             break;
         }
       }
@@ -158,6 +187,7 @@ const App = () => {
     [
       dispatch,
       tracks,
+      measures,
       selectedTrackNumber,
       selectedMeasureNumber,
       selectedStringNumber,

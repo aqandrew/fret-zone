@@ -130,6 +130,7 @@ const documentSlice = createSlice({
 export const {
   addTrack,
   addMeasure,
+  addNote,
   deleteTrack,
   deleteMeasure,
 } = documentSlice.actions;

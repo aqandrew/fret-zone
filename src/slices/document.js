@@ -141,6 +141,10 @@ export const measuresSelector = (state) =>
   state.document.measures.allIds.map(
     (measureId) => state.document.measures.byId[measureId]
   );
+export const notesSelector = (state) =>
+  state.document.notes.allIds.map(
+    (noteId) => state.document.notes.byId[noteId]
+  );
 // export const measuresInTrackSelector = (state, trackId) =>
 //   state.document.tracks.byId[trackId].measures.map(
 //     measureId => state.document.measures.byId[measureId]

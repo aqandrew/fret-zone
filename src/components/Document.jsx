@@ -11,7 +11,11 @@ import {
   // selectedNoteNumberSelector,
   // selectNote,
 } from '../slices/ui';
-import { measuresSelector, tracksSelector } from '../slices/document';
+import {
+  measuresSelector,
+  tracksSelector,
+  notesSelector,
+} from '../slices/document';
 
 import './Document.scss';
 
@@ -19,17 +23,50 @@ const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const notes = useSelector(notesSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
   // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
+
+  const renderMeasureInput = (measureNumber) => {
+    const selectedTrack = tracks[selectedTrackNumber];
+
+    return selectedTrack.tuning.map((stringTuning, stringNumber) => {
+      let inputClassname = 'Measure__Input';
+
+      // TODO Refactor using classnames utility
+      if (
+        measureNumber === selectedMeasureNumber &&
+        stringNumber === selectedStringNumber
+      ) {
+        inputClassname += ` ${inputClassname}--IsActive`;
+      }
+
+      return (
+        <input
+          className={inputClassname}
+          type="text"
+          value="-"
+          onClick={() => {
+            dispatch(selectMeasure(measureNumber));
+            dispatch(selectString(stringNumber));
+          }}
+          onChange={(event) => {
+            console.log('you typed a number:', event.target.value);
+          }}
+          key={stringNumber}
+        />
+      );
+    });
+  };
 
   const renderSelectedTrackNotation = () => {
     const selectedTrack = tracks[selectedTrackNumber];
 
     if (tracks.length && measures.length) {
       const measuresInSelectedTrack = selectedTrack.measures.map((measureId) =>
-        measures.find((someMeasure) => someMeasure.id === measureId)
+        measures.find((measure) => measure.id === measureId)
       );
 
       return (
@@ -37,37 +74,23 @@ const Document = ({ documentTitle, documentArtist }) => {
           <span className="TrackNotation__TrackName--Abbreviated">
             {selectedTrack.abbreviatedName}
           </span>
-          {measuresInSelectedTrack.map((measure, measureNumber) => (
-            <div className="Measure" key={measureNumber}>
-              {selectedTrack.tuning.map((stringTuning, stringNumber) => {
-                let inputClassname = 'Measure__Input';
+          {measuresInSelectedTrack.map((measure, measureNumber) => {
+            const notesInMeasure = measure.notes.map((noteId) =>
+              notes.find((note) => note.id === noteId)
+            );
 
-                // TODO Refactor using classnames utility
-                if (
-                  measureNumber === selectedMeasureNumber &&
-                  stringNumber === selectedStringNumber
-                ) {
-                  inputClassname += ` ${inputClassname}--IsActive`;
-                }
-
-                return (
-                  <input
-                    className={inputClassname}
-                    type="text"
-                    value="-"
-                    onClick={() => {
-                      dispatch(selectMeasure(measureNumber));
-                      dispatch(selectString(stringNumber));
-                    }}
-                    onChange={(event) => {
-                      console.log('you typed a number:', event.target.value);
-                    }}
-                    key={stringNumber}
-                  />
-                );
-              })}
-            </div>
-          ))}
+            return (
+              <div className="Measure" key={measureNumber}>
+                {notesInMeasure.map((note) =>
+                  renderMeasureInput(measureNumber)
+                )}
+                {/* TODO Add (OR bar duration !== maximum) to ternary condition */}
+                {notesInMeasure.length === 0
+                  ? renderMeasureInput(measureNumber)
+                  : null}
+              </div>
+            );
+          })}
         </div>
       );
     }

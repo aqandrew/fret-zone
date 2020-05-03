@@ -8,8 +8,8 @@ import {
   selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector,
-  // selectNote,
-  // selectedNoteNumberSelector,
+  // selectDuration,
+  selectedDurationNumberSelector,
   selectString,
   selectedStringNumberSelector,
 } from './slices/ui';
@@ -21,6 +21,7 @@ import {
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
+  durationsSelector,
 } from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
@@ -37,8 +38,10 @@ const App = () => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedDurationNumber = useSelector(selectedDurationNumberSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
 
   // TODO Put fileList in Redux store
@@ -91,17 +94,21 @@ const App = () => {
             if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
               dispatch(
                 addMeasure({
+                  // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
                   // Create a mapping from track IDs to new measure IDs
                   trackMeasureIds: tracks.reduce((map, track) => {
-                    map[track.id] = uuidv4();
+                    map[track.id] = {
+                      measureId: uuidv4(),
+                      durationId: uuidv4(),
+                    };
                     return map;
                   }, {}),
                   ...defaultMeasureOptions,
                 })
               );
             } else {
-              // TODO If currently selected note is NOT last,
-              // TODO   Select the next note
+              // TODO If currently selected duration is NOT last,
+              // TODO   Select the next duration
             }
 
             dispatch(selectMeasure(selectedMeasureNumber + 1));
@@ -169,9 +176,11 @@ const App = () => {
                 duration: 1 / 4,
               };
 
+              // TODO This action doesn't work correctly yet,
+              // since selectedDurationNumber remains null
               dispatch(
                 addNote({
-                  measureId: measures[selectedMeasureNumber].id,
+                  durationId: durations[selectedDurationNumber].id,
                   id: uuidv4(),
                   string: selectedStringNumber,
                   fret: parseInt(event.key),

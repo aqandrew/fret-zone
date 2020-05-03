@@ -14,6 +14,7 @@ import {
 import {
   measuresSelector,
   tracksSelector,
+  durationsSelector,
   notesSelector,
 } from '../slices/document';
 
@@ -23,6 +24,7 @@ const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const notes = useSelector(notesSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
@@ -89,17 +91,17 @@ const Document = ({ documentTitle, documentArtist }) => {
             {selectedTrack.abbreviatedName}
           </span>
           {measuresInSelectedTrack.map((measure, measureNumber) => {
-            const notesInMeasure = measure.notes.map((noteId) =>
-              notes.find((note) => note.id === noteId)
+            const durationsInMeasure = measure.durations.map((durationId) =>
+              durations.find((duration) => duration.id === durationId)
             );
 
             return (
               <div className="Measure" key={measureNumber}>
-                {notesInMeasure.map((note) =>
-                  renderDurationColumn(measureNumber, note)
+                {durationsInMeasure.map((duration) =>
+                  renderDurationColumn(measureNumber, duration)
                 )}
                 {/* TODO Add (OR bar duration !== maximum) to ternary condition */}
-                {notesInMeasure.length === 0
+                {durationsInMeasure.length === 0
                   ? renderDurationColumn(measureNumber, null)
                   : null}
               </div>

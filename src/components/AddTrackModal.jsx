@@ -19,12 +19,25 @@ const AddTrackModal = ({ show, onClose }) => {
 
   const confirmAddTrack = () => {
     let newTrackId = uuidv4();
+    // TODO Turn ID array generation into a function
     let measureIds =
       tracks.length === 0
         ? [uuidv4()]
         : tracks[0].measures.map((measure) => uuidv4());
+    let durationIds =
+      tracks.length === 0
+        ? [uuidv4()]
+        : tracks[0].measures.map((measure) => uuidv4());
 
-    dispatch(addTrack({ id: newTrackId, measures: measureIds, ...trackToAdd }));
+    // debugger;
+    dispatch(
+      addTrack({
+        id: newTrackId,
+        measures: measureIds,
+        durationIds: durationIds,
+        ...trackToAdd,
+      })
+    );
 
     return newTrackId;
   };

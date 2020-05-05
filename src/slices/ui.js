@@ -4,7 +4,7 @@ export const initialState = {
   selectedTrackNumber: 0,
   selectedMeasureNumber: 0,
   selectedStringNumber: 0,
-  selectedDurationNumber: null,
+  selectedDurationId: null,
 };
 
 const uiSlice = createSlice({
@@ -25,7 +25,7 @@ const uiSlice = createSlice({
       state.selectedStringNumber = payload;
     },
     selectDuration: (state, { payload }) => {
-      state.selectedDurationNumber = payload;
+      state.selectedDurationId = payload;
     },
   },
 });
@@ -42,7 +42,7 @@ export const selectedMeasureNumberSelector = (state) =>
   state.ui.selectedMeasureNumber;
 export const selectedStringNumberSelector = (state) =>
   state.ui.selectedStringNumber;
-export const selectedDurationNumberSelector = (state) =>
-  state.ui.selectedDurationNumber;
+export const selectedDurationIdSelector = (state) =>
+  state.ui.selectedDurationId;
 
 export default uiSlice.reducer;

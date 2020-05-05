@@ -31,13 +31,13 @@ const Document = ({ documentTitle, documentArtist }) => {
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
   // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
 
-  const renderDurationColumn = (measureNumber, note) => {
+  const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];
 
     return (
       <div
         className="Measure__DurationColumn"
-        key={note ? note.id : selectedTrack.measures[measureNumber].id}
+        key={duration ? duration.id : selectedTrack.measures[measureNumber].id}
       >
         {selectedTrack.tuning.map((stringTuning, stringNumber) => {
           let inputClassname = 'Measure__Input';
@@ -50,18 +50,22 @@ const Document = ({ documentTitle, documentArtist }) => {
             inputClassname += ` ${inputClassname}--IsActive`;
           }
 
+          let noteAtString = duration.notes.find(
+            (note) => note.string === stringNumber
+          );
+
           return (
             <input
               className={inputClassname}
               type="text"
               readOnly
               value={
-                note
-                  ? note.isRest
+                duration
+                  ? duration.isRest
                     ? 'R'
-                    : note.string === stringNumber
-                    ? // TODO note.fret should probably be returned by a function that includes things like slides/vibrato
-                      note.fret
+                    : noteAtString
+                    ? // TODO noteAtString.fret should probably be returned by a function that includes symbols for slides/vibrato/etc
+                      noteAtString.fret
                     : '-'
                   : '-'
               }

@@ -29,7 +29,6 @@ const AddTrackModal = ({ show, onClose }) => {
         ? [uuidv4()]
         : tracks[0].measures.map((measure) => uuidv4());
 
-    // debugger;
     dispatch(
       addTrack({
         id: newTrackId,

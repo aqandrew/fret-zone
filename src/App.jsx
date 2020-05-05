@@ -8,8 +8,8 @@ import {
   selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector,
-  // selectDuration,
-  selectedDurationNumberSelector,
+  selectDuration,
+  selectedDurationIdSelector,
   selectString,
   selectedStringNumberSelector,
 } from './slices/ui';
@@ -41,7 +41,7 @@ const App = () => {
   const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedDurationNumber = useSelector(selectedDurationNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
 
   // TODO Put fileList in Redux store
@@ -119,8 +119,8 @@ const App = () => {
             if (selectedMeasureNumber > 0) {
               dispatch(selectMeasure(selectedMeasureNumber - 1));
             } else {
-              // TODO If currently selected note is NOT first,
-              // TODO   Select the previous note
+              // TODO If currently selected duration is NOT first in the measure,
+              // TODO   Select the previous duration
             }
 
             break;
@@ -170,21 +170,13 @@ const App = () => {
               tracks.length !== 0 &&
               measures.length !== 0
             ) {
-              // TODO This object should not live here
-              const defaultNoteOptions = {
-                isRest: false,
-                duration: 1 / 4,
-              };
-
-              // TODO This action doesn't work correctly yet,
-              // since selectedDurationNumber remains null
               dispatch(
                 addNote({
-                  durationId: durations[selectedDurationNumber].id,
+                  measureId: measures[selectedMeasureNumber].id,
+                  durationId: selectedDurationId,
                   id: uuidv4(),
                   string: selectedStringNumber,
                   fret: parseInt(event.key),
-                  ...defaultNoteOptions,
                 })
               );
             }
@@ -200,6 +192,7 @@ const App = () => {
       selectedTrackNumber,
       selectedMeasureNumber,
       selectedStringNumber,
+      selectedDurationId,
     ]
   );
 
@@ -325,11 +318,12 @@ const App = () => {
       </div>
       <AddTrackModal
         show={showAddTrackModal}
-        onClose={(newTrackId) => {
+        onClose={(modalResult) => {
           setShowAddTrackModal(false);
 
-          if (newTrackId) {
+          if (modalResult) {
             dispatch(selectTrack(tracks.length));
+            dispatch(selectDuration(modalResult.durationIdToSelect));
           }
         }}
       />

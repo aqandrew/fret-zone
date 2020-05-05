@@ -8,7 +8,7 @@ import {
   selectMeasure,
   selectedStringNumberSelector,
   selectString,
-  // selectedNoteNumberSelector,
+  selectedDurationIdSelector,
   // selectNote,
 } from '../slices/ui';
 import {
@@ -29,7 +29,7 @@ const Document = ({ documentTitle, documentArtist }) => {
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
-  // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];
@@ -43,6 +43,7 @@ const Document = ({ documentTitle, documentArtist }) => {
           let inputClassname = 'Measure__Input';
 
           // TODO Refactor using classnames utility
+          // TODO Add duration.id === selectedDurationId when durations are selected properly
           if (
             measureNumber === selectedMeasureNumber &&
             stringNumber === selectedStringNumber
@@ -50,9 +51,9 @@ const Document = ({ documentTitle, documentArtist }) => {
             inputClassname += ` ${inputClassname}--IsActive`;
           }
 
-          let noteAtString = duration.notes.find(
-            (note) => note.string === stringNumber
-          );
+          let noteAtString = duration.notes
+            .map((noteId) => notes.find((note) => note.id === noteId))
+            .find((note) => note.string === stringNumber);
 
           return (
             <input

@@ -43,10 +43,10 @@ const Document = ({ documentTitle, documentArtist }) => {
           let inputClassname = 'Measure__Input';
 
           // TODO Refactor using classnames utility
-          // TODO Add duration.id === selectedDurationId when durations are selected properly
           if (
             measureNumber === selectedMeasureNumber &&
-            stringNumber === selectedStringNumber
+            stringNumber === selectedStringNumber &&
+            duration.id === selectedDurationId
           ) {
             inputClassname += ` ${inputClassname}--IsActive`;
           }

@@ -17,6 +17,7 @@ import {
   deleteTrack,
   addMeasure,
   deleteMeasure,
+  addDuration,
   addNote,
   defaultMeasureOptions,
   measuresSelector,
@@ -68,6 +69,11 @@ const App = () => {
           event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
+        const selectedMeasure = measures.find(
+          (measure) =>
+            measure.id ===
+            tracks[selectedTrackNumber].measures[selectedMeasureNumber]
+        );
         console.log(event);
 
         switch (event.key) {
@@ -92,26 +98,63 @@ const App = () => {
           // Advance note/measure
           case 'ArrowRight':
             if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
+              // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
+              // Create a mapping from track IDs to new measure IDs
+              let trackMeasureIds = tracks.reduce((map, track) => {
+                map[track.id] = {
+                  measureId: uuidv4(),
+                  durationId: uuidv4(),
+                };
+                return map;
+              }, {});
+
               dispatch(
                 addMeasure({
-                  // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
-                  // Create a mapping from track IDs to new measure IDs
-                  trackMeasureIds: tracks.reduce((map, track) => {
-                    map[track.id] = {
-                      measureId: uuidv4(),
-                      durationId: uuidv4(),
-                    };
-                    return map;
-                  }, {}),
+                  trackMeasureIds: trackMeasureIds,
                   ...defaultMeasureOptions,
                 })
               );
+              dispatch(selectMeasure(selectedMeasureNumber + 1));
+              dispatch(
+                selectDuration(trackMeasureIds[selectedTrack.id].durationId)
+              );
             } else {
-              // TODO If currently selected duration is NOT last,
-              // TODO   Select the next duration
+              // If currently selected duration is NOT last,
+              if (selectedDurationId !== selectedMeasure.durations.slice(-1)) {
+                // If there is a note at the selected duration,
+                if (!durations[selectedDurationId].notes.length) {
+                  // TODO Only create a new duration on ArrowRight if the measure's total length !== maximum AND last duration isn't empty
+                  // Create a new duration
+                  dispatch(
+                    addDuration({
+                      measureId: selectedMeasure.id,
+                      newDurationId: uuidv4(),
+                    })
+                  );
+                }
+                // Otherwise, select the next duration
+                else {
+                  dispatch(
+                    selectDuration(
+                      selectedMeasure.durations[
+                        selectedMeasure.durations.findIndex(
+                          (durationId) => durationId === selectedDurationId
+                        ) + 1
+                      ]
+                    )
+                  );
+                }
+              }
+              // Otherwise, select the next measure
+              else {
+                dispatch(selectMeasure(selectedMeasureNumber + 1));
+                dispatch(
+                  selectDuration(
+                    measures[selectedMeasureNumber + 1].durations[0]
+                  )
+                );
+              }
             }
-
-            dispatch(selectMeasure(selectedMeasureNumber + 1));
 
             break;
           // Previous note/measure
@@ -172,7 +215,6 @@ const App = () => {
             ) {
               dispatch(
                 addNote({
-                  measureId: measures[selectedMeasureNumber].id,
                   durationId: selectedDurationId,
                   id: uuidv4(),
                   string: selectedStringNumber,
@@ -189,6 +231,7 @@ const App = () => {
       dispatch,
       tracks,
       measures,
+      durations,
       selectedTrackNumber,
       selectedMeasureNumber,
       selectedStringNumber,

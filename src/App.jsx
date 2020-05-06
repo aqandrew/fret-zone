@@ -163,9 +163,29 @@ const App = () => {
           case 'ArrowLeft':
             if (selectedMeasureNumber > 0) {
               dispatch(selectMeasure(selectedMeasureNumber - 1));
+
+              // Select the last duration of the previous measure
+              dispatch(
+                selectDuration(
+                  measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
+                )
+              );
+
+              // TODO Select the FIRST duration of the previous measure if Cmd was held
             } else {
-              // TODO If currently selected duration is NOT first in the measure,
-              // TODO   Select the previous duration
+              // If currently selected duration is NOT first in the measure,
+              if (selectedDurationId !== selectedMeasure.durations[0]) {
+                // Select the previous duration
+                dispatch(
+                  selectDuration(
+                    selectedMeasure.durations[
+                      selectedMeasure.durations.findIndex(
+                        (durationId) => durationId === selectedDurationId
+                      ) - 1
+                    ]
+                  )
+                );
+              }
             }
 
             break;

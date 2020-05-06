@@ -145,12 +145,38 @@ const documentSlice = createSlice({
         );
       }
     },
+    addDuration: (state, { payload }) => {
+      let { measureId, newDurationId } = payload;
+
+      state.measures.byId[measureId].durations.push(newDurationId);
+      state.durations.byId[newDurationId] = {
+        id: newDurationId,
+        ...defaultDurationOptions,
+      };
+      state.durations.allIds.push(newDurationId);
+    },
     // TODO Refactor this to be used for inserting a new note
     addNote: (state, { payload }) => {
-      let { measureId, durationId, ...note } = payload;
+      let { durationId, ...note } = payload;
 
       if (note.isRest) {
         // TODO
+      }
+
+      // If this duration already has a note at the specified string,
+      if (
+        state.durations.byId[durationId].notes
+          .map((noteId) => state.notes.byId[noteId])
+          .map((note) => note.string)
+          .includes(payload.string)
+      ) {
+        // Delete the existing note
+        state.durations.byId[durationId].notes.splice(
+          state.durations.byId[durationId].notes.findIndex(
+            (noteId) => state.notes.byId[noteId].string === payload.string
+          ),
+          1
+        );
       }
 
       state.durations.byId[durationId].notes.push(note.id);
@@ -166,6 +192,7 @@ const documentSlice = createSlice({
 export const {
   addTrack,
   addMeasure,
+  addDuration,
   addNote,
   deleteTrack,
   deleteMeasure,

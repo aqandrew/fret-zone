@@ -120,7 +120,9 @@ const App = () => {
               );
             } else {
               // If currently selected duration is NOT last,
-              if (selectedDurationId !== selectedMeasure.durations.slice(-1)) {
+              if (
+                selectedDurationId !== selectedMeasure.durations.slice(-1)[0]
+              ) {
                 // If there is a note at the selected duration,
                 if (!durations[selectedDurationId].notes.length) {
                   // TODO Only create a new duration on ArrowRight if the measure's total length !== maximum AND last duration isn't empty

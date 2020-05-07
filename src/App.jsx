@@ -126,6 +126,7 @@ const App = () => {
               );
             } else {
               // If currently selected duration is NOT last,
+              // TODO Or if Cmd wasn't held
               if (
                 selectedDurationId !== selectedMeasure.durations.slice(-1)[0]
               ) {
@@ -156,6 +157,8 @@ const App = () => {
               // Otherwise, select the next measure
               else {
                 dispatch(selectMeasure(selectedMeasureNumber + 1));
+
+                // TODO This will be extremely buggy with multiple tracks; index selectedTrack.measures instead
                 dispatch(
                   selectDuration(
                     measures[selectedMeasureNumber + 1].durations[0]
@@ -197,16 +200,45 @@ const App = () => {
             }
 
             break;
-          // Delete measure
-          case '-':
-            if (event.ctrlKey && selectedTrack.measures.length > 1) {
-              if (selectedMeasureNumber > 0) {
-                dispatch(selectMeasure(selectedMeasureNumber - 1));
-              }
+          case '+':
+            // TODO Insert measure
+            if (event.ctrlKey) {
+            }
+            // TODO Shorten selected duration
+            else {
+            }
 
-              // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
-              // so this still deletes the correct measure
-              dispatch(deleteMeasure(selectedMeasureNumber));
+            break;
+          case '-':
+            // Delete measure
+            if (event.ctrlKey) {
+              if (selectedTrack.measures.length > 1) {
+                let newSelectedMeasureNumber;
+
+                if (selectedMeasureNumber > 0) {
+                  newSelectedMeasureNumber = selectedMeasureNumber - 1;
+                  dispatch(selectMeasure(newSelectedMeasureNumber));
+                } else {
+                  newSelectedMeasureNumber = selectedMeasureNumber + 1;
+                }
+
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[newSelectedMeasureNumber]
+                    ).durations[0]
+                  )
+                );
+
+                // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
+                // so this still deletes the correct measure after selectMeasure has executed
+                dispatch(deleteMeasure(selectedMeasureNumber));
+              }
+            }
+            // TODO Lengthen selected duration
+            else {
             }
 
             break;

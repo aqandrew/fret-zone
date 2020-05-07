@@ -95,7 +95,10 @@ const GlobalView = ({ openAddTrackModal }) => {
 
 const TrackControl = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
+  const tracks = useSelector(tracksSelector);
+  const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   let trackControlClassName = 'TrackControl';
 
@@ -107,7 +110,20 @@ const TrackControl = ({ track, trackNumber }) => {
   return (
     <div
       className={trackControlClassName}
-      onClick={() => dispatch(selectTrack(trackNumber))}
+      onClick={() => {
+        dispatch(selectTrack(trackNumber));
+
+        // Select first duration of track's measure at selectedMeasureNumber
+        dispatch(
+          selectDuration(
+            measures.find(
+              (measure) =>
+                measure.id ===
+                tracks[trackNumber].measures[selectedMeasureNumber]
+            ).durations[0]
+          )
+        );
+      }}
     >
       <div className="TrackControl__ColorTab"></div>
       <span className="TrackControl__TrackNumber">{trackNumber + 1}.</span>

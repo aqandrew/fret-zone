@@ -341,42 +341,55 @@ const App = () => {
     };
   }, [onKeyDown]);
 
+  const getSelectedMeasure = () =>
+    measures.find(
+      (measure) =>
+        measure.id ===
+        tracks[selectedTrackNumber].measures[selectedMeasureNumber]
+    );
+
+  const getCurrentBarMaximumDuration = () => {
+    const selectedMeasure = getSelectedMeasure();
+
+    return (
+      (selectedMeasure.timeSignature.beatUnit / 4) *
+      selectedMeasure.timeSignature.beatsPerMeasure
+    );
+  };
+
+  const getCurrentBarDuration = () => {
+    const selectedMeasure = getSelectedMeasure();
+    const currentBarMaximumDuration = getCurrentBarMaximumDuration();
+
+    return (
+      selectedMeasure.durations.reduce((totalDuration, durationId) => {
+        let durationInMeasure = durations.find(
+          (duration) => duration.id === durationId
+        );
+
+        if (durationInMeasure.notes.length || durationInMeasure.isRest) {
+          return totalDuration + durationInMeasure.length;
+        }
+
+        return totalDuration;
+      }, 0) * currentBarMaximumDuration
+    );
+  };
+
   const renderBarCurrentDuration = () => {
+    let barDuration = 0;
+    let barMaximumDuration = 1;
+
     if (tracks.length && measures.length) {
-      const selectedMeasure = measures.find(
-        (measure) =>
-          measure.id ===
-          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-      );
-
-      let currentBarMaximumDuration =
-        (selectedMeasure.timeSignature.beatUnit / 4) *
-        selectedMeasure.timeSignature.beatsPerMeasure;
-      let currentBarDuration =
-        selectedMeasure.durations.reduce((totalDuration, durationId) => {
-          let durationInMeasure = durations.find(
-            (duration) => duration.id === durationId
-          );
-
-          if (durationInMeasure.notes.length || durationInMeasure.isRest) {
-            return totalDuration + durationInMeasure.length;
-          }
-
-          return totalDuration;
-        }, 0) * currentBarMaximumDuration;
-
-      // TODO Display minimum 1 decimal place, and up to 4 decimal places,
-      //   rounded, not truncated
-      //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
-      //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
-      return (
-        currentBarDuration.toFixed(1) +
-        ':' +
-        currentBarMaximumDuration.toFixed(1)
-      );
+      barDuration = getCurrentBarDuration();
+      barMaximumDuration = getCurrentBarMaximumDuration();
     }
 
-    return '0.0:1.0';
+    // TODO Display minimum 1 decimal place, and up to 4 decimal places,
+    //   rounded, not truncated
+    //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
+    //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
+    return barDuration.toFixed(1) + ':' + barMaximumDuration.toFixed(1);
   };
 
   return (

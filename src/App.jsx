@@ -264,10 +264,34 @@ const App = () => {
             if (event.altKey && event.metaKey) {
               // TODO Open confirmation dialog
 
-              if (
-                selectedTrackNumber === tracks.length - 1 &&
-                tracks.length > 1
-              ) {
+              // If a track that's not last is being deleted,
+              if (selectedTrackNumber < tracks.length - 1) {
+                // Select first duration of next track's measure at selectedMeasureNumber
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        tracks[selectedTrackNumber + 1].measures[
+                          selectedMeasureNumber
+                        ]
+                    ).durations[0]
+                  )
+                );
+              }
+              // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
+              else if (selectedTrackNumber !== 0) {
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        tracks[selectedTrackNumber - 1].measures[
+                          selectedMeasureNumber
+                        ]
+                    ).durations[0]
+                  )
+                );
                 dispatch(selectTrack(selectedTrackNumber - 1));
               }
 

@@ -277,11 +277,21 @@ const App = () => {
           tracks[selectedTrackNumber].measures[selectedMeasureNumber]
       );
 
-      // TODO Calculate currentBarDuration based on notes in bar
-      let currentBarDuration = 0;
       let currentBarMaximumDuration =
         (selectedMeasure.timeSignature.beatUnit / 4) *
         selectedMeasure.timeSignature.beatsPerMeasure;
+      let currentBarDuration =
+        selectedMeasure.durations.reduce((totalDuration, durationId) => {
+          let durationInMeasure = durations.find(
+            (duration) => duration.id === durationId
+          );
+
+          if (durationInMeasure.notes.length || durationInMeasure.isRest) {
+            return totalDuration + durationInMeasure.length;
+          }
+
+          return totalDuration;
+        }, 0) * currentBarMaximumDuration;
 
       // TODO Display minimum 1 decimal place, and up to 4 decimal places,
       //   rounded, not truncated

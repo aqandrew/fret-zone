@@ -78,6 +78,8 @@ const App = () => {
 
         switch (event.key) {
           case 'ArrowUp':
+            event.preventDefault();
+
             dispatch(
               selectString(
                 selectedStringNumber === 0
@@ -88,6 +90,8 @@ const App = () => {
 
             break;
           case 'ArrowDown':
+            event.preventDefault();
+
             dispatch(
               selectString(
                 (selectedStringNumber + 1) % selectedTrack.tuning.length
@@ -97,6 +101,8 @@ const App = () => {
             break;
           // Advance note/measure
           case 'ArrowRight':
+            event.preventDefault();
+
             if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
               // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
               // Create a mapping from track IDs to new measure IDs
@@ -161,6 +167,8 @@ const App = () => {
             break;
           // Previous note/measure
           case 'ArrowLeft':
+            event.preventDefault();
+
             if (selectedMeasureNumber > 0) {
               dispatch(selectMeasure(selectedMeasureNumber - 1));
 

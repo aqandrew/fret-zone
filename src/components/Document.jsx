@@ -8,8 +8,8 @@ import {
   selectMeasure,
   selectedStringNumberSelector,
   selectString,
+  selectDuration,
   selectedDurationIdSelector,
-  // selectNote,
 } from '../slices/ui';
 import {
   measuresSelector,
@@ -73,6 +73,7 @@ const Document = ({ documentTitle, documentArtist }) => {
               onClick={() => {
                 dispatch(selectMeasure(measureNumber));
                 dispatch(selectString(stringNumber));
+                dispatch(selectDuration(duration.id));
               }}
               key={stringNumber}
             />

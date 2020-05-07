@@ -157,11 +157,13 @@ const App = () => {
               // Otherwise, select the next measure
               else {
                 dispatch(selectMeasure(selectedMeasureNumber + 1));
-
-                // TODO This will be extremely buggy with multiple tracks; index selectedTrack.measures instead
                 dispatch(
                   selectDuration(
-                    measures[selectedMeasureNumber + 1].durations[0]
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[selectedMeasureNumber + 1]
+                    ).durations[0]
                   )
                 );
               }
@@ -178,7 +180,13 @@ const App = () => {
               // Select the last duration of the previous measure
               dispatch(
                 selectDuration(
-                  measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
+                  measures
+                    .find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[selectedMeasureNumber - 1]
+                    )
+                    .durations.slice(-1)[0]
                 )
               );
 

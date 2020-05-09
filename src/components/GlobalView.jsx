@@ -5,15 +5,17 @@ import {
   selectTrack,
   selectedTrackNumberSelector,
   selectMeasure,
-  selectedMeasureNumberSelector
+  selectedMeasureNumberSelector,
+  selectDuration,
 } from '../slices/ui';
-import { tracksSelector } from '../slices/document';
+import { tracksSelector, measuresSelector } from '../slices/document';
 
 import './GlobalView.scss';
 
 const GlobalView = ({ openAddTrackModal }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
+  const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
@@ -53,7 +55,7 @@ const GlobalView = ({ openAddTrackModal }) => {
         <div className="MeasureTable__Header">
           {tracks.length
             ? tracks[selectedTrackNumber].measures.map(
-                (measure, measureNumber) => {
+                (measureId, measureNumber) => {
                   let measureNumberClassName = 'MeasureTable__MeasureNumber';
 
                   // TODO Refactor using classnames utility
@@ -64,7 +66,15 @@ const GlobalView = ({ openAddTrackModal }) => {
                   return (
                     <div
                       className={measureNumberClassName}
-                      onClick={() => dispatch(selectMeasure(measureNumber))}
+                      onClick={() => {
+                        dispatch(selectMeasure(measureNumber));
+                        dispatch(
+                          selectDuration(
+                            measures.find((measure) => measure.id === measureId)
+                              .durations[0]
+                          )
+                        );
+                      }}
                       key={measureNumber}
                     >
                       {measureNumber + 1}
@@ -85,7 +95,10 @@ const GlobalView = ({ openAddTrackModal }) => {
 
 const TrackControl = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
+  const tracks = useSelector(tracksSelector);
+  const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
+  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
   let trackControlClassName = 'TrackControl';
 
@@ -97,7 +110,20 @@ const TrackControl = ({ track, trackNumber }) => {
   return (
     <div
       className={trackControlClassName}
-      onClick={() => dispatch(selectTrack(trackNumber))}
+      onClick={() => {
+        dispatch(selectTrack(trackNumber));
+
+        // Select first duration of track's measure at selectedMeasureNumber
+        dispatch(
+          selectDuration(
+            measures.find(
+              (measure) =>
+                measure.id ===
+                tracks[trackNumber].measures[selectedMeasureNumber]
+            ).durations[0]
+          )
+        );
+      }}
     >
       <div className="TrackControl__ColorTab"></div>
       <span className="TrackControl__TrackNumber">{trackNumber + 1}.</span>
@@ -108,6 +134,7 @@ const TrackControl = ({ track, trackNumber }) => {
 
 const MeasureTableRow = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
+  const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
@@ -130,6 +157,12 @@ const MeasureTableRow = ({ track, trackNumber }) => {
             onClick={() => {
               dispatch(selectTrack(trackNumber));
               dispatch(selectMeasure(measureNumber));
+              dispatch(
+                selectDuration(
+                  measures.find((measure) => measure.id === measureId)
+                    .durations[0]
+                )
+              );
             }}
             key={measureId}
           ></div>

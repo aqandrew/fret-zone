@@ -8,8 +8,8 @@ import {
   selectedTrackNumberSelector,
   selectMeasure,
   selectedMeasureNumberSelector,
-  // selectNote,
-  // selectedNoteNumberSelector,
+  selectDuration,
+  selectedDurationIdSelector,
   selectString,
   selectedStringNumberSelector,
 } from './slices/ui';
@@ -17,10 +17,12 @@ import {
   deleteTrack,
   addMeasure,
   deleteMeasure,
+  addDuration,
   addNote,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
+  durationsSelector,
 } from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
@@ -37,8 +39,10 @@ const App = () => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
 
   // TODO Put fileList in Redux store
@@ -57,6 +61,44 @@ const App = () => {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
+  const getSelectedMeasure = useCallback(
+    () =>
+      measures.find(
+        (measure) =>
+          measure.id ===
+          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
+      ),
+    [tracks, measures, selectedTrackNumber, selectedMeasureNumber]
+  );
+
+  const getCurrentBarMaximumDuration = useCallback(() => {
+    const selectedMeasure = getSelectedMeasure();
+
+    return (
+      (selectedMeasure.timeSignature.beatUnit / 4) *
+      selectedMeasure.timeSignature.beatsPerMeasure
+    );
+  }, [getSelectedMeasure]);
+
+  const getCurrentBarDuration = useCallback(() => {
+    const selectedMeasure = getSelectedMeasure();
+    const currentBarMaximumDuration = getCurrentBarMaximumDuration();
+
+    return (
+      selectedMeasure.durations.reduce((totalDuration, durationId) => {
+        let durationInMeasure = durations.find(
+          (duration) => duration.id === durationId
+        );
+
+        if (durationInMeasure.notes.length || durationInMeasure.isRest) {
+          return totalDuration + durationInMeasure.length;
+        }
+
+        return totalDuration;
+      }, 0) * currentBarMaximumDuration
+    );
+  }, [durations, getSelectedMeasure, getCurrentBarMaximumDuration]);
+
   const onKeyDown = useCallback(
     (event) => {
       if (
@@ -65,10 +107,13 @@ const App = () => {
           event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
+        const selectedMeasure = getSelectedMeasure();
         console.log(event);
 
         switch (event.key) {
           case 'ArrowUp':
+            event.preventDefault();
+
             dispatch(
               selectString(
                 selectedStringNumber === 0
@@ -79,6 +124,8 @@ const App = () => {
 
             break;
           case 'ArrowDown':
+            event.preventDefault();
+
             dispatch(
               selectString(
                 (selectedStringNumber + 1) % selectedTrack.tuning.length
@@ -86,47 +133,173 @@ const App = () => {
             );
 
             break;
-          // Advance note/measure
+          // Advance duration/measure
           case 'ArrowRight':
-            if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
-              dispatch(
-                addMeasure({
-                  // Create a mapping from track IDs to new measure IDs
-                  trackMeasureIds: tracks.reduce((map, track) => {
-                    map[track.id] = uuidv4();
-                    return map;
-                  }, {}),
-                  ...defaultMeasureOptions,
-                })
-              );
-            } else {
-              // TODO If currently selected note is NOT last,
-              // TODO   Select the next note
-            }
+            event.preventDefault();
 
-            dispatch(selectMeasure(selectedMeasureNumber + 1));
+            // TODO If Cmd was held, select the first duration of the next measure
 
-            break;
-          // Previous note/measure
-          case 'ArrowLeft':
-            if (selectedMeasureNumber > 0) {
-              dispatch(selectMeasure(selectedMeasureNumber - 1));
-            } else {
-              // TODO If currently selected note is NOT first,
-              // TODO   Select the previous note
-            }
+            let shouldCheckIfMeasureIsLast = false;
 
-            break;
-          // Delete measure
-          case '-':
-            if (event.ctrlKey && selectedTrack.measures.length > 1) {
-              if (selectedMeasureNumber > 0) {
-                dispatch(selectMeasure(selectedMeasureNumber - 1));
+            // If there's a note at this duration,
+            if (
+              durations.find((duration) => duration.id === selectedDurationId)
+                .notes.length
+            ) {
+              // If this is the last duration,
+              if (
+                selectedDurationId === selectedMeasure.durations.slice(-1)[0]
+              ) {
+                // If the measure's total length === maximum,
+                if (
+                  getCurrentBarDuration() === getCurrentBarMaximumDuration()
+                ) {
+                  shouldCheckIfMeasureIsLast = true;
+                }
+                // Add a new duration to this measure
+                else {
+                  let newDurationId = uuidv4();
+
+                  dispatch(
+                    addDuration({
+                      measureId: selectedMeasure.id,
+                      newDurationId: newDurationId,
+                    })
+                  );
+                  dispatch(selectDuration(newDurationId));
+                }
               }
+              // Select the next duration in this measure
+              else {
+                dispatch(
+                  selectDuration(
+                    selectedMeasure.durations[
+                      selectedMeasure.durations.findIndex(
+                        (durationId) => durationId === selectedDurationId
+                      ) + 1
+                    ]
+                  )
+                );
+              }
+            } else {
+              shouldCheckIfMeasureIsLast = true;
+            }
 
-              // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
-              // so this still deletes the correct measure
-              dispatch(deleteMeasure(selectedMeasureNumber));
+            if (shouldCheckIfMeasureIsLast) {
+              // If selectedMeasure is last,
+              // Add a new measure
+              if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
+                // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
+                // Create a mapping from track IDs to new measure IDs
+                let trackMeasureIds = tracks.reduce((map, track) => {
+                  map[track.id] = {
+                    measureId: uuidv4(),
+                    durationId: uuidv4(),
+                  };
+                  return map;
+                }, {});
+
+                dispatch(
+                  addMeasure({
+                    trackMeasureIds: trackMeasureIds,
+                    ...defaultMeasureOptions,
+                  })
+                );
+                dispatch(selectMeasure(selectedMeasureNumber + 1));
+                dispatch(
+                  selectDuration(trackMeasureIds[selectedTrack.id].durationId)
+                );
+              }
+              // Select the next measure
+              else {
+                dispatch(selectMeasure(selectedMeasureNumber + 1));
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[selectedMeasureNumber + 1]
+                    ).durations[0]
+                  )
+                );
+              }
+            }
+
+            break;
+          // Previous duration/measure
+          case 'ArrowLeft':
+            event.preventDefault();
+
+            // If currently selected duration is NOT first in the measure,
+            if (selectedDurationId !== selectedMeasure.durations[0]) {
+              // Select the previous duration
+              dispatch(
+                selectDuration(
+                  selectedMeasure.durations[
+                    selectedMeasure.durations.findIndex(
+                      (durationId) => durationId === selectedDurationId
+                    ) - 1
+                  ]
+                )
+              );
+            } else if (selectedMeasureNumber > 0) {
+              dispatch(selectMeasure(selectedMeasureNumber - 1));
+
+              // Select the last duration of the previous measure
+              dispatch(
+                selectDuration(
+                  measures
+                    .find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[selectedMeasureNumber - 1]
+                    )
+                    .durations.slice(-1)[0]
+                )
+              );
+              // TODO Select the FIRST duration of the previous measure if Cmd was held
+            }
+
+            break;
+          case '+':
+            // TODO Insert measure
+            if (event.ctrlKey) {
+            }
+            // TODO Shorten selected duration
+            else {
+            }
+
+            break;
+          case '-':
+            // Delete measure
+            if (event.ctrlKey) {
+              if (selectedTrack.measures.length > 1) {
+                let newSelectedMeasureNumber;
+
+                if (selectedMeasureNumber > 0) {
+                  newSelectedMeasureNumber = selectedMeasureNumber - 1;
+                  dispatch(selectMeasure(newSelectedMeasureNumber));
+                } else {
+                  newSelectedMeasureNumber = selectedMeasureNumber + 1;
+                }
+
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        selectedTrack.measures[newSelectedMeasureNumber]
+                    ).durations[0]
+                  )
+                );
+
+                // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
+                // so this still deletes the correct measure after selectMeasure has executed
+                dispatch(deleteMeasure(selectedMeasureNumber));
+              }
+            }
+            // TODO Lengthen selected duration
+            else {
             }
 
             break;
@@ -144,10 +317,34 @@ const App = () => {
             if (event.altKey && event.metaKey) {
               // TODO Open confirmation dialog
 
-              if (
-                selectedTrackNumber === tracks.length - 1 &&
-                tracks.length > 1
-              ) {
+              // If a track that's not last is being deleted,
+              if (selectedTrackNumber < tracks.length - 1) {
+                // Select first duration of next track's measure at selectedMeasureNumber
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        tracks[selectedTrackNumber + 1].measures[
+                          selectedMeasureNumber
+                        ]
+                    ).durations[0]
+                  )
+                );
+              }
+              // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
+              else if (selectedTrackNumber !== 0) {
+                dispatch(
+                  selectDuration(
+                    measures.find(
+                      (measure) =>
+                        measure.id ===
+                        tracks[selectedTrackNumber - 1].measures[
+                          selectedMeasureNumber
+                        ]
+                    ).durations[0]
+                  )
+                );
                 dispatch(selectTrack(selectedTrackNumber - 1));
               }
 
@@ -163,19 +360,12 @@ const App = () => {
               tracks.length !== 0 &&
               measures.length !== 0
             ) {
-              // TODO This object should not live here
-              const defaultNoteOptions = {
-                isRest: false,
-                duration: 1 / 4,
-              };
-
               dispatch(
                 addNote({
-                  measureId: measures[selectedMeasureNumber].id,
+                  durationId: selectedDurationId,
                   id: uuidv4(),
                   string: selectedStringNumber,
                   fret: parseInt(event.key),
-                  ...defaultNoteOptions,
                 })
               );
             }
@@ -186,11 +376,16 @@ const App = () => {
     },
     [
       dispatch,
+      getSelectedMeasure,
+      getCurrentBarDuration,
+      getCurrentBarMaximumDuration,
       tracks,
       measures,
+      durations,
       selectedTrackNumber,
       selectedMeasureNumber,
       selectedStringNumber,
+      selectedDurationId,
     ]
   );
 
@@ -203,31 +398,19 @@ const App = () => {
   }, [onKeyDown]);
 
   const renderBarCurrentDuration = () => {
+    let barDuration = 0;
+    let barMaximumDuration = 1;
+
     if (tracks.length && measures.length) {
-      const selectedMeasure = measures.find(
-        (measure) =>
-          measure.id ===
-          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-      );
-
-      // TODO Calculate currentBarDuration based on notes in bar
-      let currentBarDuration = 0;
-      let currentBarMaximumDuration =
-        (selectedMeasure.timeSignature.beatUnit / 4) *
-        selectedMeasure.timeSignature.beatsPerMeasure;
-
-      // TODO Display minimum 1 decimal place, and up to 4 decimal places,
-      //   rounded, not truncated
-      //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
-      //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
-      return (
-        currentBarDuration.toFixed(1) +
-        ':' +
-        currentBarMaximumDuration.toFixed(1)
-      );
+      barDuration = getCurrentBarDuration();
+      barMaximumDuration = getCurrentBarMaximumDuration();
     }
 
-    return '0.0:1.0';
+    // TODO Display minimum 1 decimal place, and up to 4 decimal places,
+    //   rounded, not truncated
+    //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
+    //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
+    return barDuration.toFixed(1) + ':' + barMaximumDuration.toFixed(1);
   };
 
   return (
@@ -316,11 +499,12 @@ const App = () => {
       </div>
       <AddTrackModal
         show={showAddTrackModal}
-        onClose={(newTrackId) => {
+        onClose={(modalResult) => {
           setShowAddTrackModal(false);
 
-          if (newTrackId) {
+          if (modalResult) {
             dispatch(selectTrack(tracks.length));
+            dispatch(selectDuration(modalResult.durationIdToSelect));
           }
         }}
       />

@@ -9,6 +9,10 @@ export const initialState = {
     byId: {},
     allIds: [],
   },
+  durations: {
+    byId: {},
+    allIds: [],
+  },
   notes: {
     byId: {},
     allIds: [],
@@ -24,6 +28,12 @@ export const defaultMeasureOptions = {
     tonic: 'C',
     isMajor: true,
   },
+  durations: [],
+};
+
+const defaultDurationOptions = {
+  isRest: false,
+  length: 1 / 4,
   notes: [],
 };
 
@@ -37,21 +47,24 @@ const documentSlice = createSlice({
       state.measures = initialState.measures;
     },
     addTrack: (state, { payload }) => {
-      let measureIds = payload.measures;
-      let newTrackId = payload.id;
+      let { durationIds, ...restOfPayload } = payload;
+      let measureIds = restOfPayload.measures;
+      let newTrackId = restOfPayload.id;
       let isFirstTrack = state.tracks.allIds.length === 0;
 
-      state.tracks.byId[newTrackId] = { ...payload };
+      state.tracks.byId[newTrackId] = { ...restOfPayload };
       state.tracks.allIds.push(newTrackId);
 
       measureIds.forEach((newMeasureId, measureNumber) => {
         let measureToAdd;
+        let newDurationId = durationIds[measureNumber];
 
         // Add one measure with default options
         if (isFirstTrack) {
           measureToAdd = {
             id: newMeasureId,
             ...defaultMeasureOptions,
+            durations: [newDurationId],
           };
           // Otherwise, add as many new measures to this track as the number of existing measures in each other track
         } else {
@@ -63,12 +76,19 @@ const documentSlice = createSlice({
           measureToAdd = {
             ...existingMeasure,
             id: newMeasureId,
-            notes: [],
+            durations: [newDurationId],
           };
         }
 
         state.measures.byId[newMeasureId] = measureToAdd;
         state.measures.allIds.push(newMeasureId);
+
+        // Add a new duration to each measure
+        state.durations.byId[newDurationId] = {
+          id: newDurationId,
+          ...defaultDurationOptions,
+        };
+        state.durations.allIds.push(newDurationId);
       });
     },
     deleteTrack: (state, { payload }) => {
@@ -90,18 +110,27 @@ const documentSlice = createSlice({
     },
     // TODO Refactor this to be used for inserting a new measure
     addMeasure: (state, { payload }) => {
-      let { trackMeasureIds, ...payloadWithoutIdMap } = payload;
+      let { trackMeasureIds, ...restOfPayload } = payload;
 
       // Add a new measure for each track
       for (const trackId in trackMeasureIds) {
-        let newMeasureId = trackMeasureIds[trackId];
+        let newMeasureId = trackMeasureIds[trackId].measureId;
+        let newDurationId = trackMeasureIds[trackId].durationId;
 
         state.tracks.byId[trackId].measures.push(newMeasureId);
         state.measures.byId[newMeasureId] = {
           id: newMeasureId,
-          ...payloadWithoutIdMap,
+          ...restOfPayload,
+          durations: [newDurationId],
         };
         state.measures.allIds.push(newMeasureId);
+
+        // Add a new duration for each measure
+        state.durations.byId[newDurationId] = {
+          id: newDurationId,
+          ...defaultDurationOptions,
+        };
+        state.durations.allIds.push(newDurationId);
       }
     },
     deleteMeasure: (state, { payload }) => {
@@ -116,20 +145,54 @@ const documentSlice = createSlice({
         );
       }
     },
+    addDuration: (state, { payload }) => {
+      let { measureId, newDurationId } = payload;
+
+      state.measures.byId[measureId].durations.push(newDurationId);
+      state.durations.byId[newDurationId] = {
+        id: newDurationId,
+        ...defaultDurationOptions,
+      };
+      state.durations.allIds.push(newDurationId);
+    },
     // TODO Refactor this to be used for inserting a new note
     addNote: (state, { payload }) => {
-      let { measureId, ...note } = payload;
+      let { durationId, ...note } = payload;
 
-      state.measures.byId[measureId].notes.push(note.id);
-      state.notes.byId[note.id] = { ...note };
+      if (note.isRest) {
+        // TODO
+      }
+
+      // If this duration already has a note at the specified string,
+      if (
+        state.durations.byId[durationId].notes
+          .map((noteId) => state.notes.byId[noteId])
+          .map((note) => note.string)
+          .includes(payload.string)
+      ) {
+        // Delete the existing note
+        state.durations.byId[durationId].notes.splice(
+          state.durations.byId[durationId].notes.findIndex(
+            (noteId) => state.notes.byId[noteId].string === payload.string
+          ),
+          1
+        );
+      }
+
+      state.durations.byId[durationId].notes.push(note.id);
+      state.notes.byId[note.id] = note;
       state.notes.allIds.push(note.id);
     },
+    deleteNote: (state, { payload }) => {},
+    // TODO deleteDuration is only used when deleting multiple notes at once
+    deleteDuration: (state, { payload }) => {},
   },
 });
 
 export const {
   addTrack,
   addMeasure,
+  addDuration,
   addNote,
   deleteTrack,
   deleteMeasure,
@@ -141,6 +204,10 @@ export const tracksSelector = (state) =>
 export const measuresSelector = (state) =>
   state.document.measures.allIds.map(
     (measureId) => state.document.measures.byId[measureId]
+  );
+export const durationsSelector = (state) =>
+  state.document.durations.allIds.map(
+    (durationId) => state.document.durations.byId[durationId]
   );
 export const notesSelector = (state) =>
   state.document.notes.allIds.map(

@@ -230,7 +230,19 @@ const App = () => {
           case 'ArrowLeft':
             event.preventDefault();
 
-            if (selectedMeasureNumber > 0) {
+            // If currently selected duration is NOT first in the measure,
+            if (selectedDurationId !== selectedMeasure.durations[0]) {
+              // Select the previous duration
+              dispatch(
+                selectDuration(
+                  selectedMeasure.durations[
+                    selectedMeasure.durations.findIndex(
+                      (durationId) => durationId === selectedDurationId
+                    ) - 1
+                  ]
+                )
+              );
+            } else if (selectedMeasureNumber > 0) {
               dispatch(selectMeasure(selectedMeasureNumber - 1));
 
               // Select the last duration of the previous measure
@@ -245,22 +257,7 @@ const App = () => {
                     .durations.slice(-1)[0]
                 )
               );
-
               // TODO Select the FIRST duration of the previous measure if Cmd was held
-            } else {
-              // If currently selected duration is NOT first in the measure,
-              if (selectedDurationId !== selectedMeasure.durations[0]) {
-                // Select the previous duration
-                dispatch(
-                  selectDuration(
-                    selectedMeasure.durations[
-                      selectedMeasure.durations.findIndex(
-                        (durationId) => durationId === selectedDurationId
-                      ) - 1
-                    ]
-                  )
-                );
-              }
             }
 
             break;

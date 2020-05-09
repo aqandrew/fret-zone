@@ -61,6 +61,44 @@ const App = () => {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
 
+  const getSelectedMeasure = useCallback(
+    () =>
+      measures.find(
+        (measure) =>
+          measure.id ===
+          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
+      ),
+    [tracks, measures, selectedTrackNumber, selectedMeasureNumber]
+  );
+
+  const getCurrentBarMaximumDuration = useCallback(() => {
+    const selectedMeasure = getSelectedMeasure();
+
+    return (
+      (selectedMeasure.timeSignature.beatUnit / 4) *
+      selectedMeasure.timeSignature.beatsPerMeasure
+    );
+  }, [getSelectedMeasure]);
+
+  const getCurrentBarDuration = useCallback(() => {
+    const selectedMeasure = getSelectedMeasure();
+    const currentBarMaximumDuration = getCurrentBarMaximumDuration();
+
+    return (
+      selectedMeasure.durations.reduce((totalDuration, durationId) => {
+        let durationInMeasure = durations.find(
+          (duration) => duration.id === durationId
+        );
+
+        if (durationInMeasure.notes.length || durationInMeasure.isRest) {
+          return totalDuration + durationInMeasure.length;
+        }
+
+        return totalDuration;
+      }, 0) * currentBarMaximumDuration
+    );
+  }, [durations, getSelectedMeasure, getCurrentBarMaximumDuration]);
+
   const onKeyDown = useCallback(
     (event) => {
       if (
@@ -69,11 +107,7 @@ const App = () => {
           event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
-        const selectedMeasure = measures.find(
-          (measure) =>
-            measure.id ===
-            tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-        );
+        const selectedMeasure = getSelectedMeasure();
         console.log(event);
 
         switch (event.key) {
@@ -99,62 +133,84 @@ const App = () => {
             );
 
             break;
-          // Advance note/measure
+          // Advance duration/measure
           case 'ArrowRight':
             event.preventDefault();
 
-            if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
-              // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
-              // Create a mapping from track IDs to new measure IDs
-              let trackMeasureIds = tracks.reduce((map, track) => {
-                map[track.id] = {
-                  measureId: uuidv4(),
-                  durationId: uuidv4(),
-                };
-                return map;
-              }, {});
+            // TODO If Cmd was held, select the first duration of the next measure
 
-              dispatch(
-                addMeasure({
-                  trackMeasureIds: trackMeasureIds,
-                  ...defaultMeasureOptions,
-                })
-              );
-              dispatch(selectMeasure(selectedMeasureNumber + 1));
-              dispatch(
-                selectDuration(trackMeasureIds[selectedTrack.id].durationId)
-              );
-            } else {
-              // If currently selected duration is NOT last,
-              // TODO Or if Cmd wasn't held
+            let shouldCheckIfMeasureIsLast = false;
+
+            // If there's a note at this duration,
+            if (
+              durations.find((duration) => duration.id === selectedDurationId)
+                .notes.length
+            ) {
+              // If this is the last duration,
               if (
-                selectedDurationId !== selectedMeasure.durations.slice(-1)[0]
+                selectedDurationId === selectedMeasure.durations.slice(-1)[0]
               ) {
-                // If there is a note at the selected duration,
-                if (!durations[selectedDurationId].notes.length) {
-                  // TODO Only create a new duration on ArrowRight if the measure's total length !== maximum AND last duration isn't empty
-                  // Create a new duration
+                // If the measure's total length === maximum,
+                if (
+                  getCurrentBarDuration() === getCurrentBarMaximumDuration()
+                ) {
+                  shouldCheckIfMeasureIsLast = true;
+                }
+                // Add a new duration to this measure
+                else {
+                  let newDurationId = uuidv4();
+
                   dispatch(
                     addDuration({
                       measureId: selectedMeasure.id,
-                      newDurationId: uuidv4(),
+                      newDurationId: newDurationId,
                     })
                   );
-                }
-                // Otherwise, select the next duration
-                else {
-                  dispatch(
-                    selectDuration(
-                      selectedMeasure.durations[
-                        selectedMeasure.durations.findIndex(
-                          (durationId) => durationId === selectedDurationId
-                        ) + 1
-                      ]
-                    )
-                  );
+                  dispatch(selectDuration(newDurationId));
                 }
               }
-              // Otherwise, select the next measure
+              // Select the next duration in this measure
+              else {
+                dispatch(
+                  selectDuration(
+                    selectedMeasure.durations[
+                      selectedMeasure.durations.findIndex(
+                        (durationId) => durationId === selectedDurationId
+                      ) + 1
+                    ]
+                  )
+                );
+              }
+            } else {
+              shouldCheckIfMeasureIsLast = true;
+            }
+
+            if (shouldCheckIfMeasureIsLast) {
+              // If selectedMeasure is last,
+              // Add a new measure
+              if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
+                // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
+                // Create a mapping from track IDs to new measure IDs
+                let trackMeasureIds = tracks.reduce((map, track) => {
+                  map[track.id] = {
+                    measureId: uuidv4(),
+                    durationId: uuidv4(),
+                  };
+                  return map;
+                }, {});
+
+                dispatch(
+                  addMeasure({
+                    trackMeasureIds: trackMeasureIds,
+                    ...defaultMeasureOptions,
+                  })
+                );
+                dispatch(selectMeasure(selectedMeasureNumber + 1));
+                dispatch(
+                  selectDuration(trackMeasureIds[selectedTrack.id].durationId)
+                );
+              }
+              // Select the next measure
               else {
                 dispatch(selectMeasure(selectedMeasureNumber + 1));
                 dispatch(
@@ -170,7 +226,7 @@ const App = () => {
             }
 
             break;
-          // Previous note/measure
+          // Previous duration/measure
           case 'ArrowLeft':
             event.preventDefault();
 
@@ -323,6 +379,9 @@ const App = () => {
     },
     [
       dispatch,
+      getSelectedMeasure,
+      getCurrentBarDuration,
+      getCurrentBarMaximumDuration,
       tracks,
       measures,
       durations,
@@ -340,41 +399,6 @@ const App = () => {
       document.removeEventListener('keydown', onKeyDown);
     };
   }, [onKeyDown]);
-
-  const getSelectedMeasure = () =>
-    measures.find(
-      (measure) =>
-        measure.id ===
-        tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-    );
-
-  const getCurrentBarMaximumDuration = () => {
-    const selectedMeasure = getSelectedMeasure();
-
-    return (
-      (selectedMeasure.timeSignature.beatUnit / 4) *
-      selectedMeasure.timeSignature.beatsPerMeasure
-    );
-  };
-
-  const getCurrentBarDuration = () => {
-    const selectedMeasure = getSelectedMeasure();
-    const currentBarMaximumDuration = getCurrentBarMaximumDuration();
-
-    return (
-      selectedMeasure.durations.reduce((totalDuration, durationId) => {
-        let durationInMeasure = durations.find(
-          (duration) => duration.id === durationId
-        );
-
-        if (durationInMeasure.notes.length || durationInMeasure.isRest) {
-          return totalDuration + durationInMeasure.length;
-        }
-
-        return totalDuration;
-      }, 0) * currentBarMaximumDuration
-    );
-  };
 
   const renderBarCurrentDuration = () => {
     let barDuration = 0;

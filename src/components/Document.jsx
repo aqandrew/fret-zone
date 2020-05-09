@@ -8,12 +8,13 @@ import {
   selectMeasure,
   selectedStringNumberSelector,
   selectString,
-  // selectedNoteNumberSelector,
-  // selectNote,
+  selectDuration,
+  selectedDurationIdSelector,
 } from '../slices/ui';
 import {
   measuresSelector,
   tracksSelector,
+  durationsSelector,
   notesSelector,
 } from '../slices/document';
 
@@ -23,19 +24,20 @@ const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const notes = useSelector(notesSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
   const selectedStringNumber = useSelector(selectedStringNumberSelector);
-  // const selectedNoteNumber = useSelector(selectedNoteNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
-  const renderDurationColumn = (measureNumber, note) => {
+  const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];
 
     return (
       <div
         className="Measure__DurationColumn"
-        key={note ? note.id : selectedTrack.measures[measureNumber].id}
+        key={duration ? duration.id : selectedTrack.measures[measureNumber].id}
       >
         {selectedTrack.tuning.map((stringTuning, stringNumber) => {
           let inputClassname = 'Measure__Input';
@@ -43,10 +45,15 @@ const Document = ({ documentTitle, documentArtist }) => {
           // TODO Refactor using classnames utility
           if (
             measureNumber === selectedMeasureNumber &&
-            stringNumber === selectedStringNumber
+            stringNumber === selectedStringNumber &&
+            duration.id === selectedDurationId
           ) {
             inputClassname += ` ${inputClassname}--IsActive`;
           }
+
+          let noteAtString = duration.notes
+            .map((noteId) => notes.find((note) => note.id === noteId))
+            .find((note) => note.string === stringNumber);
 
           return (
             <input
@@ -54,18 +61,19 @@ const Document = ({ documentTitle, documentArtist }) => {
               type="text"
               readOnly
               value={
-                note
-                  ? note.isRest
+                duration
+                  ? duration.isRest
                     ? 'R'
-                    : note.string === stringNumber
-                    ? // TODO note.fret should probably be returned by a function that includes things like slides/vibrato
-                      note.fret
+                    : noteAtString
+                    ? // TODO noteAtString.fret should probably be returned by a function that includes symbols for slides/vibrato/etc
+                      noteAtString.fret
                     : '-'
                   : '-'
               }
               onClick={() => {
                 dispatch(selectMeasure(measureNumber));
                 dispatch(selectString(stringNumber));
+                dispatch(selectDuration(duration.id));
               }}
               key={stringNumber}
             />
@@ -89,17 +97,17 @@ const Document = ({ documentTitle, documentArtist }) => {
             {selectedTrack.abbreviatedName}
           </span>
           {measuresInSelectedTrack.map((measure, measureNumber) => {
-            const notesInMeasure = measure.notes.map((noteId) =>
-              notes.find((note) => note.id === noteId)
+            const durationsInMeasure = measure.durations.map((durationId) =>
+              durations.find((duration) => duration.id === durationId)
             );
 
             return (
               <div className="Measure" key={measureNumber}>
-                {notesInMeasure.map((note) =>
-                  renderDurationColumn(measureNumber, note)
+                {durationsInMeasure.map((duration) =>
+                  renderDurationColumn(measureNumber, duration)
                 )}
                 {/* TODO Add (OR bar duration !== maximum) to ternary condition */}
-                {notesInMeasure.length === 0
+                {durationsInMeasure.length === 0
                   ? renderDurationColumn(measureNumber, null)
                   : null}
               </div>

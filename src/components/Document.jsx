@@ -20,6 +20,17 @@ import {
 
 import './Document.scss';
 
+// TODO Should this live here?
+const durationMarkers = {
+  1: 'w',
+  [1 / 2]: 'h',
+  [1 / 4]: 'q',
+  [1 / 8]: 'e',
+  [1 / 16]: 'x',
+  [1 / 32]: 't',
+  [1 / 64]: 's',
+};
+
 const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
@@ -79,6 +90,7 @@ const Document = ({ documentTitle, documentArtist }) => {
             />
           );
         })}
+        {duration.isRest || duration.notes.length ? <DurationMarker duration={duration} /> : null}
       </div>
     );
   };
@@ -132,5 +144,12 @@ const Document = ({ documentTitle, documentArtist }) => {
     </div>
   );
 };
+
+const DurationMarker = ({ duration }) => (
+  <span className="Measure__DurationMarker">
+    {/* TODO Account for dotted/triplet length */}
+    {durationMarkers[duration.length]}
+  </span>
+)
 
 export default Document;

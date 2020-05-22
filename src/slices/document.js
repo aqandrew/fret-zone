@@ -198,7 +198,23 @@ const documentSlice = createSlice({
       state.notes.byId[note.id] = note;
       state.notes.allIds.push(note.id);
     },
-    deleteNote: (state, { payload }) => {},
+    deleteNote: (state, { payload }) => {
+      const durationId = state.durations.allIds.find((id) =>
+        state.durations.byId[id].notes.includes(payload)
+      );
+
+      state.durations.byId[durationId].notes.splice(
+        state.durations.byId[durationId].notes.findIndex(
+          (noteId) => noteId === payload
+        ),
+        1
+      );
+      delete state.notes.byId[payload];
+      state.notes.allIds.splice(
+        state.notes.allIds.findIndex((id) => id === payload),
+        1
+      );
+    },
     // TODO deleteDuration is only used when deleting multiple notes at once
     deleteDuration: (state, { payload }) => {},
   },
@@ -212,6 +228,7 @@ export const {
   addRest,
   deleteTrack,
   deleteMeasure,
+  deleteNote,
 } = documentSlice.actions;
 export const tracksSelector = (state) =>
   state.document.tracks.allIds.map(

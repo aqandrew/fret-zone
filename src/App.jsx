@@ -19,6 +19,7 @@ import {
   deleteMeasure,
   addDuration,
   addNote,
+  addRest,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
@@ -142,9 +143,12 @@ const App = () => {
             let shouldCheckIfMeasureIsLast = false;
 
             // If there's a note at this duration,
+            // Or if this duration is a rest,
             if (
               durations.find((duration) => duration.id === selectedDurationId)
-                .notes.length
+                .notes.length ||
+              durations.find((duration) => duration.id === selectedDurationId)
+                .isRest
             ) {
               // If this is the last duration,
               if (
@@ -300,6 +304,34 @@ const App = () => {
             }
             // TODO Lengthen selected duration
             else {
+            }
+
+            break;
+          case 'r':
+            // Turn selected duration into rest
+            dispatch(addRest(selectedDurationId));
+
+            break;
+          case 'Backspace':
+            // TODO Delete selected note
+            // If there is a note at this selected duration/string,
+            if (true) {
+              // Delete it
+
+              // If this was the last note at this duration,
+              if (true) {
+                // Turn this duration into a rest
+                dispatch(addRest(selectedDurationId));
+              }
+            }
+            // If there is a rest at the selected duration,
+            else if (true) {
+              // Delete the duration
+            }
+
+            // If there is a duration preceding this one,
+            if (true) {
+              // Select the previous duration
             }
 
             break;

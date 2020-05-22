@@ -90,7 +90,9 @@ const Document = ({ documentTitle, documentArtist }) => {
             />
           );
         })}
-        {duration.isRest || duration.notes.length ? <DurationMarker duration={duration} /> : null}
+        {duration.isRest || duration.notes.length ? (
+          <DurationMarker duration={duration} />
+        ) : null}
       </div>
     );
   };
@@ -150,6 +152,6 @@ const DurationMarker = ({ duration }) => (
     {/* TODO Account for dotted/triplet length */}
     {durationMarkers[duration.length]}
   </span>
-)
+);
 
 export default Document;

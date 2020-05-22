@@ -193,6 +193,7 @@ const documentSlice = createSlice({
         );
       }
 
+      state.durations.byId[durationId].isRest = false;
       state.durations.byId[durationId].notes.push(note.id);
       state.notes.byId[note.id] = note;
       state.notes.allIds.push(note.id);

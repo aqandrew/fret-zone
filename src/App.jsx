@@ -20,10 +20,12 @@ import {
   addDuration,
   addNote,
   addRest,
+  deleteNote,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
   durationsSelector,
+  notesSelector,
 } from './slices/document';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
@@ -41,6 +43,7 @@ const App = () => {
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
+  const notes = useSelector(notesSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
   const selectedDurationId = useSelector(selectedDurationIdSelector);
@@ -313,26 +316,45 @@ const App = () => {
 
             break;
           case 'Backspace':
-            // TODO Delete selected note
+            // Delete selected note
+
             // If there is a note at this selected duration/string,
-            if (true) {
+            if (
+              durations
+                .find((duration) => duration.id === selectedDurationId)
+                .notes.map(
+                  (noteId) => notes.find((note) => note.id === noteId).string
+                )
+                .includes(selectedStringNumber)
+            ) {
               // Delete it
+              // TODO These lines are horribly inefficient
+              const selectedDuration = durations.find(
+                (duration) => duration.id === selectedDurationId
+              );
+              const selectedNoteId = selectedDuration.notes.find(
+                (noteId) =>
+                  notes.find((note) => note.id === noteId).string ===
+                  selectedStringNumber
+              );
+
+              dispatch(deleteNote(selectedNoteId));
 
               // If this was the last note at this duration,
-              if (true) {
+              if (selectedDuration.notes.length === 1) {
                 // Turn this duration into a rest
                 dispatch(addRest(selectedDurationId));
               }
             }
-            // If there is a rest at the selected duration,
-            else if (true) {
-              // Delete the duration
-            }
+            // // TODO If there is a rest at the selected duration,
+            // else if () {
+            //   // Delete the duration
+            // }
 
-            // If there is a duration preceding this one,
-            if (true) {
-              // Select the previous duration
-            }
+            // // TODO If there is a duration preceding this one,
+            // if () {
+            //   // Select the previous duration
+            // }
 
             break;
           // Add track
@@ -414,6 +436,7 @@ const App = () => {
       tracks,
       measures,
       durations,
+      notes,
       selectedTrackNumber,
       selectedMeasureNumber,
       selectedStringNumber,

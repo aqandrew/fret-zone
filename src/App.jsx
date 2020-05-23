@@ -346,15 +346,40 @@ const App = () => {
                 dispatch(addRest(selectedDurationId));
               }
             }
-            // // TODO If there is a rest at the selected duration,
-            // else if () {
-            //   // Delete the duration
-            // }
+            // If there is a rest at the selected duration,
+            else if (
+              durations.find((duration) => duration.id === selectedDurationId)
+                .isRest
+            ) {
+              // TODO Delete the duration
+            }
 
-            // // TODO If there is a duration preceding this one,
-            // if () {
-            //   // Select the previous duration
-            // }
+            // If the currently selected duration in NOT first in the measure,
+            if (selectedDurationId !== selectedMeasure.durations[0]) {
+              // Select the previous duration
+              const previousDurationId =
+                selectedMeasure.durations[
+                  selectedMeasure.durations.findIndex(
+                    (durationId) => durationId === selectedDurationId
+                  ) - 1
+                ];
+
+              dispatch(selectDuration(previousDurationId));
+            }
+            // If the currently selected duration is first in the measure,
+            // And there is a duration preceding this one,
+            else if (
+              selectedMeasureNumber > 0 &&
+              measures[selectedMeasureNumber - 1].durations.slice(-1).length
+            ) {
+              // Select the last duration of the previous measure
+              dispatch(
+                selectDuration(
+                  measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
+                )
+              );
+              dispatch(selectMeasure(selectedMeasureNumber - 1));
+            }
 
             break;
           // Add track

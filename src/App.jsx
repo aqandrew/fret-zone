@@ -20,6 +20,7 @@ import {
   addDuration,
   addNote,
   addRest,
+  deleteDuration,
   deleteNote,
   defaultMeasureOptions,
   measuresSelector,
@@ -318,6 +319,16 @@ const App = () => {
           case 'Backspace':
             // Delete selected note
 
+            // TODO Stub out logic following Excalidraw flowchart,
+            // and move around existing booleans/operations to fit into it
+            let needToSelectNewDuration = false;
+            // If there is a note at this selected duration/string,
+            // if () {
+            //   //
+            // }
+
+            let noteOrDurationWasDeleted = false;
+
             // If there is a note at this selected duration/string,
             if (
               durations
@@ -345,40 +356,62 @@ const App = () => {
                 // Turn this duration into a rest
                 dispatch(addRest(selectedDurationId));
               }
+
+              noteOrDurationWasDeleted = true;
             }
             // If there is a rest at the selected duration,
             else if (
               durations.find((duration) => duration.id === selectedDurationId)
                 .isRest
             ) {
-              // TODO Delete the duration
+              // Delete the duration
+              dispatch(deleteDuration(selectedDurationId));
+              noteOrDurationWasDeleted = true;
             }
 
-            // If the currently selected duration in NOT first in the measure,
-            if (selectedDurationId !== selectedMeasure.durations[0]) {
-              // Select the previous duration
-              const previousDurationId =
-                selectedMeasure.durations[
-                  selectedMeasure.durations.findIndex(
-                    (durationId) => durationId === selectedDurationId
-                  ) - 1
-                ];
+            if (noteOrDurationWasDeleted) {
+              debugger;
+              // If the currently selected duration in NOT first in the measure,
+              if (selectedDurationId !== selectedMeasure.durations[0]) {
+                // Select the previous duration
+                const previousDurationId =
+                  selectedMeasure.durations[
+                    selectedMeasure.durations.findIndex(
+                      (durationId) => durationId === selectedDurationId
+                    ) - 1
+                  ];
 
-              dispatch(selectDuration(previousDurationId));
-            }
-            // If the currently selected duration is first in the measure,
-            // And there is a duration preceding this one,
-            else if (
-              selectedMeasureNumber > 0 &&
-              measures[selectedMeasureNumber - 1].durations.slice(-1).length
-            ) {
-              // Select the last duration of the previous measure
-              dispatch(
-                selectDuration(
-                  measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
-                )
-              );
-              dispatch(selectMeasure(selectedMeasureNumber - 1));
+                dispatch(selectDuration(previousDurationId));
+              } else if (selectedMeasureNumber === 0) {
+                // If there's a duration following the deleted one in this measure,
+                if (selectedMeasure.durations.length > 1) {
+                  const nextDurationId =
+                    selectedMeasure.durations[
+                      selectedMeasure.durations.findIndex(
+                        (durationId) => durationId === selectedDurationId
+                      ) + 1
+                    ];
+
+                  // Select it
+                  dispatch(selectDuration(nextDurationId));
+                } else {
+                  dispatch(selectDuration(null));
+                }
+              }
+              // If the currently selected duration is first in the measure,
+              // And there is a duration preceding this one,
+              else if (
+                selectedMeasureNumber > 0 &&
+                measures[selectedMeasureNumber - 1].durations.slice(-1).length
+              ) {
+                // Select the last duration of the previous measure
+                dispatch(
+                  selectDuration(
+                    measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
+                  )
+                );
+                dispatch(selectMeasure(selectedMeasureNumber - 1));
+              }
             }
 
             break;

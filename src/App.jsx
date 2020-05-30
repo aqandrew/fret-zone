@@ -318,14 +318,40 @@ const App = () => {
             break;
           case 'Backspace':
             // Delete selected note
+            let needToSelectNewDuration = true;
 
-            // TODO Stub out logic following Excalidraw flowchart,
-            // and move around existing booleans/operations to fit into it
-            let needToSelectNewDuration = false;
             // If there is a note at this selected duration/string,
-            // if () {
-            //   //
-            // }
+            if (true) {
+              // TODO Delete that note
+
+              // If the deleted note was the last one in the selected duration,
+              if (true) {
+                // TODO Turn the duration into a rest
+              }
+            }
+            else {
+              // If the selected duration is a rest,
+              if (true) {
+                // TODO Delete that duration
+              }
+              else {
+                needToSelectNewDuration = false;
+              }
+            }
+
+            if (needToSelectNewDuration) {
+              // If the selected duration is NOT first in the document,
+              if (true) {
+                // If the first duration of the selected measure is selected,
+                if (true) {
+                  // TODO Select the previous measure's last duration
+                }
+                else {
+                  // TODO Otherwise, select this measure's previous duration
+                }
+              }
+            }
+            
 
             let noteOrDurationWasDeleted = false;
 

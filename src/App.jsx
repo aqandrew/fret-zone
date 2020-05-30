@@ -364,37 +364,33 @@ const App = () => {
             if (needToSelectNewDuration) {
               let newDurationIdToSelect;
 
-              // If the selected duration is first in the document,
-              // TODO The logic in this block can be decomposed better
-              if (
-                selectedMeasureNumber === 0 &&
-                selectedDurationId === selectedMeasure.durations[0]
-              ) {
-                // Select the next duration of this measure
-                newDurationIdToSelect =
-                  selectedMeasure.durations[
-                    selectedMeasure.durations.findIndex(
-                      (durationId) => durationId === selectedDurationId
-                    ) + 1
-                  ];
-              } else {
-                // If the first duration of the selected measure is selected,
-                if (selectedDurationId === selectedMeasure.durations[0]) {
+              // If the selected duration is first in the measure,
+              if (selectedDurationId === selectedMeasure.durations[0]) {
+                // If the first measure of the document is selected,
+                if (selectedMeasureNumber === 0) {
+                  // Select the next duration of this measure
+                  newDurationIdToSelect =
+                    selectedMeasure.durations[
+                      selectedMeasure.durations.findIndex(
+                        (durationId) => durationId === selectedDurationId
+                      ) + 1
+                    ];
+                } else {
                   // Select the previous measure's last duration
                   newDurationIdToSelect = measures[
                     selectedMeasureNumber - 1
                   ].durations.slice(-1)[0];
 
                   dispatch(selectMeasure(selectedMeasureNumber - 1));
-                } else {
-                  // Otherwise, select this measure's previous duration
-                  newDurationIdToSelect =
-                    selectedMeasure.durations[
-                      selectedMeasure.durations.findIndex(
-                        (durationId) => durationId === selectedDurationId
-                      ) - 1
-                    ];
                 }
+              } else {
+                // Select this measure's previous duration
+                newDurationIdToSelect =
+                  selectedMeasure.durations[
+                    selectedMeasure.durations.findIndex(
+                      (durationId) => durationId === selectedDurationId
+                    ) - 1
+                  ];
               }
 
               dispatch(selectDuration(newDurationIdToSelect));

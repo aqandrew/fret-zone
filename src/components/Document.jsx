@@ -90,6 +90,7 @@ const Document = ({ documentTitle, documentArtist }) => {
             />
           );
         })}
+        {/* TODO Show DurationMarker even for empty non-rest durations */}
         {duration.isRest || duration.notes.length ? (
           <DurationMarker duration={duration} />
         ) : null}

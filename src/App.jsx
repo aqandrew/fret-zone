@@ -321,41 +321,6 @@ const App = () => {
             let needToSelectNewDuration = true;
 
             // If there is a note at this selected duration/string,
-            if (true) {
-              // TODO Delete that note
-
-              // If the deleted note was the last one in the selected duration,
-              if (true) {
-                // TODO Turn the duration into a rest
-              }
-            }
-            else {
-              // If the selected duration is a rest,
-              if (true) {
-                // TODO Delete that duration
-              }
-              else {
-                needToSelectNewDuration = false;
-              }
-            }
-
-            if (needToSelectNewDuration) {
-              // If the selected duration is NOT first in the document,
-              if (true) {
-                // If the first duration of the selected measure is selected,
-                if (true) {
-                  // TODO Select the previous measure's last duration
-                }
-                else {
-                  // TODO Otherwise, select this measure's previous duration
-                }
-              }
-            }
-            
-
-            let noteOrDurationWasDeleted = false;
-
-            // If there is a note at this selected duration/string,
             if (
               durations
                 .find((duration) => duration.id === selectedDurationId)
@@ -364,7 +329,7 @@ const App = () => {
                 )
                 .includes(selectedStringNumber)
             ) {
-              // Delete it
+              // Delete that note
               // TODO These lines are horribly inefficient
               const selectedDuration = durations.find(
                 (duration) => duration.id === selectedDurationId
@@ -377,67 +342,62 @@ const App = () => {
 
               dispatch(deleteNote(selectedNoteId));
 
-              // If this was the last note at this duration,
+              // If the deleted note was the last one in the selected duration,
               if (selectedDuration.notes.length === 1) {
-                // Turn this duration into a rest
+                // Turn the duration into a rest
                 dispatch(addRest(selectedDurationId));
+                needToSelectNewDuration = false;
               }
-
-              noteOrDurationWasDeleted = true;
+            } else {
+              // If the selected duration is a rest,
+              if (
+                durations.find((duration) => duration.id === selectedDurationId)
+                  .isRest
+              ) {
+                // Delete that duration
+                dispatch(deleteDuration(selectedDurationId));
+              } else {
+                needToSelectNewDuration = false;
+              }
             }
-            // If there is a rest at the selected duration,
-            else if (
-              durations.find((duration) => duration.id === selectedDurationId)
-                .isRest
-            ) {
-              // Delete the duration
-              dispatch(deleteDuration(selectedDurationId));
-              noteOrDurationWasDeleted = true;
-            }
 
-            if (noteOrDurationWasDeleted) {
-              debugger;
-              // If the currently selected duration in NOT first in the measure,
-              if (selectedDurationId !== selectedMeasure.durations[0]) {
-                // Select the previous duration
-                const previousDurationId =
+            if (needToSelectNewDuration) {
+              let newDurationIdToSelect;
+
+              // If the selected duration is first in the document,
+              // TODO The logic in this block can be decomposed better
+              if (
+                selectedMeasureNumber === 0 &&
+                selectedDurationId === selectedMeasure.durations[0]
+              ) {
+                // Select the next duration of this measure
+                newDurationIdToSelect =
                   selectedMeasure.durations[
                     selectedMeasure.durations.findIndex(
                       (durationId) => durationId === selectedDurationId
-                    ) - 1
+                    ) + 1
                   ];
+              } else {
+                // If the first duration of the selected measure is selected,
+                if (selectedDurationId === selectedMeasure.durations[0]) {
+                  // Select the previous measure's last duration
+                  newDurationIdToSelect = measures[
+                    selectedMeasureNumber - 1
+                  ].durations.slice(-1)[0];
 
-                dispatch(selectDuration(previousDurationId));
-              } else if (selectedMeasureNumber === 0) {
-                // If there's a duration following the deleted one in this measure,
-                if (selectedMeasure.durations.length > 1) {
-                  const nextDurationId =
+                  dispatch(selectMeasure(selectedMeasureNumber - 1));
+                } else {
+                  // Otherwise, select this measure's previous duration
+                  newDurationIdToSelect =
                     selectedMeasure.durations[
                       selectedMeasure.durations.findIndex(
                         (durationId) => durationId === selectedDurationId
-                      ) + 1
+                      ) - 1
                     ];
-
-                  // Select it
-                  dispatch(selectDuration(nextDurationId));
-                } else {
-                  dispatch(selectDuration(null));
                 }
               }
-              // If the currently selected duration is first in the measure,
-              // And there is a duration preceding this one,
-              else if (
-                selectedMeasureNumber > 0 &&
-                measures[selectedMeasureNumber - 1].durations.slice(-1).length
-              ) {
-                // Select the last duration of the previous measure
-                dispatch(
-                  selectDuration(
-                    measures[selectedMeasureNumber - 1].durations.slice(-1)[0]
-                  )
-                );
-                dispatch(selectMeasure(selectedMeasureNumber - 1));
-              }
+
+              dispatch(selectDuration(newDurationIdToSelect));
             }
 
             break;

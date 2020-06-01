@@ -76,6 +76,11 @@ const App = () => {
     [tracks, measures, selectedTrackNumber, selectedMeasureNumber]
   );
 
+  const getSelectedDuration = useCallback(
+    () => durations.find((duration) => duration.id === selectedDurationId),
+    [durations, selectedDurationId]
+  );
+
   const getCurrentBarMaximumDuration = useCallback(() => {
     const selectedMeasure = getSelectedMeasure();
 
@@ -113,6 +118,7 @@ const App = () => {
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
         const selectedMeasure = getSelectedMeasure();
+        const selectedDuration = getSelectedDuration();
         console.log(event);
 
         switch (event.key) {
@@ -148,12 +154,7 @@ const App = () => {
 
             // If there's a note at this duration,
             // Or if this duration is a rest,
-            if (
-              durations.find((duration) => duration.id === selectedDurationId)
-                .notes.length ||
-              durations.find((duration) => duration.id === selectedDurationId)
-                .isRest
-            ) {
+            if (selectedDuration.notes.length || selectedDuration.isRest) {
               // If this is the last duration,
               if (
                 selectedDurationId === selectedMeasure.durations.slice(-1)[0]
@@ -322,18 +323,14 @@ const App = () => {
 
             // If there is a note at this selected duration/string,
             if (
-              durations
-                .find((duration) => duration.id === selectedDurationId)
-                .notes.map(
+              selectedDuration.notes
+                .map(
                   (noteId) => notes.find((note) => note.id === noteId).string
                 )
                 .includes(selectedStringNumber)
             ) {
               // Delete that note
               // TODO These lines are horribly inefficient
-              const selectedDuration = durations.find(
-                (duration) => duration.id === selectedDurationId
-              );
               const selectedNoteId = selectedDuration.notes.find(
                 (noteId) =>
                   notes.find((note) => note.id === noteId).string ===
@@ -350,10 +347,7 @@ const App = () => {
               }
             } else {
               // If the selected duration is a rest,
-              if (
-                durations.find((duration) => duration.id === selectedDurationId)
-                  .isRest
-              ) {
+              if (selectedDuration.isRest) {
                 // Delete that duration
                 dispatch(deleteDuration(selectedDurationId));
               } else {
@@ -471,11 +465,11 @@ const App = () => {
     [
       dispatch,
       getSelectedMeasure,
+      getSelectedDuration,
       getCurrentBarDuration,
       getCurrentBarMaximumDuration,
       tracks,
       measures,
-      durations,
       notes,
       selectedTrackNumber,
       selectedMeasureNumber,

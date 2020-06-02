@@ -30,6 +30,7 @@ import {
   durationsSelector,
   notesSelector,
 } from './slices/document';
+import durationMarkers from './constants';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
 import CheckboxButton from './components/CheckboxButton';
@@ -278,8 +279,10 @@ const App = () => {
             }
             // Shorten selected duration
             else {
-              // TODO Pull 1-value from imported constants object
-              if (selectedDuration.length > 1 / 64) {
+              if (
+                selectedDuration.length >
+                Math.min(...Object.keys(durationMarkers))
+              ) {
                 dispatch(shortenDuration(selectedDurationId));
               }
             }
@@ -315,17 +318,21 @@ const App = () => {
             }
             // Lengthen selected duration
             else {
-              // TODO Pull 1-value from imported constants object
-              if (selectedDuration.length < 1) {
+              if (
+                selectedDuration.length <
+                Math.max(...Object.keys(durationMarkers))
+              ) {
                 dispatch(lengthenDuration(selectedDurationId));
               }
             }
 
             break;
           case '=':
-            // Lengthen selected duration
-            // TODO Pull 1-value from imported constants object
-            if (selectedDuration.length > 1 / 64) {
+            // Shorten selected duration
+            if (
+              selectedDuration.length >
+              Math.min(...Object.keys(durationMarkers))
+            ) {
               dispatch(shortenDuration(selectedDurationId));
             }
 

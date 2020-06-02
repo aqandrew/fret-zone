@@ -22,6 +22,8 @@ import {
   addRest,
   deleteDuration,
   deleteNote,
+  shortenDuration,
+  lengthenDuration,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
@@ -274,8 +276,12 @@ const App = () => {
             // TODO Insert measure
             if (event.ctrlKey) {
             }
-            // TODO Shorten selected duration
+            // Shorten selected duration
             else {
+              // TODO Pull 1-value from imported constants object
+              if (selectedDuration.length > 1 / 64) {
+                dispatch(shortenDuration(selectedDurationId));
+              }
             }
 
             break;
@@ -307,8 +313,20 @@ const App = () => {
                 dispatch(deleteMeasure(selectedMeasureNumber));
               }
             }
-            // TODO Lengthen selected duration
+            // Lengthen selected duration
             else {
+              // TODO Pull 1-value from imported constants object
+              if (selectedDuration.length < 1) {
+                dispatch(lengthenDuration(selectedDurationId));
+              }
+            }
+
+            break;
+          case '=':
+            // Lengthen selected duration
+            // TODO Pull 1-value from imported constants object
+            if (selectedDuration.length > 1 / 64) {
+              dispatch(shortenDuration(selectedDurationId));
             }
 
             break;

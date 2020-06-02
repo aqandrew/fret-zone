@@ -1,6 +1,8 @@
 $header-height: 20px;
 $footer-height: 24px;
 $measure-cell-width: 24px;
+// TODO Store background-color in track store
+$default-guitar-color: #d66a67;
 
 .GlobalView {
   display: flex;
@@ -60,8 +62,7 @@ $measure-cell-width: 24px;
       height: 100%;
       width: 4px;
       margin-right: 4px;
-      // TODO Store background-color in track store
-      background: #d88b72;
+      background: $default-guitar-color;
     }
 
     &__TrackNumber {
@@ -132,8 +133,7 @@ $measure-cell-width: 24px;
     &__Cell {
       height: 100%;
       width: $measure-cell-width;
-      // TODO Store background-color in track store
-      background: #d98b6f;
+      background: $default-guitar-color;
 
       &:not(:last-child) {
         border-right: 1px solid #2f333a;

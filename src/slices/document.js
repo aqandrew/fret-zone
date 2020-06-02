@@ -84,6 +84,7 @@ const documentSlice = createSlice({
         state.measures.allIds.push(newMeasureId);
 
         // Add a new duration to each measure
+        // TODO Added duration should have the same length as the last selected duration
         state.durations.byId[newDurationId] = {
           id: newDurationId,
           ...defaultDurationOptions,
@@ -126,6 +127,7 @@ const documentSlice = createSlice({
         state.measures.allIds.push(newMeasureId);
 
         // Add a new duration for each measure
+        // TODO Added duration should have the same length as the last selected duration
         state.durations.byId[newDurationId] = {
           id: newDurationId,
           ...defaultDurationOptions,
@@ -149,6 +151,7 @@ const documentSlice = createSlice({
       let { measureId, newDurationId } = payload;
 
       state.measures.byId[measureId].durations.push(newDurationId);
+      // TODO Added duration should have the same length as the last selected duration
       state.durations.byId[newDurationId] = {
         id: newDurationId,
         ...defaultDurationOptions,
@@ -232,6 +235,14 @@ const documentSlice = createSlice({
         1
       );
     },
+    shortenDuration: (state, { payload }) => {
+      state.durations.byId[payload].length =
+        state.durations.byId[payload].length / 2;
+    },
+    lengthenDuration: (state, { payload }) => {
+      state.durations.byId[payload].length =
+        state.durations.byId[payload].length * 2;
+    },
   },
 });
 
@@ -245,6 +256,8 @@ export const {
   deleteMeasure,
   deleteDuration,
   deleteNote,
+  shortenDuration,
+  lengthenDuration,
 } = documentSlice.actions;
 export const tracksSelector = (state) =>
   state.document.tracks.allIds.map(

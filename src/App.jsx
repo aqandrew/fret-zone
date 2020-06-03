@@ -345,7 +345,7 @@ const App = () => {
             break;
           case 'Backspace':
             // Delete selected note
-            let needToSelectNewDuration = true;
+            let needToSelectNewDuration = false;
 
             // If there is a note at this selected duration/string,
             if (
@@ -369,7 +369,8 @@ const App = () => {
               if (selectedDuration.notes.length === 1) {
                 // Turn the duration into a rest
                 dispatch(addRest(selectedDurationId));
-                needToSelectNewDuration = false;
+              } else {
+                needToSelectNewDuration = true;
               }
             } else {
               // If the selected duration is a rest,
@@ -381,10 +382,10 @@ const App = () => {
                 } else {
                   // Delete that duration
                   dispatch(deleteDuration(selectedDurationId));
+
+                  needToSelectNewDuration = true;
                 }
               }
-
-              needToSelectNewDuration = false;
             }
 
             if (needToSelectNewDuration) {

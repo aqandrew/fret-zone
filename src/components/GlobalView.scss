@@ -48,16 +48,16 @@ $default-guitar-color: #d66a67;
     background: $measuretable-row-background;
     user-select: none;
 
+    &:hover {
+      background: #33373f;
+    }
+
     &--IsActive {
       background: #3c4049;
 
       &:hover {
         background: #3e434c;
       }
-    }
-
-    &:not(&--IsActive):hover {
-      background: #33373f;
     }
 
     &__ColorTab {
@@ -142,18 +142,16 @@ $default-guitar-color: #d66a67;
         border-right: 1px solid $globalview-background;
       }
 
-      &--Empty {
-        background: #3b3d43;
+      &:hover {
+        background: lighten(saturate($default-guitar-color, 12.89%), 16.67%);
       }
 
-      // TODO For empty or rest-only measures:
-      //   default background #3b3d43
-      //   hover background #5d626c
-      // TODO For measures with non-rest notes:
-      //   saturate original color by 12.89%
-      //   and lighten by 16.67%
-      &:hover {
-        background: #5d626c;
+      &--Empty {
+        background: #3b3d43;
+
+        &:hover {
+          background: #5d626c;
+        }
       }
 
       &--IsSelected {

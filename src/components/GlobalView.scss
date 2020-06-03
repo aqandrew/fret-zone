@@ -1,17 +1,19 @@
 $header-height: 20px;
 $footer-height: 24px;
 $measure-cell-width: 24px;
+$globalview-background: #24272c;
+$measuretable-row-background: #2a2d33;
 // TODO Store background-color in track store
 $default-guitar-color: #d66a67;
 
 .GlobalView {
   display: flex;
-  background: #2f333a;
+  background: $globalview-background;
   border-top: 1px solid black;
 
   .TrackControls {
     width: 535px;
-    border-right: 1px solid #2f333a;
+    border-right: 1px solid $globalview-background;
 
     &__Header,
     &__Footer {
@@ -40,22 +42,22 @@ $default-guitar-color: #d66a67;
 
   .TrackControl {
     height: 24px;
-    border-bottom: 1px solid #373b42;
+    border-bottom: 1px solid $measuretable-row-background;
     display: flex;
     align-items: center;
-    background: #373b42;
+    background: $measuretable-row-background;
     user-select: none;
 
     &--IsActive {
-      background: #4d525b;
+      background: #3c4049;
 
       &:hover {
-        background: #50545e;
+        background: #3e434c;
       }
     }
 
     &:not(&--IsActive):hover {
-      background: #434850;
+      background: #33373f;
     }
 
     &__ColorTab {
@@ -94,7 +96,7 @@ $default-guitar-color: #d66a67;
       }
 
       &:not(:first-child):not(:nth-child(4n)) {
-        color: #2f333a;
+        color: $globalview-background;
 
         &:hover {
           color: white;
@@ -124,19 +126,24 @@ $default-guitar-color: #d66a67;
 
     &__Row {
       height: 24px;
-      border-bottom: 1px solid #373b43;
+      border-bottom: 1px solid $measuretable-row-background;
       display: flex;
       align-items: center;
-      background: #373b43;
+      background: $measuretable-row-background;
     }
 
     &__Cell {
       height: 100%;
       width: $measure-cell-width;
+      // TODO This should probably be set in JS
       background: $default-guitar-color;
 
       &:not(:last-child) {
-        border-right: 1px solid #2f333a;
+        border-right: 1px solid $globalview-background;
+      }
+
+      &--Empty {
+        background: #3b3d43;
       }
 
       // TODO For empty or rest-only measures:
@@ -146,7 +153,7 @@ $default-guitar-color: #d66a67;
       //   saturate original color by 12.89%
       //   and lighten by 16.67%
       &:hover {
-        background: #f3cabb;
+        background: #5d626c;
       }
 
       &--IsSelected {

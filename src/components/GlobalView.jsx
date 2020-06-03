@@ -132,43 +132,48 @@ const TrackControl = ({ track, trackNumber }) => {
   );
 };
 
-const MeasureTableRow = ({ track, trackNumber }) => {
+const MeasureTableRow = ({ track, trackNumber }) => (
+  <div className="MeasureTable__Row">
+    {track.measures.map((measureId, measureNumber) => (
+      <MeasureTableCell
+        measureId={measureId}
+        measureNumber={measureNumber}
+        trackNumber={trackNumber}
+        key={measureId}
+      />
+    ))}
+  </div>
+);
+
+const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
   const dispatch = useDispatch();
   const measures = useSelector(measuresSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
+  let cellClassName = 'MeasureTable__Cell';
+
+  // TODO Refactor using classnames utility
+  if (
+    trackNumber === selectedTrackNumber &&
+    measureNumber === selectedMeasureNumber
+  ) {
+    cellClassName += ` ${cellClassName}--IsSelected`;
+  }
+
   return (
-    <div className="MeasureTable__Row">
-      {track.measures.map((measureId, measureNumber) => {
-        let cellClassName = 'MeasureTable__Cell';
-
-        // TODO Refactor using classnames utility
-        if (
-          trackNumber === selectedTrackNumber &&
-          measureNumber === selectedMeasureNumber
-        ) {
-          cellClassName += ` ${cellClassName}--IsSelected`;
-        }
-
-        return (
-          <div
-            className={cellClassName}
-            onClick={() => {
-              dispatch(selectTrack(trackNumber));
-              dispatch(selectMeasure(measureNumber));
-              dispatch(
-                selectDuration(
-                  measures.find((measure) => measure.id === measureId)
-                    .durations[0]
-                )
-              );
-            }}
-            key={measureId}
-          ></div>
+    <div
+      className={cellClassName}
+      onClick={() => {
+        dispatch(selectTrack(trackNumber));
+        dispatch(selectMeasure(measureNumber));
+        dispatch(
+          selectDuration(
+            measures.find((measure) => measure.id === measureId).durations[0]
+          )
         );
-      })}
-    </div>
+      }}
+    ></div>
   );
 };
 

@@ -235,6 +235,9 @@ const documentSlice = createSlice({
         1
       );
     },
+    markDurationAsNotRest: (state, { payload }) => {
+      state.durations.byId[payload].isRest = false;
+    },
     shortenDuration: (state, { payload }) => {
       state.durations.byId[payload].length =
         state.durations.byId[payload].length / 2;
@@ -255,6 +258,7 @@ export const {
   deleteTrack,
   deleteMeasure,
   deleteDuration,
+  markDurationAsNotRest,
   deleteNote,
   shortenDuration,
   lengthenDuration,

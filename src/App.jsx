@@ -21,6 +21,7 @@ import {
   addNote,
   addRest,
   deleteDuration,
+  markDurationAsNotRest,
   deleteNote,
   shortenDuration,
   lengthenDuration,
@@ -373,11 +374,17 @@ const App = () => {
             } else {
               // If the selected duration is a rest,
               if (selectedDuration.isRest) {
-                // Delete that duration
-                dispatch(deleteDuration(selectedDurationId));
-              } else {
-                needToSelectNewDuration = false;
+                // If this is the only duration in the measure,
+                if (selectedMeasure.durations.length === 1) {
+                  // Change the duration to NOT a rest
+                  dispatch(markDurationAsNotRest(selectedDurationId));
+                } else {
+                  // Delete that duration
+                  dispatch(deleteDuration(selectedDurationId));
+                }
               }
+
+              needToSelectNewDuration = false;
             }
 
             if (needToSelectNewDuration) {

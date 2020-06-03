@@ -8,7 +8,11 @@ import {
   selectedMeasureNumberSelector,
   selectDuration,
 } from '../slices/ui';
-import { tracksSelector, measuresSelector } from '../slices/document';
+import {
+  tracksSelector,
+  measuresSelector,
+  durationsSelector,
+} from '../slices/document';
 
 import './GlobalView.scss';
 
@@ -148,17 +152,33 @@ const MeasureTableRow = ({ track, trackNumber }) => (
 const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
   const dispatch = useDispatch();
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
 
-  let cellClassName = 'MeasureTable__Cell';
+  const getMeasure = () => measures.find((measure) => measure.id === measureId);
+
+  const cellBaseClassName = 'MeasureTable__Cell';
+  let cellClassName = cellBaseClassName;
 
   // TODO Refactor using classnames utility
   if (
     trackNumber === selectedTrackNumber &&
     measureNumber === selectedMeasureNumber
   ) {
-    cellClassName += ` ${cellClassName}--IsSelected`;
+    cellClassName += ` ${cellBaseClassName}--IsSelected`;
+  }
+
+  if (
+    getMeasure().durations.every((durationId) => {
+      const thisDuration = durations.find(
+        (duration) => duration.id === durationId
+      );
+
+      return thisDuration.isRest || !thisDuration.notes.length;
+    })
+  ) {
+    cellClassName += ` ${cellBaseClassName}--Empty`;
   }
 
   return (
@@ -167,11 +187,7 @@ const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
       onClick={() => {
         dispatch(selectTrack(trackNumber));
         dispatch(selectMeasure(measureNumber));
-        dispatch(
-          selectDuration(
-            measures.find((measure) => measure.id === measureId).durations[0]
-          )
-        );
+        dispatch(selectDuration(getMeasure().durations[0]));
       }}
     ></div>
   );

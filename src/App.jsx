@@ -40,6 +40,7 @@ import Document from './components/Document';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
 import AddTrackModal from './components/AddTrackModal';
+import DeleteTrackModal from './components/DeleteTrackModal';
 
 import './App.scss';
 
@@ -69,6 +70,7 @@ const App = () => {
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
+  const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
 
   const getSelectedMeasure = useCallback(
     () =>
@@ -112,6 +114,37 @@ const App = () => {
       }, 0) * currentBarMaximumDuration
     );
   }, [durations, getSelectedMeasure, getCurrentBarMaximumDuration]);
+
+  const dispatchDeleteTrack = () => {
+    // If a track that's not last is being deleted,
+    if (selectedTrackNumber < tracks.length - 1) {
+      // Select first duration of next track's measure at selectedMeasureNumber
+      dispatch(
+        selectDuration(
+          measures.find(
+            (measure) =>
+              measure.id ===
+              tracks[selectedTrackNumber + 1].measures[selectedMeasureNumber]
+          ).durations[0]
+        )
+      );
+    }
+    // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
+    else if (selectedTrackNumber !== 0) {
+      dispatch(
+        selectDuration(
+          measures.find(
+            (measure) =>
+              measure.id ===
+              tracks[selectedTrackNumber - 1].measures[selectedMeasureNumber]
+          ).durations[0]
+        )
+      );
+      dispatch(selectTrack(selectedTrackNumber - 1));
+    }
+
+    dispatch(deleteTrack(tracks[selectedTrackNumber].id));
+  };
 
   const onKeyDown = useCallback(
     (event) => {
@@ -436,40 +469,7 @@ const App = () => {
           // TODO Account for non-macOS devices
           case '®':
             if (event.altKey && event.metaKey) {
-              // TODO Open confirmation dialog
-
-              // If a track that's not last is being deleted,
-              if (selectedTrackNumber < tracks.length - 1) {
-                // Select first duration of next track's measure at selectedMeasureNumber
-                dispatch(
-                  selectDuration(
-                    measures.find(
-                      (measure) =>
-                        measure.id ===
-                        tracks[selectedTrackNumber + 1].measures[
-                          selectedMeasureNumber
-                        ]
-                    ).durations[0]
-                  )
-                );
-              }
-              // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
-              else if (selectedTrackNumber !== 0) {
-                dispatch(
-                  selectDuration(
-                    measures.find(
-                      (measure) =>
-                        measure.id ===
-                        tracks[selectedTrackNumber - 1].measures[
-                          selectedMeasureNumber
-                        ]
-                    ).durations[0]
-                  )
-                );
-                dispatch(selectTrack(selectedTrackNumber - 1));
-              }
-
-              dispatch(deleteTrack(selectedTrack.id));
+              setShowDeleteTrackModal(true);
             }
 
             break;
@@ -627,6 +627,16 @@ const App = () => {
           if (modalResult) {
             dispatch(selectTrack(tracks.length));
             dispatch(selectDuration(modalResult.durationIdToSelect));
+          }
+        }}
+      />
+      <DeleteTrackModal
+        show={showDeleteTrackModal}
+        onClose={(modalResult) => {
+          setShowDeleteTrackModal(false);
+
+          if (modalResult) {
+            dispatchDeleteTrack();
           }
         }}
       />

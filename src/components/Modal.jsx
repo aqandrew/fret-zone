@@ -49,7 +49,19 @@ const ShownModal = ({ children, modalTitle, onClose, onConfirm }) => {
     // Select the first input in this modal,
     // so that modalRef will hear the event
     // TODO This may not make sense for every modal
-    node.querySelector('input').focus();
+    let focusableElement = node.querySelector('input');
+
+    if (!focusableElement) {
+      const confirmLabels = ['OK', 'Yes'];
+
+      focusableElement = Array.from(
+        node.querySelectorAll('button')
+      ).find((element) =>
+        confirmLabels.some((label) => element.innerText.indexOf(label) !== -1)
+      );
+    }
+
+    focusableElement.focus();
 
     return () => {
       node.removeEventListener('keydown', handleKeyDown);

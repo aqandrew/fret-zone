@@ -20,6 +20,7 @@ const AddTrackModal = ({ show, onClose }) => {
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
 
+  // TODO This logic should probably be moved to App (see DeleteTrackModal)
   const confirmAddTrack = () => {
     let newTrackId = uuidv4();
     // TODO Turn ID array generation into a function

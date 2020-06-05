@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-
-import { selectedMeasureNumberSelector } from '../slices/ui';
-import { addTrack, tracksSelector } from '../slices/document';
 
 import Modal from './Modal';
 
 const AddTrackModal = ({ show, onClose }) => {
-  const dispatch = useDispatch();
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const tracks = useSelector(tracksSelector);
   // TODO Move this object to document.js
   const defaultTrackOptions = {
     fullName: 'Electric Guitar - Clean',
@@ -20,32 +12,8 @@ const AddTrackModal = ({ show, onClose }) => {
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
 
-  // TODO This logic should probably be moved to App (see DeleteTrackModal)
   const confirmAddTrack = () => {
-    let newTrackId = uuidv4();
-    // TODO Turn ID array generation into a function
-    let measureIds =
-      tracks.length === 0
-        ? [uuidv4()]
-        : tracks[0].measures.map((measure) => uuidv4());
-    let durationIds =
-      tracks.length === 0
-        ? [uuidv4()]
-        : tracks[0].measures.map((measure) => uuidv4());
-
-    dispatch(
-      addTrack({
-        id: newTrackId,
-        measures: measureIds,
-        durationIds: durationIds,
-        ...trackToAdd,
-      })
-    );
-
-    return {
-      newTrackId: newTrackId,
-      durationIdToSelect: durationIds[selectedMeasureNumber],
-    };
+    onClose(trackToAdd);
   };
 
   return (

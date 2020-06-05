@@ -14,6 +14,7 @@ import {
   selectedStringNumberSelector,
 } from './slices/ui';
 import {
+  addTrack,
   deleteTrack,
   addMeasure,
   deleteMeasure,
@@ -146,6 +147,33 @@ const App = () => {
     dispatch(deleteTrack(tracks[selectedTrackNumber].id));
   };
 
+  const dispatchAddTrack = (trackToAdd) => {
+    let newTrackId = uuidv4();
+    // TODO Turn ID array generation into a function
+    let measureIds =
+      tracks.length === 0
+        ? [uuidv4()]
+        : tracks[0].measures.map((measure) => uuidv4());
+    let durationIds =
+      tracks.length === 0
+        ? [uuidv4()]
+        : tracks[0].measures.map((measure) => uuidv4());
+
+    dispatch(
+      addTrack({
+        id: newTrackId,
+        measures: measureIds,
+        durationIds: durationIds,
+        ...trackToAdd,
+      })
+    );
+
+    return {
+      newTrackId: newTrackId,
+      durationIdToSelect: durationIds[selectedMeasureNumber],
+    };
+  };
+
   const onKeyDown = useCallback(
     (event) => {
       if (
@@ -235,7 +263,7 @@ const App = () => {
               // If selectedMeasure is last,
               // Add a new measure
               if (selectedMeasureNumber === selectedTrack.measures.length - 1) {
-                // TODO Use parallel arrays like in AddTrackModal.confirmAddTrack instead
+                // TODO Use parallel arrays like in dispatchAddTrack instead
                 // Create a mapping from track IDs to new measure IDs
                 let trackMeasureIds = tracks.reduce((map, track) => {
                   map[track.id] = {
@@ -625,8 +653,10 @@ const App = () => {
           setShowAddTrackModal(false);
 
           if (modalResult) {
+            const { durationIdToSelect } = dispatchAddTrack(modalResult);
+
             dispatch(selectTrack(tracks.length));
-            dispatch(selectDuration(modalResult.durationIdToSelect));
+            dispatch(selectDuration(durationIdToSelect));
           }
         }}
       />

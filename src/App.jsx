@@ -32,7 +32,11 @@ import {
   durationsSelector,
   notesSelector,
 } from './slices/document';
-import durationMarkers from './constants';
+import {
+  maximumFretNumber,
+  sameFretNumberCutoffTime,
+  durationMarkers,
+} from './constants';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
 import CheckboxButton from './components/CheckboxButton';
@@ -72,6 +76,7 @@ const App = () => {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
+  const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
 
   const getSelectedMeasure = useCallback(
     () =>
@@ -509,12 +514,31 @@ const App = () => {
               tracks.length !== 0 &&
               measures.length !== 0
             ) {
+              const fretInputTime = Date.now();
+              setLastFretInputTime(fretInputTime);
+
+              // TODO See other comment about "horribly inefficient"
+              // TODO selectedNote is probably a good variable to have
+              const currentFretNumber =
+                notes.find(
+                  (note) =>
+                    note.string === selectedStringNumber &&
+                    selectedDuration.notes.includes(note.id)
+                )?.fret || 0;
+              const enteredFretNumber = parseInt(event.key);
+              const newFretNumber = currentFretNumber * 10 + enteredFretNumber;
+
               dispatch(
                 addNote({
                   durationId: selectedDurationId,
                   id: uuidv4(),
                   string: selectedStringNumber,
-                  fret: parseInt(event.key),
+                  fret:
+                    fretInputTime - lastFretInputTime <
+                      sameFretNumberCutoffTime &&
+                    newFretNumber <= maximumFretNumber
+                      ? newFretNumber
+                      : enteredFretNumber,
                 })
               );
             }
@@ -536,6 +560,7 @@ const App = () => {
       selectedMeasureNumber,
       selectedStringNumber,
       selectedDurationId,
+      lastFretInputTime,
     ]
   );
 

@@ -1,6 +1,10 @@
-// TODO Put durationMarkers in its own separate file,
+// TODO Put these in their own separate files,
 // once we figure out what other constants should be accessible by multiple
 // components
+export const maximumFretNumber = 63;
+
+export const sameFretNumberCutoffTime = 1000;
+
 export const durationMarkers = {
   1: 'w',
   [1 / 2]: 'h',

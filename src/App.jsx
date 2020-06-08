@@ -179,6 +179,11 @@ const App = () => {
     };
   };
 
+  const setDurationLength = (length) => {
+    // TODO Shorten/lengthen duration reducers should probably be refactored into a single setter
+    console.log('TODO set duration length to ', length);
+  };
+
   const onKeyDown = useCallback(
     (event) => {
       if (
@@ -656,7 +661,14 @@ const App = () => {
       />
       <div className="App__Content--Main">
         <div className="App__Content--Center">
-          {editionPaletteShown && <EditionPalette />}
+          {/* TODO This prop-drilling approach should be rethought */}
+          {/* Won't scale nicely--there will be a ton of setter functions to drill into the whole Edition Palette */}
+          {editionPaletteShown && (
+            <EditionPalette
+              selectedDuration={getSelectedDuration()}
+              setDurationLength={setDurationLength}
+            />
+          )}
           <Document
             documentTitle={documentTitle}
             documentArtist={documentArtist}

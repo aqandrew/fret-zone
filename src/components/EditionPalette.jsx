@@ -1,28 +1,33 @@
 import React from 'react';
 
 import RadioButton from './RadioButton';
+import { durationLengths } from '../constants';
 
 import './EditionPalette.scss';
 
-// TODO Populate props based on selected measure/note
-const EditionPalette = () => (
-  <div className="EditionPalette">
-    {/* TODO GlobalOptions */}
-    {/* TODO MeasureOptions */}
-    <div className="NoteOptions">
-      <RadioButton name="duration" buttonTitle="Whole Note" />
-      <RadioButton name="duration" buttonTitle="Half Note" />
-      {/* TODO Select Quarter Note by default */}
-      <RadioButton name="duration" buttonTitle="Quarter Note" />
-      <RadioButton name="duration" buttonTitle="Eighth Note" />
-      <RadioButton name="duration" buttonTitle="Sixteenth Note" />
-      <RadioButton name="duration" buttonTitle="Thirty-Second Note" />
-      <RadioButton name="duration" buttonTitle="Sixty-Fourth Note" />
+const EditionPalette = ({ selectedDuration, setDurationLength }) => {
+  const renderNoteOptions = () =>
+    Object.keys(durationLengths).map((length) => (
+      <RadioButton
+        name="duration"
+        buttonTitle={`${durationLengths[length].name} Note`}
+        disabled={!selectedDuration}
+        isChecked={selectedDuration?.length === +length}
+        onChange={() => setDurationLength(length)}
+        key={length}
+      />
+    ));
+
+  return (
+    <div className="EditionPalette">
+      {/* TODO GlobalOptions */}
+      {/* TODO MeasureOptions */}
+      <div className="NoteOptions">{renderNoteOptions()}</div>
+      {/* TODO EmbellishmentOptions */}
+      {/* TODO AnnotationOptions */}
+      {/* TODO TempoAndVolumeOptions */}
     </div>
-    {/* TODO EmbellishmentOptions */}
-    {/* TODO AnnotationOptions */}
-    {/* TODO TempoAndVolumeOptions */}
-  </div>
-);
+  );
+};
 
 export default EditionPalette;

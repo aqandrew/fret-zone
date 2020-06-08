@@ -35,7 +35,7 @@ import {
 import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
-  durationMarkers,
+  durationLengths,
 } from './constants';
 import AppMenu from './components/AppMenu';
 import FileList from './components/FileList';
@@ -348,7 +348,7 @@ const App = () => {
             else {
               if (
                 selectedDuration.length >
-                Math.min(...Object.keys(durationMarkers))
+                Math.min(...Object.keys(durationLengths))
               ) {
                 dispatch(shortenDuration(selectedDurationId));
               }
@@ -387,7 +387,7 @@ const App = () => {
             else {
               if (
                 selectedDuration.length <
-                Math.max(...Object.keys(durationMarkers))
+                Math.max(...Object.keys(durationLengths))
               ) {
                 dispatch(lengthenDuration(selectedDurationId));
               }
@@ -398,7 +398,7 @@ const App = () => {
             // Shorten selected duration
             if (
               selectedDuration.length >
-              Math.min(...Object.keys(durationMarkers))
+              Math.min(...Object.keys(durationLengths))
             ) {
               dispatch(shortenDuration(selectedDurationId));
             }

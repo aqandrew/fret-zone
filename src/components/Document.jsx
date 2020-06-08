@@ -17,7 +17,7 @@ import {
   durationsSelector,
   notesSelector,
 } from '../slices/document';
-import durationMarkers from '../constants';
+import durationLengths from '../constants';
 
 import './Document.scss';
 
@@ -138,7 +138,7 @@ const Document = ({ documentTitle, documentArtist }) => {
 const DurationMarker = ({ duration }) => (
   <span className="Measure__DurationMarker">
     {/* TODO Account for dotted/triplet length */}
-    {durationMarkers[duration.length]}
+    {durationLengths[duration.length].abbreviation}
   </span>
 );
 

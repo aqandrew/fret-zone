@@ -1,7 +1,7 @@
 import React from 'react';
 import slugify from 'slugify';
 
-const RadioButton = ({ name, buttonTitle, isChecked, setIsChecked }) => {
+const RadioButton = ({ name, buttonTitle, disabled, isChecked, onChange }) => {
   const inputId = slugify(buttonTitle, { lower: true });
 
   return (
@@ -9,11 +9,10 @@ const RadioButton = ({ name, buttonTitle, isChecked, setIsChecked }) => {
       <input
         type="radio"
         id={inputId}
+        disabled={disabled}
         name={name}
-        // checked={isChecked}
-        // onChange={() => {
-        //   setChecked(!isChecked);
-        // }}
+        checked={isChecked}
+        onChange={onChange}
       />
       <label htmlFor={inputId}>{buttonTitle}</label>
     </div>

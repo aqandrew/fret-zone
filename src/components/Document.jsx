@@ -17,7 +17,7 @@ import {
   durationsSelector,
   notesSelector,
 } from '../slices/document';
-import durationLengths from '../constants';
+import { durationLengths } from '../constants';
 
 import './Document.scss';
 

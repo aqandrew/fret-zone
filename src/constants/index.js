@@ -5,14 +5,14 @@ export const maximumFretNumber = 63;
 
 export const sameFretNumberCutoffTime = 1000;
 
-export const durationMarkers = {
-  1: 'w',
-  [1 / 2]: 'h',
-  [1 / 4]: 'q',
-  [1 / 8]: 'e',
-  [1 / 16]: 'x',
-  [1 / 32]: 't',
-  [1 / 64]: 's',
+export const durationLengths = {
+  1: { name: 'Whole', abbreviation: 'w' },
+  [1 / 2]: { name: 'Half', abbreviation: 'h' },
+  [1 / 4]: { name: 'Quarter', abbreviation: 'q' },
+  [1 / 8]: { name: 'Eighth', abbreviation: 'e' },
+  [1 / 16]: { name: 'Sixteenth', abbreviation: 'x' },
+  [1 / 32]: { name: 'Thirty-Second', abbreviation: 't' },
+  [1 / 64]: { name: 'Sixty-Fourth', abbreviation: 's' },
 };
 
-export default durationMarkers;
+export default durationLengths;

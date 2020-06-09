@@ -178,13 +178,6 @@ const App = () => {
     };
   };
 
-  // TODO This function should live in EditionPalette
-  const onDurationRadioChange = (length) => {
-    dispatch(
-      setDurationLength({ durationId: selectedDurationId, newLength: +length })
-    );
-  };
-
   const shortenDuration = useCallback(
     (durationId) => {
       dispatch(
@@ -691,10 +684,7 @@ const App = () => {
           {/* TODO This prop-drilling approach should be rethought */}
           {/* Won't scale nicely--there will be a ton of setter functions to drill into the whole Edition Palette */}
           {editionPaletteShown && (
-            <EditionPalette
-              selectedDuration={getSelectedDuration()}
-              onDurationRadioChange={onDurationRadioChange}
-            />
+            <EditionPalette selectedDuration={getSelectedDuration()} />
           )}
           <Document
             documentTitle={documentTitle}

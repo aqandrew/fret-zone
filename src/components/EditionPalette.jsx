@@ -5,9 +5,23 @@ import { durationLengths } from '../constants';
 
 import './EditionPalette.scss';
 
-const EditionPalette = ({ selectedDuration, onDurationRadioChange }) => {
-  const renderNoteOptions = () =>
-    Object.keys(durationLengths).map((length) => (
+const EditionPalette = ({ selectedDuration, onDurationRadioChange }) => (
+  <div className="EditionPalette">
+    {/* TODO GlobalOptions */}
+    {/* TODO MeasureOptions */}
+    <NoteSymbols
+      selectedDuration={selectedDuration}
+      onDurationRadioChange={onDurationRadioChange}
+    />
+    {/* TODO EmbellishmentOptions */}
+    {/* TODO AnnotationOptions */}
+    {/* TODO TempoAndVolumeOptions */}
+  </div>
+);
+
+const NoteSymbols = ({ selectedDuration, onDurationRadioChange }) => (
+  <div className="NoteSymbols">
+    {Object.keys(durationLengths).map((length) => (
       <RadioButton
         name="duration"
         buttonTitle={`${durationLengths[length].name} Note`}
@@ -16,18 +30,8 @@ const EditionPalette = ({ selectedDuration, onDurationRadioChange }) => {
         onChange={() => onDurationRadioChange(length)}
         key={length}
       />
-    ));
-
-  return (
-    <div className="EditionPalette">
-      {/* TODO GlobalOptions */}
-      {/* TODO MeasureOptions */}
-      <div className="NoteOptions">{renderNoteOptions()}</div>
-      {/* TODO EmbellishmentOptions */}
-      {/* TODO AnnotationOptions */}
-      {/* TODO TempoAndVolumeOptions */}
-    </div>
-  );
-};
+    ))}
+  </div>
+);
 
 export default EditionPalette;

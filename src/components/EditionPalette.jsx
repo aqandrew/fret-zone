@@ -10,12 +10,12 @@ import './EditionPalette.scss';
 
 const EditionPalette = ({ selectedDuration }) => (
   <div className="EditionPalette">
-    {/* TODO GlobalOptions */}
-    {/* TODO MeasureOptions */}
+    {/* TODO MiscEdition */}
+    {/* TODO BarSymbols */}
     <NoteSymbols selectedDuration={selectedDuration} />
-    {/* TODO EmbellishmentOptions */}
-    {/* TODO AnnotationOptions */}
-    {/* TODO TempoAndVolumeOptions */}
+    {/* TODO EffectSymbols */}
+    {/* TODO NotationSymbols */}
+    {/* TODO AutomationSymbols */}
   </div>
 );
 

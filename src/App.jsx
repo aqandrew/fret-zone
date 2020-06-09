@@ -178,6 +178,7 @@ const App = () => {
     };
   };
 
+  // TODO This function should live in EditionPalette
   const onDurationRadioChange = (length) => {
     dispatch(
       setDurationLength({ durationId: selectedDurationId, newLength: +length })

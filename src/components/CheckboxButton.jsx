@@ -1,7 +1,7 @@
 import React from 'react';
 import slugify from 'slugify';
 
-const CheckboxButton = ({ buttonTitle, isChecked, setChecked }) => {
+const CheckboxButton = ({ buttonTitle, disabled, isChecked, setChecked }) => {
   const inputId = slugify(buttonTitle, { lower: true });
 
   return (
@@ -9,6 +9,7 @@ const CheckboxButton = ({ buttonTitle, isChecked, setChecked }) => {
       <input
         type="checkbox"
         id={inputId}
+        disabled={disabled}
         checked={isChecked}
         onChange={() => {
           setChecked(!isChecked);

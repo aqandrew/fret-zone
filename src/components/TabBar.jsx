@@ -1,12 +1,12 @@
 import React from 'react';
 
-import './FileList.scss';
+import './TabBar.scss';
 
 // TODO Should this be a series of NavLinks?
-const FileList = ({ files, activeFileName, setActiveFileName }) => {
+const TabBar = ({ files, activeFileName, setActiveFileName }) => {
   const renderFiles = () =>
-    files.map(file => {
-      let tabClassName = 'FileList__Tab';
+    files.map((file) => {
+      let tabClassName = 'TabBar__Tab';
 
       // TODO Refactor using classnames utility
       if (file.name === activeFileName) {
@@ -17,25 +17,25 @@ const FileList = ({ files, activeFileName, setActiveFileName }) => {
         <li
           key={file.id}
           className={tabClassName}
-          onClick={event => {
+          onClick={(event) => {
             if (!(event.target instanceof HTMLButtonElement)) {
               setActiveFileName(file.name);
             }
           }}
         >
           {file.name || 'untitled'}
-          <button className="FileList__Button--Close">Close</button>
+          <button className="TabBar__Button--Close">Close</button>
         </li>
       );
     });
 
   return (
-    <ol className="FileList">
+    <ol className="TabBar">
       {renderFiles()}
       {/* TODO On click, open context menu for selecting New/Open */}
-      <li className="FileList__Button--AddTab">+</li>
+      <li className="TabBar__Button--AddTab">+</li>
     </ol>
   );
 };
 
-export default FileList;
+export default TabBar;

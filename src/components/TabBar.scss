@@ -1,4 +1,4 @@
-.FileList {
+.TabBar {
   display: flex;
   margin: 0;
   padding: 0;
@@ -43,7 +43,7 @@
       right: 2px;
     }
 
-    // TODO Share these styles w/FileList__Tab to avoid repetition
+    // TODO Share these styles w/TabBar__Tab to avoid repetition
     &--AddTab {
       display: flex;
       justify-content: center;

@@ -19,7 +19,7 @@ import {
 } from '../slices/document';
 import { durationLengths } from '../constants';
 
-import './Document.scss';
+import './Workspace.scss';
 
 const Document = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();

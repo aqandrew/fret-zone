@@ -24,8 +24,7 @@ import {
   deleteDuration,
   markDurationAsNotRest,
   deleteNote,
-  shortenDuration,
-  lengthenDuration,
+  setDurationLength,
   defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
@@ -179,10 +178,35 @@ const App = () => {
     };
   };
 
-  const setDurationLength = (length) => {
-    // TODO Shorten/lengthen duration reducers should probably be refactored into a single setter
-    console.log('TODO set duration length to ', length);
+  const onDurationRadioChange = (length) => {
+    dispatch(
+      setDurationLength({ durationId: selectedDurationId, newLength: +length })
+    );
   };
+
+  const shortenDuration = useCallback(
+    (durationId) => {
+      dispatch(
+        setDurationLength({
+          durationId: durationId,
+          newLength: getSelectedDuration().length / 2,
+        })
+      );
+    },
+    [dispatch, getSelectedDuration]
+  );
+
+  const lengthenDuration = useCallback(
+    (durationId) => {
+      dispatch(
+        setDurationLength({
+          durationId: durationId,
+          newLength: getSelectedDuration().length * 2,
+        })
+      );
+    },
+    [dispatch, getSelectedDuration]
+  );
 
   const onKeyDown = useCallback(
     (event) => {
@@ -355,7 +379,7 @@ const App = () => {
                 selectedDuration.length >
                 Math.min(...Object.keys(durationLengths))
               ) {
-                dispatch(shortenDuration(selectedDurationId));
+                shortenDuration(selectedDurationId);
               }
             }
 
@@ -394,7 +418,7 @@ const App = () => {
                 selectedDuration.length <
                 Math.max(...Object.keys(durationLengths))
               ) {
-                dispatch(lengthenDuration(selectedDurationId));
+                lengthenDuration(selectedDurationId);
               }
             }
 
@@ -405,7 +429,7 @@ const App = () => {
               selectedDuration.length >
               Math.min(...Object.keys(durationLengths))
             ) {
-              dispatch(shortenDuration(selectedDurationId));
+              shortenDuration(selectedDurationId);
             }
 
             break;
@@ -558,6 +582,8 @@ const App = () => {
       getSelectedDuration,
       getCurrentBarDuration,
       getCurrentBarMaximumDuration,
+      shortenDuration,
+      lengthenDuration,
       tracks,
       measures,
       notes,
@@ -666,7 +692,7 @@ const App = () => {
           {editionPaletteShown && (
             <EditionPalette
               selectedDuration={getSelectedDuration()}
-              setDurationLength={setDurationLength}
+              onDurationRadioChange={onDurationRadioChange}
             />
           )}
           <Document

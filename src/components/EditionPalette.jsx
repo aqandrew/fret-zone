@@ -1,28 +1,25 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { addRest } from '../slices/document';
+import { addRest, setDurationLength } from '../slices/document';
 import RadioButton from './RadioButton';
 import CheckboxButton from './CheckboxButton';
 import { durationLengths } from '../constants';
 
 import './EditionPalette.scss';
 
-const EditionPalette = ({ selectedDuration, onDurationRadioChange }) => (
+const EditionPalette = ({ selectedDuration }) => (
   <div className="EditionPalette">
     {/* TODO GlobalOptions */}
     {/* TODO MeasureOptions */}
-    <NoteSymbols
-      selectedDuration={selectedDuration}
-      onDurationRadioChange={onDurationRadioChange}
-    />
+    <NoteSymbols selectedDuration={selectedDuration} />
     {/* TODO EmbellishmentOptions */}
     {/* TODO AnnotationOptions */}
     {/* TODO TempoAndVolumeOptions */}
   </div>
 );
 
-const NoteSymbols = ({ selectedDuration, onDurationRadioChange }) => {
+const NoteSymbols = ({ selectedDuration }) => {
   const dispatch = useDispatch();
 
   return (
@@ -33,7 +30,14 @@ const NoteSymbols = ({ selectedDuration, onDurationRadioChange }) => {
           buttonTitle={`${durationLengths[length].name} Note`}
           disabled={!selectedDuration}
           isChecked={selectedDuration?.length === +length}
-          onChange={() => onDurationRadioChange(length)}
+          onChange={() =>
+            dispatch(
+              setDurationLength({
+                durationId: selectedDuration.id,
+                newLength: +length,
+              })
+            )
+          }
           key={length}
         />
       ))}

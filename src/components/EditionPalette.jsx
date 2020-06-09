@@ -5,7 +5,7 @@ import { durationLengths } from '../constants';
 
 import './EditionPalette.scss';
 
-const EditionPalette = ({ selectedDuration, setDurationLength }) => {
+const EditionPalette = ({ selectedDuration, onDurationRadioChange }) => {
   const renderNoteOptions = () =>
     Object.keys(durationLengths).map((length) => (
       <RadioButton
@@ -13,7 +13,7 @@ const EditionPalette = ({ selectedDuration, setDurationLength }) => {
         buttonTitle={`${durationLengths[length].name} Note`}
         disabled={!selectedDuration}
         isChecked={selectedDuration?.length === +length}
-        onChange={() => setDurationLength(length)}
+        onChange={() => onDurationRadioChange(length)}
         key={length}
       />
     ));

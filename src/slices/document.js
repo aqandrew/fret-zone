@@ -238,13 +238,10 @@ const documentSlice = createSlice({
     markDurationAsNotRest: (state, { payload }) => {
       state.durations.byId[payload].isRest = false;
     },
-    shortenDuration: (state, { payload }) => {
-      state.durations.byId[payload].length =
-        state.durations.byId[payload].length / 2;
-    },
-    lengthenDuration: (state, { payload }) => {
-      state.durations.byId[payload].length =
-        state.durations.byId[payload].length * 2;
+    setDurationLength: (state, { payload }) => {
+      const { durationId, newLength } = payload;
+
+      state.durations.byId[durationId].length = newLength;
     },
   },
 });
@@ -260,8 +257,7 @@ export const {
   deleteDuration,
   markDurationAsNotRest,
   deleteNote,
-  shortenDuration,
-  lengthenDuration,
+  setDurationLength,
 } = documentSlice.actions;
 export const tracksSelector = (state) =>
   state.document.tracks.allIds.map(

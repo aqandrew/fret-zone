@@ -8,7 +8,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  .TopBar {
+  .ToolBar {
     background: #2a2a2a;
 
     &__ActiveFileName {
@@ -45,7 +45,7 @@
 
   &__Content {
     &--Main {
-      // TODO Find less hacky solution than { height: 0 } for making Document scrollable without making page taller
+      // TODO Find less hacky solution than { height: 0 } for making Workspace scrollable without making page taller
       height: 0;
       flex: 1;
       display: flex;

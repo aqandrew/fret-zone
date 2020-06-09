@@ -37,10 +37,10 @@ import {
   durationLengths,
 } from './constants';
 import AppMenu from './components/AppMenu';
-import FileList from './components/FileList';
+import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
 import EditionPalette from './components/EditionPalette';
-import Document from './components/Document';
+import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
 import AddTrackModal from './components/AddTrackModal';
@@ -530,7 +530,7 @@ const App = () => {
 
             break;
           default:
-            // TODO Is there a way to move this logic to Document?
+            // TODO Is there a way to move this logic to Workspace?
             // Set note at cursor
             if (
               !isNaN(event.key) &&
@@ -616,8 +616,8 @@ const App = () => {
   return (
     <div className="App" onKeyDown={onKeyDown}>
       <AppMenu />
-      <div className="TopBar">
-        <div className="TopBar__ActiveFileName">
+      <div className="ToolBar">
+        <div className="ToolBar__ActiveFileName">
           {activeFileName || 'untitled'}
         </div>
         <div className="ScoreControls">
@@ -639,7 +639,7 @@ const App = () => {
             />
           </div>
           {/* TODO Zoom control */}
-          {/* TODO Document view select */}
+          {/* TODO Display modes select */}
           {/* TODO Undo/redo */}
           {/* TODO Print */}
           <div className="PlaybackControls">
@@ -674,7 +674,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      <FileList
+      <TabBar
         files={dummyFileList}
         activeFileName={activeFileName}
         setActiveFileName={setActiveFileName}
@@ -686,7 +686,7 @@ const App = () => {
           {editionPaletteShown && (
             <EditionPalette selectedDuration={getSelectedDuration()} />
           )}
-          <Document
+          <Workspace
             documentTitle={documentTitle}
             documentArtist={documentArtist}
           />

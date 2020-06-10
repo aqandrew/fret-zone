@@ -25,7 +25,6 @@ import {
   markDurationAsNotRest,
   deleteNote,
   setDurationLength,
-  defaultMeasureOptions,
   measuresSelector,
   tracksSelector,
   durationsSelector,
@@ -237,24 +236,30 @@ const App = () => {
           )
         );
       } else if (selectedMeasureNumber > 0) {
-        dispatch(selectMeasure(selectedMeasureNumber - 1));
-
-        const durationIdToSelect = measures
-          .find(
-            (measure) =>
-              measure.id === selectedTrack.measures[selectedMeasureNumber - 1]
-          )
-          .durations.slice(-1)[0];
+        const previousMeasure = measures.find(
+          (measure) =>
+            measure.id === selectedTrack.measures[selectedMeasureNumber - 1]
+        );
+        const durationIdToSelect = previousMeasure.durations.slice(-1)[0];
+        const previousMeasuresLastDuration = durations.find(
+          (duration) => duration.id === durationIdToSelect
+        );
 
         // Select the last duration of the previous measure
+        dispatch(selectMeasure(selectedMeasureNumber - 1));
         dispatch(selectDuration(durationIdToSelect));
 
         if (
-          selectedDuration.length !==
-          durations.find((duration) => duration.id === durationIdToSelect)
-            .length
+          !previousMeasuresLastDuration.notes.length &&
+          !previousMeasuresLastDuration.isRest &&
+          previousMeasuresLastDuration.length !== selectedDuration.length
         ) {
-          console.log(`TODO Change this empty non-rest duration's length`);
+          dispatch(
+            setDurationLength({
+              durationId: durationIdToSelect,
+              newLength: selectedDuration.length,
+            })
+          );
         }
       }
     },
@@ -282,6 +287,7 @@ const App = () => {
               addDuration({
                 measureId: selectedMeasure.id,
                 newDurationId: newDurationId,
+                length: selectedDuration.length,
               })
             );
             dispatch(selectDuration(newDurationId));
@@ -289,15 +295,31 @@ const App = () => {
         }
         // Select the next duration in this measure
         else {
-          dispatch(
-            selectDuration(
+          const nextDuration = durations.find(
+            (duration) =>
+              duration.id ===
               selectedMeasure.durations[
                 selectedMeasure.durations.findIndex(
                   (durationId) => durationId === selectedDurationId
                 ) + 1
               ]
-            )
           );
+
+          // TODO Reduce code duplication with "Select the next measure" block
+          dispatch(selectDuration(nextDuration.id));
+
+          if (
+            !nextDuration.notes.length &&
+            !nextDuration.isRest &&
+            nextDuration.length !== selectedDuration.length
+          ) {
+            dispatch(
+              setDurationLength({
+                durationId: nextDuration.id,
+                newLength: selectedDuration.length,
+              })
+            );
+          }
         }
       } else {
         shouldCheckIfMeasureIsLast = true;
@@ -317,10 +339,11 @@ const App = () => {
             return map;
           }, {});
 
+          // TODO Pass in current measure's time signature
           dispatch(
             addMeasure({
               trackMeasureIds: trackMeasureIds,
-              ...defaultMeasureOptions,
+              firstDurationLength: selectedDuration.length,
             })
           );
           dispatch(selectMeasure(selectedMeasureNumber + 1));
@@ -330,16 +353,33 @@ const App = () => {
         }
         // Select the next measure
         else {
-          dispatch(selectMeasure(selectedMeasureNumber + 1));
-          dispatch(
-            selectDuration(
-              measures.find(
-                (measure) =>
-                  measure.id ===
-                  selectedTrack.measures[selectedMeasureNumber + 1]
-              ).durations[0]
-            )
+          const nextMeasure = measures.find(
+            (measure) =>
+              measure.id === selectedTrack.measures[selectedMeasureNumber + 1]
           );
+          const durationIdToSelect = nextMeasure.durations[0];
+          const nextMeasuresFirstDuration = durations.find(
+            (duration) =>
+              duration.id ===
+              measures.find((measure) => measure.id === nextMeasure.id)
+                .durations[0]
+          );
+
+          dispatch(selectMeasure(selectedMeasureNumber + 1));
+          dispatch(selectDuration(durationIdToSelect));
+
+          if (
+            !nextMeasuresFirstDuration.notes.length &&
+            !nextMeasuresFirstDuration.isRest &&
+            nextMeasuresFirstDuration.length !== selectedDuration.length
+          ) {
+            dispatch(
+              setDurationLength({
+                durationId: durationIdToSelect,
+                newLength: selectedDuration.length,
+              })
+            );
+          }
         }
       }
     },
@@ -349,6 +389,7 @@ const App = () => {
       getCurrentBarMaximumDuration,
       tracks,
       measures,
+      durations,
       selectedDurationId,
       selectedMeasureNumber,
     ]

@@ -111,7 +111,7 @@ const documentSlice = createSlice({
     },
     // TODO Refactor this to be used for inserting a new measure
     addMeasure: (state, { payload }) => {
-      let { trackMeasureIds, ...restOfPayload } = payload;
+      let { trackMeasureIds, firstDurationLength } = payload;
 
       // Add a new measure for each track
       for (const trackId in trackMeasureIds) {
@@ -121,7 +121,7 @@ const documentSlice = createSlice({
         state.tracks.byId[trackId].measures.push(newMeasureId);
         state.measures.byId[newMeasureId] = {
           id: newMeasureId,
-          ...restOfPayload,
+          ...defaultMeasureOptions,
           durations: [newDurationId],
         };
         state.measures.allIds.push(newMeasureId);
@@ -131,6 +131,7 @@ const documentSlice = createSlice({
         state.durations.byId[newDurationId] = {
           id: newDurationId,
           ...defaultDurationOptions,
+          length: firstDurationLength,
         };
         state.durations.allIds.push(newDurationId);
       }
@@ -148,13 +149,14 @@ const documentSlice = createSlice({
       }
     },
     addDuration: (state, { payload }) => {
-      let { measureId, newDurationId } = payload;
+      let { measureId, newDurationId, length } = payload;
 
       state.measures.byId[measureId].durations.push(newDurationId);
       // TODO Added duration should have the same length as the last selected duration
       state.durations.byId[newDurationId] = {
         id: newDurationId,
         ...defaultDurationOptions,
+        length: length,
       };
       state.durations.allIds.push(newDurationId);
     },

@@ -414,7 +414,7 @@ const App = () => {
   );
 
   const dispatchDeleteMeasure = useCallback(
-    (selectedTrack) => {
+    (selectedTrack, selectedDurationLength) => {
       if (selectedTrack.measures.length > 1) {
         let newSelectedMeasureNumber;
 
@@ -425,13 +425,19 @@ const App = () => {
           newSelectedMeasureNumber = selectedMeasureNumber + 1;
         }
 
-        dispatch(
-          selectDuration(
+        const durationToSelect = durations.find(
+          (duration) =>
+            duration.id ===
             measures.find(
               (measure) =>
                 measure.id === selectedTrack.measures[newSelectedMeasureNumber]
             ).durations[0]
-          )
+        );
+
+        dispatch(selectDuration(durationToSelect.id));
+        dispatchChangeNextSelectedDurationLengthIfNecessary(
+          durationToSelect,
+          selectedDurationLength
         );
 
         // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
@@ -439,7 +445,13 @@ const App = () => {
         dispatch(deleteMeasure(selectedMeasureNumber));
       }
     },
-    [dispatch, measures, selectedMeasureNumber]
+    [
+      dispatch,
+      measures,
+      durations,
+      selectedMeasureNumber,
+      dispatchChangeNextSelectedDurationLengthIfNecessary,
+    ]
   );
 
   const dispatchDeleteNote = useCallback(
@@ -635,7 +647,7 @@ const App = () => {
           case '-':
             // Delete measure
             if (event.ctrlKey) {
-              dispatchDeleteMeasure(selectedTrack);
+              dispatchDeleteMeasure(selectedTrack, selectedDuration.length);
             }
             // Lengthen selected duration
             else {

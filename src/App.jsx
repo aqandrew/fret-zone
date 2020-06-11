@@ -150,32 +150,36 @@ const App = () => {
     dispatch(deleteTrack(tracks[selectedTrackNumber].id));
   };
 
-  const dispatchAddTrack = (trackToAdd) => {
-    let newTrackId = uuidv4();
-    // TODO Turn ID array generation into a function
-    let measureIds =
-      tracks.length === 0
-        ? [uuidv4()]
-        : tracks[0].measures.map((measure) => uuidv4());
-    let durationIds =
-      tracks.length === 0
-        ? [uuidv4()]
-        : tracks[0].measures.map((measure) => uuidv4());
+  const dispatchAddTrack = useCallback(
+    (trackToAdd) => {
+      let newTrackId = uuidv4();
+      // TODO Turn ID array generation into a function
+      let measureIds =
+        tracks.length === 0
+          ? [uuidv4()]
+          : tracks[0].measures.map((measure) => uuidv4());
+      let durationIds =
+        tracks.length === 0
+          ? [uuidv4()]
+          : tracks[0].measures.map((measure) => uuidv4());
 
-    dispatch(
-      addTrack({
-        id: newTrackId,
-        measures: measureIds,
-        durationIds: durationIds,
-        ...trackToAdd,
-      })
-    );
+      dispatch(
+        addTrack({
+          id: newTrackId,
+          measures: measureIds,
+          durationIds: durationIds,
+          durationLength: getSelectedDuration()?.length,
+          ...trackToAdd,
+        })
+      );
 
-    return {
-      newTrackId: newTrackId,
-      durationIdToSelect: durationIds[selectedMeasureNumber],
-    };
-  };
+      return {
+        newTrackId: newTrackId,
+        durationIdToSelect: durationIds[selectedMeasureNumber],
+      };
+    },
+    [dispatch, getSelectedDuration, selectedMeasureNumber, tracks]
+  );
 
   const dispatchShortenDuration = useCallback(
     (durationId) => {
@@ -349,7 +353,7 @@ const App = () => {
           dispatch(
             addMeasure({
               trackMeasureIds: trackMeasureIds,
-              firstDurationLength: selectedDuration.length,
+              durationLength: selectedDuration.length,
             })
           );
           dispatch(selectMeasure(selectedMeasureNumber + 1));

@@ -30,6 +30,7 @@ import {
   durationsSelector,
   notesSelector,
 } from './slices/document';
+import { dispatchChangeNextSelectedDurationLengthIfNecessary } from './utils';
 import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
@@ -241,24 +242,6 @@ const App = () => {
     [dispatch, selectedStringNumber]
   );
 
-  const dispatchChangeNextSelectedDurationLengthIfNecessary = useCallback(
-    (nextSelectedDuration, selectedDurationLength) => {
-      if (
-        !nextSelectedDuration.notes.length &&
-        !nextSelectedDuration.isRest &&
-        nextSelectedDuration.length !== selectedDurationLength
-      ) {
-        dispatch(
-          setDurationLength({
-            durationId: nextSelectedDuration.id,
-            newLength: selectedDurationLength,
-          })
-        );
-      }
-    },
-    [dispatch]
-  );
-
   const dispatchSelectPreviousDuration = useCallback(
     (selectedTrack, selectedMeasure, selectedDuration) => {
       // If currently selected duration is NOT first in the measure,
@@ -292,14 +275,7 @@ const App = () => {
         );
       }
     },
-    [
-      dispatch,
-      measures,
-      durations,
-      selectedMeasureNumber,
-      selectedDurationId,
-      dispatchChangeNextSelectedDurationLengthIfNecessary,
-    ]
+    [dispatch, measures, durations, selectedMeasureNumber, selectedDurationId]
   );
 
   const dispatchSelectNextDuration = useCallback(
@@ -409,7 +385,6 @@ const App = () => {
       durations,
       selectedDurationId,
       selectedMeasureNumber,
-      dispatchChangeNextSelectedDurationLengthIfNecessary,
     ]
   );
 
@@ -445,13 +420,7 @@ const App = () => {
         dispatch(deleteMeasure(selectedMeasureNumber));
       }
     },
-    [
-      dispatch,
-      measures,
-      durations,
-      selectedMeasureNumber,
-      dispatchChangeNextSelectedDurationLengthIfNecessary,
-    ]
+    [dispatch, measures, durations, selectedMeasureNumber]
   );
 
   const dispatchDeleteNote = useCallback(
@@ -544,7 +513,6 @@ const App = () => {
       selectedMeasureNumber,
       selectedDurationId,
       selectedStringNumber,
-      dispatchChangeNextSelectedDurationLengthIfNecessary,
     ]
   );
 

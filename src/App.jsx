@@ -530,15 +530,21 @@ const App = () => {
         }
 
         dispatch(selectDuration(durationIdToSelect));
+        dispatchChangeNextSelectedDurationLengthIfNecessary(
+          durations.find((duration) => duration.id === durationIdToSelect),
+          selectedDuration.length
+        );
       }
     },
     [
       dispatch,
       measures,
+      durations,
       notes,
       selectedMeasureNumber,
       selectedDurationId,
       selectedStringNumber,
+      dispatchChangeNextSelectedDurationLengthIfNecessary,
     ]
   );
 

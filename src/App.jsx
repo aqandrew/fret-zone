@@ -221,6 +221,24 @@ const App = () => {
     [dispatch, selectedStringNumber]
   );
 
+  const dispatchChangeNextSelectedDurationLengthIfNecessary = useCallback(
+    (nextSelectedDuration, selectedDurationLength) => {
+      if (
+        !nextSelectedDuration.notes.length &&
+        !nextSelectedDuration.isRest &&
+        nextSelectedDuration.length !== selectedDurationLength
+      ) {
+        dispatch(
+          setDurationLength({
+            durationId: nextSelectedDuration.id,
+            newLength: selectedDurationLength,
+          })
+        );
+      }
+    },
+    [dispatch]
+  );
+
   const dispatchSelectPreviousDuration = useCallback(
     (selectedTrack, selectedMeasure, selectedDuration) => {
       // If currently selected duration is NOT first in the measure,
@@ -248,22 +266,20 @@ const App = () => {
         // Select the last duration of the previous measure
         dispatch(selectMeasure(selectedMeasureNumber - 1));
         dispatch(selectDuration(durationIdToSelect));
-
-        if (
-          !previousMeasuresLastDuration.notes.length &&
-          !previousMeasuresLastDuration.isRest &&
-          previousMeasuresLastDuration.length !== selectedDuration.length
-        ) {
-          dispatch(
-            setDurationLength({
-              durationId: durationIdToSelect,
-              newLength: selectedDuration.length,
-            })
-          );
-        }
+        dispatchChangeNextSelectedDurationLengthIfNecessary(
+          previousMeasuresLastDuration,
+          selectedDuration.length
+        );
       }
     },
-    [dispatch, measures, durations, selectedMeasureNumber, selectedDurationId]
+    [
+      dispatch,
+      measures,
+      durations,
+      selectedMeasureNumber,
+      selectedDurationId,
+      dispatchChangeNextSelectedDurationLengthIfNecessary,
+    ]
   );
 
   const dispatchSelectNextDuration = useCallback(
@@ -305,21 +321,11 @@ const App = () => {
               ]
           );
 
-          // TODO Reduce code duplication with "Select the next measure" block
           dispatch(selectDuration(nextDuration.id));
-
-          if (
-            !nextDuration.notes.length &&
-            !nextDuration.isRest &&
-            nextDuration.length !== selectedDuration.length
-          ) {
-            dispatch(
-              setDurationLength({
-                durationId: nextDuration.id,
-                newLength: selectedDuration.length,
-              })
-            );
-          }
+          dispatchChangeNextSelectedDurationLengthIfNecessary(
+            nextDuration,
+            selectedDuration.length
+          );
         }
       } else {
         shouldCheckIfMeasureIsLast = true;
@@ -367,19 +373,10 @@ const App = () => {
 
           dispatch(selectMeasure(selectedMeasureNumber + 1));
           dispatch(selectDuration(durationIdToSelect));
-
-          if (
-            !nextMeasuresFirstDuration.notes.length &&
-            !nextMeasuresFirstDuration.isRest &&
-            nextMeasuresFirstDuration.length !== selectedDuration.length
-          ) {
-            dispatch(
-              setDurationLength({
-                durationId: durationIdToSelect,
-                newLength: selectedDuration.length,
-              })
-            );
-          }
+          dispatchChangeNextSelectedDurationLengthIfNecessary(
+            nextMeasuresFirstDuration,
+            selectedDuration.length
+          );
         }
       }
     },
@@ -392,6 +389,7 @@ const App = () => {
       durations,
       selectedDurationId,
       selectedMeasureNumber,
+      dispatchChangeNextSelectedDurationLengthIfNecessary,
     ]
   );
 

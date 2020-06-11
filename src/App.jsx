@@ -122,29 +122,45 @@ const App = () => {
   const dispatchDeleteTrack = () => {
     // If a track that's not last is being deleted,
     if (selectedTrackNumber < tracks.length - 1) {
-      // Select first duration of next track's measure at selectedMeasureNumber
-      dispatch(
-        selectDuration(
+      const nextTracksFirstDurationAtSelectedMeasureNumber = durations.find(
+        (duration) =>
+          duration.id ===
           measures.find(
             (measure) =>
               measure.id ===
               tracks[selectedTrackNumber + 1].measures[selectedMeasureNumber]
           ).durations[0]
-        )
+      );
+
+      // Select first duration of next track's measure at selectedMeasureNumber
+      dispatch(
+        selectDuration(nextTracksFirstDurationAtSelectedMeasureNumber.id)
+      );
+      dispatchChangeNextSelectedDurationLengthIfNecessary(
+        nextTracksFirstDurationAtSelectedMeasureNumber,
+        getSelectedDuration().length
       );
     }
     // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
     else if (selectedTrackNumber !== 0) {
-      dispatch(
-        selectDuration(
+      const previousTracksFirstDurationAtSelectedMeasureNumber = durations.find(
+        (duration) =>
+          duration.id ===
           measures.find(
             (measure) =>
               measure.id ===
               tracks[selectedTrackNumber - 1].measures[selectedMeasureNumber]
           ).durations[0]
-        )
       );
+
       dispatch(selectTrack(selectedTrackNumber - 1));
+      dispatch(
+        selectDuration(previousTracksFirstDurationAtSelectedMeasureNumber.id)
+      );
+      dispatchChangeNextSelectedDurationLengthIfNecessary(
+        previousTracksFirstDurationAtSelectedMeasureNumber,
+        getSelectedDuration().length
+      );
     }
 
     dispatch(deleteTrack(tracks[selectedTrackNumber].id));

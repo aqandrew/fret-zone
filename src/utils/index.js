@@ -1,1 +1,4 @@
-export { dispatchChangeNextSelectedDurationLengthIfNecessary } from './utils';
+export {
+  dispatchChangeNextSelectedDurationLengthIfNecessary,
+  roundDurationLength,
+} from './utils';

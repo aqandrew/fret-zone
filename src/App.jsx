@@ -30,7 +30,10 @@ import {
   durationsSelector,
   notesSelector,
 } from './slices/document';
-import { dispatchChangeNextSelectedDurationLengthIfNecessary } from './utils';
+import {
+  dispatchChangeNextSelectedDurationLengthIfNecessary,
+  roundDurationLength,
+} from './utils';
 import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
@@ -721,11 +724,11 @@ const App = () => {
       barMaximumDuration = getCurrentBarMaximumDuration();
     }
 
-    // TODO Display minimum 1 decimal place, and up to 4 decimal places,
-    //   rounded, not truncated
-    //     e.g. 0.0, 0.5, 0.25, 0.125, 0.0625 (duplets)
-    //          0.667, 0.333, 0.167, 0.0833, 0.0417 (triplets)
-    return barDuration.toFixed(1) + ':' + barMaximumDuration.toFixed(1);
+    return (
+      roundDurationLength(barDuration) +
+      ':' +
+      roundDurationLength(barMaximumDuration)
+    );
   };
 
   return (

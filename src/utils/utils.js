@@ -25,4 +25,17 @@ export const dispatchChangeNextSelectedDurationLengthIfNecessary = (
 // Display minimum 1 decimal place, rounded, not truncated
 // Up to 3 decimal places, unless there's a leading 0;
 // in which case up to 4 decimal places
-export const roundDurationLength = (duration) => duration.toFixed(1);
+export const roundDurationLength = (durationLength) => {
+  let [integerString, decimalString] = durationLength.toString().split('.');
+
+  // Don't display 'undefined'
+  if (!decimalString) decimalString = '0';
+
+  if (decimalString.length > 3) {
+    return decimalString[0] === '0'
+      ? durationLength.toFixed(4)
+      : durationLength.toFixed(3);
+  }
+
+  return integerString + '.' + decimalString;
+};

@@ -7,12 +7,14 @@ import {
   selectMeasure,
   selectedMeasureNumberSelector,
   selectDuration,
+  selectedDurationIdSelector,
 } from '../slices/ui';
 import {
   tracksSelector,
   measuresSelector,
   durationsSelector,
 } from '../slices/document';
+import { dispatchChangeNextSelectedDurationLengthIfNecessary } from '../utils';
 
 import './GlobalView.scss';
 
@@ -20,8 +22,10 @@ const GlobalView = ({ openAddTrackModal }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
@@ -71,12 +75,20 @@ const GlobalView = ({ openAddTrackModal }) => {
                     <div
                       className={measureNumberClassName}
                       onClick={() => {
+                        const durationIdToSelect = measures.find(
+                          (measure) => measure.id === measureId
+                        ).durations[0];
+
                         dispatch(selectMeasure(measureNumber));
-                        dispatch(
-                          selectDuration(
-                            measures.find((measure) => measure.id === measureId)
-                              .durations[0]
-                          )
+                        dispatch(selectDuration(durationIdToSelect));
+                        // TODO Figure out a better way to find the selected duration than this and App.getSelectedDuration
+                        dispatchChangeNextSelectedDurationLengthIfNecessary(
+                          durations.find(
+                            (duration) => duration.id === durationIdToSelect
+                          ),
+                          durations.find(
+                            (duration) => duration.id === selectedDurationId
+                          ).length
                         );
                       }}
                       key={measureNumber}
@@ -101,8 +113,10 @@ const TrackControl = ({ track, trackNumber }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
+  const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   let trackControlClassName = 'TrackControl';
 
@@ -115,17 +129,18 @@ const TrackControl = ({ track, trackNumber }) => {
     <div
       className={trackControlClassName}
       onClick={() => {
-        dispatch(selectTrack(trackNumber));
-
         // Select first duration of track's measure at selectedMeasureNumber
-        dispatch(
-          selectDuration(
-            measures.find(
-              (measure) =>
-                measure.id ===
-                tracks[trackNumber].measures[selectedMeasureNumber]
-            ).durations[0]
-          )
+        const durationIdToSelect = measures.find(
+          (measure) =>
+            measure.id === tracks[trackNumber].measures[selectedMeasureNumber]
+        ).durations[0];
+
+        dispatch(selectTrack(trackNumber));
+        dispatch(selectDuration(durationIdToSelect));
+        dispatchChangeNextSelectedDurationLengthIfNecessary(
+          durations.find((duration) => duration.id === durationIdToSelect),
+          durations.find((duration) => duration.id === selectedDurationId)
+            .length
         );
       }}
     >
@@ -155,6 +170,7 @@ const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
   const durations = useSelector(durationsSelector);
   const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
   const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
+  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const getMeasure = () => measures.find((measure) => measure.id === measureId);
 
@@ -185,9 +201,16 @@ const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
     <div
       className={cellClassName}
       onClick={() => {
+        const durationIdToSelect = getMeasure().durations[0];
+
         dispatch(selectTrack(trackNumber));
         dispatch(selectMeasure(measureNumber));
-        dispatch(selectDuration(getMeasure().durations[0]));
+        dispatch(selectDuration(durationIdToSelect));
+        dispatchChangeNextSelectedDurationLengthIfNecessary(
+          durations.find((duration) => duration.id === durationIdToSelect),
+          durations.find((duration) => duration.id === selectedDurationId)
+            .length
+        );
       }}
     ></div>
   );

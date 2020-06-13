@@ -31,13 +31,13 @@ export const defaultMeasureOptions = {
   durations: [],
 };
 
-const defaultDurationOptions = {
+export const defaultDurationOptions = {
   isRest: false,
   length: 1 / 4,
   notes: [],
 };
 
-const documentSlice = createSlice({
+export const documentSlice = createSlice({
   name: 'document',
   initialState,
   // https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape

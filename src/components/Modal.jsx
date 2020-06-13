@@ -72,7 +72,7 @@ const ShownModal = ({ children, modalTitle, onClose, onConfirm }) => {
     // Even though the backdrop doesn't obscure the rest of the screen,
     // it prevents clicks outside until the modal is closed
     <div className="Modal__Backdrop">
-      <div className="Modal" ref={modalRef}>
+      <div className="Modal" ref={modalRef} role="dialog">
         <h2 className="Modal__Heading">{modalTitle}</h2>
         {children}
         <div className="Modal__Footer">

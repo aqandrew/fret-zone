@@ -51,11 +51,33 @@ describe('App', () => {
     });
 
     it('getCurrentBarDuration', () => {
+      const { container } = render(
+        <Provider store={store}>
+          <App />
+        </Provider>
+      );
+
+      const barCurrentDuration = screen.getByTitle('Bar current duration');
+
       // 0.0 initially
+      // TODO The store is persisting between tests,
+      // so the getCurrentBarMaximumDuration test, which just executed,
+      // has already inserted a new track
+      // This means that the innerText will really be '0.0:4.0', not '0.0:1.0' as expected
+      expect(barCurrentDuration).toHaveTextContent(/0\.0(?=:)/);
+
       // Add a note
+      fireEvent.keyDown(container, { key: '0' });
+
       // Expect 1.0 (default note is quarter)
+      expect(barCurrentDuration).toHaveTextContent(/1\.0(?=:)/);
+
       // Add one measure
+      fireEvent.keyDown(container, { key: 'ArrowRight' });
+      fireEvent.keyDown(container, { key: 'ArrowRight' });
+
       // Expect new measure's length also to be 0.0 initially
+      expect(barCurrentDuration).toHaveTextContent(/0\.0(?=:)/);
     });
 
     describe('onKeyDown', () => {

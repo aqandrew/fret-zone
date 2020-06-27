@@ -79,37 +79,35 @@ const App = () => {
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
+  const [selectedMeasure, setSelectedMeasure] = useState(undefined);
 
-  const getSelectedMeasure = useCallback(
-    () =>
+  useEffect(() => {
+    setSelectedMeasure(
       measures.find(
         (measure) =>
           measure.id ===
           tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-      ),
-    [tracks, measures, selectedTrackNumber, selectedMeasureNumber]
-  );
+      )
+    );
+  }, [tracks, measures, selectedTrackNumber, selectedMeasureNumber]);
 
   const getSelectedDuration = useCallback(
     () => durations.find((duration) => duration.id === selectedDurationId),
     [durations, selectedDurationId]
   );
 
-  const getCurrentBarMaximumDuration = useCallback(() => {
-    const selectedMeasure = getSelectedMeasure();
-
-    return (
-      (selectedMeasure.timeSignature.beatUnit / 4) *
-      selectedMeasure.timeSignature.beatsPerMeasure
-    );
-  }, [getSelectedMeasure]);
+  const getCurrentBarMaximumDuration = useCallback(
+    () =>
+      (selectedMeasure?.timeSignature.beatUnit / 4) *
+      selectedMeasure?.timeSignature.beatsPerMeasure,
+    [selectedMeasure]
+  );
 
   const getCurrentBarDuration = useCallback(() => {
-    const selectedMeasure = getSelectedMeasure();
     const currentBarMaximumDuration = getCurrentBarMaximumDuration();
 
     return (
-      selectedMeasure.durations.reduce((totalDuration, durationId) => {
+      selectedMeasure?.durations.reduce((totalDuration, durationId) => {
         let durationInMeasure = durations.find(
           (duration) => duration.id === durationId
         );
@@ -121,7 +119,7 @@ const App = () => {
         return totalDuration;
       }, 0) * currentBarMaximumDuration
     );
-  }, [durations, getSelectedMeasure, getCurrentBarMaximumDuration]);
+  }, [durations, selectedMeasure, getCurrentBarMaximumDuration]);
 
   const dispatchDeleteTrack = () => {
     // If a track that's not last is being deleted,
@@ -246,14 +244,14 @@ const App = () => {
   );
 
   const dispatchSelectPreviousDuration = useCallback(
-    (selectedTrack, selectedMeasure, selectedDuration) => {
+    (selectedTrack, selectedDuration) => {
       // If currently selected duration is NOT first in the measure,
-      if (selectedDurationId !== selectedMeasure.durations[0]) {
+      if (selectedDurationId !== selectedMeasure?.durations[0]) {
         // Select the previous duration
         dispatch(
           selectDuration(
-            selectedMeasure.durations[
-              selectedMeasure.durations.findIndex(
+            selectedMeasure?.durations[
+              selectedMeasure?.durations.findIndex(
                 (durationId) => durationId === selectedDurationId
               ) - 1
             ]
@@ -278,18 +276,25 @@ const App = () => {
         );
       }
     },
-    [dispatch, measures, durations, selectedMeasureNumber, selectedDurationId]
+    [
+      dispatch,
+      measures,
+      durations,
+      selectedMeasureNumber,
+      selectedMeasure,
+      selectedDurationId,
+    ]
   );
 
   const dispatchSelectNextDuration = useCallback(
-    (selectedTrack, selectedMeasure, selectedDuration) => {
+    (selectedTrack, selectedDuration) => {
       let shouldCheckIfMeasureIsLast = false;
 
       // If there's a note at this duration,
       // Or if this duration is a rest,
       if (selectedDuration.notes.length || selectedDuration.isRest) {
         // If this is the last duration,
-        if (selectedDurationId === selectedMeasure.durations.slice(-1)[0]) {
+        if (selectedDurationId === selectedMeasure?.durations.slice(-1)[0]) {
           // If the measure's total length === maximum,
           if (getCurrentBarDuration() === getCurrentBarMaximumDuration()) {
             shouldCheckIfMeasureIsLast = true;
@@ -300,7 +305,7 @@ const App = () => {
 
             dispatch(
               addDuration({
-                measureId: selectedMeasure.id,
+                measureId: selectedMeasure?.id,
                 newDurationId: newDurationId,
                 length: selectedDuration.length,
               })
@@ -313,8 +318,8 @@ const App = () => {
           const nextDuration = durations.find(
             (duration) =>
               duration.id ===
-              selectedMeasure.durations[
-                selectedMeasure.durations.findIndex(
+              selectedMeasure?.durations[
+                selectedMeasure?.durations.findIndex(
                   (durationId) => durationId === selectedDurationId
                 ) + 1
               ]
@@ -388,6 +393,7 @@ const App = () => {
       durations,
       selectedDurationId,
       selectedMeasureNumber,
+      selectedMeasure,
     ]
   );
 
@@ -427,7 +433,7 @@ const App = () => {
   );
 
   const dispatchDeleteNote = useCallback(
-    (selectedMeasure, selectedDuration) => {
+    (selectedDuration) => {
       let needToSelectNewDuration = false;
 
       // If there is a note at this selected duration/string,
@@ -457,7 +463,7 @@ const App = () => {
         // If the selected duration is a rest,
         if (selectedDuration.isRest) {
           // If this is the only duration in the measure,
-          if (selectedMeasure.durations.length === 1) {
+          if (selectedMeasure?.durations.length === 1) {
             // Change the duration to NOT a rest
             dispatch(markDurationAsNotRest(selectedDurationId));
           } else {
@@ -473,13 +479,13 @@ const App = () => {
         let durationIdToSelect;
 
         // If the selected duration is first in the measure,
-        if (selectedDurationId === selectedMeasure.durations[0]) {
+        if (selectedDurationId === selectedMeasure?.durations[0]) {
           // If the first measure of the document is selected,
           if (selectedMeasureNumber === 0) {
             // Select the next duration of this measure
             durationIdToSelect =
-              selectedMeasure.durations[
-                selectedMeasure.durations.findIndex(
+              selectedMeasure?.durations[
+                selectedMeasure?.durations.findIndex(
                   (durationId) => durationId === selectedDurationId
                 ) + 1
               ];
@@ -494,8 +500,8 @@ const App = () => {
         } else {
           // Select this measure's previous duration
           durationIdToSelect =
-            selectedMeasure.durations[
-              selectedMeasure.durations.findIndex(
+            selectedMeasure?.durations[
+              selectedMeasure?.durations.findIndex(
                 (durationId) => durationId === selectedDurationId
               ) - 1
             ];
@@ -514,6 +520,7 @@ const App = () => {
       durations,
       notes,
       selectedMeasureNumber,
+      selectedMeasure,
       selectedDurationId,
       selectedStringNumber,
     ]
@@ -565,7 +572,6 @@ const App = () => {
           event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
-        const selectedMeasure = getSelectedMeasure();
         const selectedDuration = getSelectedDuration();
         console.log(event);
 
@@ -586,11 +592,7 @@ const App = () => {
 
             // TODO If Cmd was held, select the first duration of the next measure
 
-            dispatchSelectNextDuration(
-              selectedTrack,
-              selectedMeasure,
-              selectedDuration
-            );
+            dispatchSelectNextDuration(selectedTrack, selectedDuration);
 
             break;
           // Previous duration/measure
@@ -599,11 +601,7 @@ const App = () => {
 
             // TODO Select the FIRST duration of the previous measure if Cmd was held
 
-            dispatchSelectPreviousDuration(
-              selectedTrack,
-              selectedMeasure,
-              selectedDuration
-            );
+            dispatchSelectPreviousDuration(selectedTrack, selectedDuration);
 
             break;
           case '+':
@@ -654,7 +652,7 @@ const App = () => {
             break;
           case 'Backspace':
             // Delete selected note
-            dispatchDeleteNote(selectedMeasure, selectedDuration);
+            dispatchDeleteNote(selectedDuration);
 
             break;
           // Add track
@@ -689,7 +687,6 @@ const App = () => {
     },
     [
       dispatch,
-      getSelectedMeasure,
       getSelectedDuration,
       dispatchShortenDuration,
       dispatchLengthenDuration,

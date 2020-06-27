@@ -80,6 +80,7 @@ const App = () => {
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
   const [selectedMeasure, setSelectedMeasure] = useState(undefined);
+  const [selectedDuration, setSelectedDuration] = useState(undefined);
 
   useEffect(() => {
     setSelectedMeasure(
@@ -91,10 +92,11 @@ const App = () => {
     );
   }, [tracks, measures, selectedTrackNumber, selectedMeasureNumber]);
 
-  const getSelectedDuration = useCallback(
-    () => durations.find((duration) => duration.id === selectedDurationId),
-    [durations, selectedDurationId]
-  );
+  useEffect(() => {
+    setSelectedDuration(
+      durations.find((duration) => duration.id === selectedDurationId)
+    );
+  }, [durations, selectedDurationId]);
 
   const getCurrentBarMaximumDuration = useCallback(
     () =>
@@ -112,7 +114,7 @@ const App = () => {
           (duration) => duration.id === durationId
         );
 
-        if (durationInMeasure.notes.length || durationInMeasure.isRest) {
+        if (durationInMeasure?.notes.length || durationInMeasure?.isRest) {
           return totalDuration + durationInMeasure.length;
         }
 
@@ -140,7 +142,7 @@ const App = () => {
       );
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         nextTracksFirstDurationAtSelectedMeasureNumber,
-        getSelectedDuration().length
+        selectedDuration?.length
       );
     }
     // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
@@ -161,7 +163,7 @@ const App = () => {
       );
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         previousTracksFirstDurationAtSelectedMeasureNumber,
-        getSelectedDuration().length
+        selectedDuration?.length
       );
     }
 
@@ -186,7 +188,7 @@ const App = () => {
           id: newTrackId,
           measures: measureIds,
           durationIds: durationIds,
-          durationLength: getSelectedDuration()?.length,
+          durationLength: selectedDuration?.length,
           ...trackToAdd,
         })
       );
@@ -196,7 +198,7 @@ const App = () => {
         durationIdToSelect: durationIds[selectedMeasureNumber],
       };
     },
-    [dispatch, getSelectedDuration, selectedMeasureNumber, tracks]
+    [dispatch, selectedMeasureNumber, selectedDuration, tracks]
   );
 
   const dispatchShortenDuration = useCallback(
@@ -204,11 +206,11 @@ const App = () => {
       dispatch(
         setDurationLength({
           durationId: durationId,
-          newLength: getSelectedDuration().length / 2,
+          newLength: selectedDuration?.length / 2,
         })
       );
     },
-    [dispatch, getSelectedDuration]
+    [dispatch, selectedDuration]
   );
 
   const dispatchLengthenDuration = useCallback(
@@ -216,11 +218,11 @@ const App = () => {
       dispatch(
         setDurationLength({
           durationId: durationId,
-          newLength: getSelectedDuration().length * 2,
+          newLength: selectedDuration?.length * 2,
         })
       );
     },
-    [dispatch, getSelectedDuration]
+    [dispatch, selectedDuration]
   );
 
   const dispatchSelectPreviousString = useCallback(
@@ -244,7 +246,7 @@ const App = () => {
   );
 
   const dispatchSelectPreviousDuration = useCallback(
-    (selectedTrack, selectedDuration) => {
+    (selectedTrack) => {
       // If currently selected duration is NOT first in the measure,
       if (selectedDurationId !== selectedMeasure?.durations[0]) {
         // Select the previous duration
@@ -272,7 +274,7 @@ const App = () => {
         dispatch(selectDuration(durationIdToSelect));
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           previousMeasuresLastDuration,
-          selectedDuration.length
+          selectedDuration?.length
         );
       }
     },
@@ -283,16 +285,17 @@ const App = () => {
       selectedMeasureNumber,
       selectedMeasure,
       selectedDurationId,
+      selectedDuration,
     ]
   );
 
   const dispatchSelectNextDuration = useCallback(
-    (selectedTrack, selectedDuration) => {
+    (selectedTrack) => {
       let shouldCheckIfMeasureIsLast = false;
 
       // If there's a note at this duration,
       // Or if this duration is a rest,
-      if (selectedDuration.notes.length || selectedDuration.isRest) {
+      if (selectedDuration?.notes.length || selectedDuration?.isRest) {
         // If this is the last duration,
         if (selectedDurationId === selectedMeasure?.durations.slice(-1)[0]) {
           // If the measure's total length === maximum,
@@ -307,7 +310,7 @@ const App = () => {
               addDuration({
                 measureId: selectedMeasure?.id,
                 newDurationId: newDurationId,
-                length: selectedDuration.length,
+                length: selectedDuration?.length,
               })
             );
             dispatch(selectDuration(newDurationId));
@@ -328,7 +331,7 @@ const App = () => {
           dispatch(selectDuration(nextDuration.id));
           dispatchChangeNextSelectedDurationLengthIfNecessary(
             nextDuration,
-            selectedDuration.length
+            selectedDuration?.length
           );
         }
       } else {
@@ -353,7 +356,7 @@ const App = () => {
           dispatch(
             addMeasure({
               trackMeasureIds: trackMeasureIds,
-              durationLength: selectedDuration.length,
+              durationLength: selectedDuration?.length,
             })
           );
           dispatch(selectMeasure(selectedMeasureNumber + 1));
@@ -379,7 +382,7 @@ const App = () => {
           dispatch(selectDuration(durationIdToSelect));
           dispatchChangeNextSelectedDurationLengthIfNecessary(
             nextMeasuresFirstDuration,
-            selectedDuration.length
+            selectedDuration?.length
           );
         }
       }
@@ -392,6 +395,7 @@ const App = () => {
       measures,
       durations,
       selectedDurationId,
+      selectedDuration,
       selectedMeasureNumber,
       selectedMeasure,
     ]
@@ -432,102 +436,100 @@ const App = () => {
     [dispatch, measures, durations, selectedMeasureNumber]
   );
 
-  const dispatchDeleteNote = useCallback(
-    (selectedDuration) => {
-      let needToSelectNewDuration = false;
+  const dispatchDeleteNote = useCallback(() => {
+    let needToSelectNewDuration = false;
 
-      // If there is a note at this selected duration/string,
-      if (
-        selectedDuration.notes
-          .map((noteId) => notes.find((note) => note.id === noteId).string)
-          .includes(selectedStringNumber)
-      ) {
-        // Delete that note
-        // TODO These lines are horribly inefficient
-        const selectedNoteId = selectedDuration.notes.find(
-          (noteId) =>
-            notes.find((note) => note.id === noteId).string ===
-            selectedStringNumber
-        );
+    // If there is a note at this selected duration/string,
+    if (
+      selectedDuration?.notes
+        .map((noteId) => notes.find((note) => note.id === noteId).string)
+        .includes(selectedStringNumber)
+    ) {
+      // Delete that note
+      // TODO These lines are horribly inefficient
+      const selectedNoteId = selectedDuration?.notes.find(
+        (noteId) =>
+          notes.find((note) => note.id === noteId).string ===
+          selectedStringNumber
+      );
 
-        dispatch(deleteNote(selectedNoteId));
+      dispatch(deleteNote(selectedNoteId));
 
-        // If the deleted note was the last one in the selected duration,
-        if (selectedDuration.notes.length === 1) {
-          // Turn the duration into a rest
-          dispatch(addRest(selectedDurationId));
+      // If the deleted note was the last one in the selected duration,
+      if (selectedDuration?.notes.length === 1) {
+        // Turn the duration into a rest
+        dispatch(addRest(selectedDurationId));
+      } else {
+        needToSelectNewDuration = true;
+      }
+    } else {
+      // If the selected duration is a rest,
+      if (selectedDuration?.isRest) {
+        // If this is the only duration in the measure,
+        if (selectedMeasure?.durations.length === 1) {
+          // Change the duration to NOT a rest
+          dispatch(markDurationAsNotRest(selectedDurationId));
         } else {
+          // Delete that duration
+          dispatch(deleteDuration(selectedDurationId));
+
           needToSelectNewDuration = true;
         }
-      } else {
-        // If the selected duration is a rest,
-        if (selectedDuration.isRest) {
-          // If this is the only duration in the measure,
-          if (selectedMeasure?.durations.length === 1) {
-            // Change the duration to NOT a rest
-            dispatch(markDurationAsNotRest(selectedDurationId));
-          } else {
-            // Delete that duration
-            dispatch(deleteDuration(selectedDurationId));
-
-            needToSelectNewDuration = true;
-          }
-        }
       }
+    }
 
-      if (needToSelectNewDuration) {
-        let durationIdToSelect;
+    if (needToSelectNewDuration) {
+      let durationIdToSelect;
 
-        // If the selected duration is first in the measure,
-        if (selectedDurationId === selectedMeasure?.durations[0]) {
-          // If the first measure of the document is selected,
-          if (selectedMeasureNumber === 0) {
-            // Select the next duration of this measure
-            durationIdToSelect =
-              selectedMeasure?.durations[
-                selectedMeasure?.durations.findIndex(
-                  (durationId) => durationId === selectedDurationId
-                ) + 1
-              ];
-          } else {
-            // Select the previous measure's last duration
-            durationIdToSelect = measures[
-              selectedMeasureNumber - 1
-            ].durations.slice(-1)[0];
-
-            dispatch(selectMeasure(selectedMeasureNumber - 1));
-          }
-        } else {
-          // Select this measure's previous duration
+      // If the selected duration is first in the measure,
+      if (selectedDurationId === selectedMeasure?.durations[0]) {
+        // If the first measure of the document is selected,
+        if (selectedMeasureNumber === 0) {
+          // Select the next duration of this measure
           durationIdToSelect =
             selectedMeasure?.durations[
               selectedMeasure?.durations.findIndex(
                 (durationId) => durationId === selectedDurationId
-              ) - 1
+              ) + 1
             ];
-        }
+        } else {
+          // Select the previous measure's last duration
+          durationIdToSelect = measures[
+            selectedMeasureNumber - 1
+          ].durations.slice(-1)[0];
 
-        dispatch(selectDuration(durationIdToSelect));
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          durations.find((duration) => duration.id === durationIdToSelect),
-          selectedDuration.length
-        );
+          dispatch(selectMeasure(selectedMeasureNumber - 1));
+        }
+      } else {
+        // Select this measure's previous duration
+        durationIdToSelect =
+          selectedMeasure?.durations[
+            selectedMeasure?.durations.findIndex(
+              (durationId) => durationId === selectedDurationId
+            ) - 1
+          ];
       }
-    },
-    [
-      dispatch,
-      measures,
-      durations,
-      notes,
-      selectedMeasureNumber,
-      selectedMeasure,
-      selectedDurationId,
-      selectedStringNumber,
-    ]
-  );
+
+      dispatch(selectDuration(durationIdToSelect));
+      dispatchChangeNextSelectedDurationLengthIfNecessary(
+        durations.find((duration) => duration.id === durationIdToSelect),
+        selectedDuration?.length
+      );
+    }
+  }, [
+    dispatch,
+    measures,
+    durations,
+    notes,
+    selectedMeasureNumber,
+    selectedMeasure,
+    selectedDurationId,
+    selectedDuration,
+    selectedStringNumber,
+  ]);
 
   const dispatchAddNote = useCallback(
-    (selectedDuration, fretNumber) => {
+    (fretNumber) => {
       const fretInputTime = Date.now();
       setLastFretInputTime(fretInputTime);
 
@@ -537,7 +539,7 @@ const App = () => {
         notes.find(
           (note) =>
             note.string === selectedStringNumber &&
-            selectedDuration.notes.includes(note.id)
+            selectedDuration?.notes.includes(note.id)
         )?.fret || 0;
       const enteredFretNumber = parseInt(fretNumber);
       const newFretNumber = currentFretNumber * 10 + enteredFretNumber;
@@ -559,6 +561,7 @@ const App = () => {
       dispatch,
       notes,
       selectedDurationId,
+      selectedDuration,
       selectedStringNumber,
       lastFretInputTime,
     ]
@@ -572,7 +575,6 @@ const App = () => {
           event.target.classList.contains('Measure__Input'))
       ) {
         const selectedTrack = tracks[selectedTrackNumber];
-        const selectedDuration = getSelectedDuration();
         console.log(event);
 
         switch (event.key) {
@@ -592,7 +594,7 @@ const App = () => {
 
             // TODO If Cmd was held, select the first duration of the next measure
 
-            dispatchSelectNextDuration(selectedTrack, selectedDuration);
+            dispatchSelectNextDuration(selectedTrack);
 
             break;
           // Previous duration/measure
@@ -601,7 +603,7 @@ const App = () => {
 
             // TODO Select the FIRST duration of the previous measure if Cmd was held
 
-            dispatchSelectPreviousDuration(selectedTrack, selectedDuration);
+            dispatchSelectPreviousDuration(selectedTrack);
 
             break;
           case '+':
@@ -611,7 +613,7 @@ const App = () => {
             // Shorten selected duration
             else {
               if (
-                selectedDuration.length >
+                selectedDuration?.length >
                 Math.min(...Object.keys(durationLengths))
               ) {
                 dispatchShortenDuration(selectedDurationId);
@@ -622,12 +624,12 @@ const App = () => {
           case '-':
             // Delete measure
             if (event.ctrlKey) {
-              dispatchDeleteMeasure(selectedTrack, selectedDuration.length);
+              dispatchDeleteMeasure(selectedTrack, selectedDuration?.length);
             }
             // Lengthen selected duration
             else {
               if (
-                selectedDuration.length <
+                selectedDuration?.length <
                 Math.max(...Object.keys(durationLengths))
               ) {
                 dispatchLengthenDuration(selectedDurationId);
@@ -638,7 +640,7 @@ const App = () => {
           case '=':
             // Shorten selected duration
             if (
-              selectedDuration.length >
+              selectedDuration?.length >
               Math.min(...Object.keys(durationLengths))
             ) {
               dispatchShortenDuration(selectedDurationId);
@@ -652,7 +654,7 @@ const App = () => {
             break;
           case 'Backspace':
             // Delete selected note
-            dispatchDeleteNote(selectedDuration);
+            dispatchDeleteNote();
 
             break;
           // Add track
@@ -678,7 +680,7 @@ const App = () => {
               tracks.length !== 0 &&
               measures.length !== 0
             ) {
-              dispatchAddNote(selectedDuration, event.key);
+              dispatchAddNote(event.key);
 
               break;
             }
@@ -687,13 +689,13 @@ const App = () => {
     },
     [
       dispatch,
-      getSelectedDuration,
       dispatchShortenDuration,
       dispatchLengthenDuration,
       tracks,
       measures,
       selectedTrackNumber,
       selectedDurationId,
+      selectedDuration,
       dispatchSelectPreviousString,
       dispatchSelectNextString,
       dispatchSelectPreviousDuration,
@@ -799,7 +801,7 @@ const App = () => {
           {/* TODO This prop-drilling approach should be rethought */}
           {/* Won't scale nicely--there will be a ton of setter functions to drill into the whole Edition Palette */}
           {editionPaletteShown && (
-            <EditionPalette selectedDuration={getSelectedDuration()} />
+            <EditionPalette selectedDuration={selectedDuration} />
           )}
           <Workspace
             documentTitle={documentTitle}

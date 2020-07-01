@@ -1,34 +1,36 @@
-.Document {
+.Workspace {
   flex: 1;
   width: 100%;
   overflow: scroll;
   background: #4e5158;
 
-  &__Page {
-    width: 8.5in;
-    height: 11in;
-    margin: 0 auto;
-    padding: 1in 0.25in 0.25in;
-    background: white;
-    color: black;
-  }
+  .Document {
+    &__Page {
+      width: 8.5in;
+      height: 11in;
+      margin: 0 auto;
+      padding: 1in 0.25in 0.25in;
+      background: white;
+      color: black;
+    }
 
-  &__Title,
-  &__Artist {
-    margin-top: 0;
-    text-align: center;
-    // TODO Store document font families in Stylesheet
-    font-family: 'Times New Roman', Times, serif;
-  }
+    &__Title,
+    &__Artist {
+      margin-top: 0;
+      text-align: center;
+      // TODO Store document font families in Stylesheet
+      font-family: 'Times New Roman', Times, serif;
+    }
 
-  .TrackNotation {
-    &__TrackName {
-      &--Abbreviated {
-        // TODO Set margin dynamically, e.g. as percentage
-        // Or use { vertical-align: center; } on flex parent
-        margin-bottom: -5em;
-        writing-mode: vertical-lr;
-        transform: rotate(180deg);
+    .TrackNotation {
+      &__TrackName {
+        &--Abbreviated {
+          // TODO Set margin dynamically, e.g. as percentage
+          // Or use { vertical-align: center; } on flex parent
+          margin-bottom: -5em;
+          writing-mode: vertical-lr;
+          transform: rotate(180deg);
+        }
       }
     }
   }

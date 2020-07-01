@@ -21,7 +21,7 @@ import { durationLengths } from '../constants';
 
 import './Workspace.scss';
 
-const Document = ({ documentTitle, documentArtist }) => {
+const Workspace = ({ documentTitle, documentArtist }) => {
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
@@ -123,7 +123,7 @@ const Document = ({ documentTitle, documentArtist }) => {
   };
 
   return (
-    <div className="Document">
+    <div className="Workspace">
       <div className="Document__Page">
         {documentTitle && <h1 className="Document__Title">{documentTitle}</h1>}
         {documentArtist && (
@@ -142,4 +142,4 @@ const DurationMarker = ({ duration }) => (
   </span>
 );
 
-export default Document;
+export default Workspace;

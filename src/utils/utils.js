@@ -1,22 +1,30 @@
 import store from '../store';
-import { setDurationLength } from '../slices/document';
+import { setDurationLength, setDurationDotted } from '../slices/document';
 
 // TODO Maybe this can live in an actions file, that doesn't depend on App state
-// App can just pass in the relevant parts of its state, once things like getSelectedDuration refactored out like so:
-// https://stackoverflow.com/questions/59172453/should-i-pass-useselector-to-usestate
+// App can just pass in the relevant parts of its state
 export const dispatchChangeNextSelectedDurationLengthIfNecessary = (
   nextSelectedDuration,
-  selectedDurationLength
+  selectedDuration
 ) => {
   if (
     !nextSelectedDuration.notes.length &&
     !nextSelectedDuration.isRest &&
-    nextSelectedDuration.length !== selectedDurationLength
+    nextSelectedDuration.length !== selectedDuration.length
   ) {
     store.dispatch(
       setDurationLength({
         durationId: nextSelectedDuration.id,
-        newLength: selectedDurationLength,
+        newLength: selectedDuration.length,
+      })
+    );
+  }
+
+  if (nextSelectedDuration.isDotted !== selectedDuration.isDotted) {
+    store.dispatch(
+      setDurationDotted({
+        durationId: nextSelectedDuration.id,
+        isDotted: selectedDuration.isDotted,
       })
     );
   }

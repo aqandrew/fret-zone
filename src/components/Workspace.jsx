@@ -137,8 +137,9 @@ const Workspace = ({ documentTitle, documentArtist }) => {
 
 const DurationMarker = ({ duration }) => (
   <span className="Measure__DurationMarker">
-    {/* TODO Account for dotted/triplet length */}
+    {/* TODO Account for triplet length */}
     {durationLengths[duration.length].abbreviation}
+    {duration.isDotted && '.'}
   </span>
 );
 

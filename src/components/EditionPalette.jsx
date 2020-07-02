@@ -1,7 +1,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { addRest, setDurationLength } from '../slices/document';
+import {
+  addRest,
+  setDurationLength,
+  setDurationDotted,
+} from '../slices/document';
 import RadioButton from './RadioButton';
 import CheckboxButton from './CheckboxButton';
 import { durationLengths } from '../constants';
@@ -49,6 +53,19 @@ const NoteSymbols = ({ selectedDuration }) => {
           if (isNotRest) {
             dispatch(addRest(selectedDuration.id));
           }
+        }}
+      />
+      <CheckboxButton
+        buttonTitle="Dotting"
+        disabled={!selectedDuration}
+        isChecked={selectedDuration?.isDotted || false}
+        setChecked={(isDotted) => {
+          dispatch(
+            setDurationDotted({
+              durationId: selectedDuration.id,
+              isDotted: isDotted,
+            })
+          );
         }}
       />
     </div>

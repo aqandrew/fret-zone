@@ -34,6 +34,7 @@ export const defaultMeasureOptions = {
 export const defaultDurationOptions = {
   isRest: false,
   length: 1 / 4,
+  isDotted: false,
   notes: [],
 };
 
@@ -154,7 +155,7 @@ export const documentSlice = createSlice({
       }
     },
     addDuration: (state, { payload }) => {
-      let { measureId, newDurationId, length } = payload;
+      let { measureId, newDurationId, length, isDotted } = payload;
 
       state.measures.byId[measureId].durations.push(newDurationId);
       // TODO Added duration should have the same length as the last selected duration
@@ -162,6 +163,7 @@ export const documentSlice = createSlice({
         id: newDurationId,
         ...defaultDurationOptions,
         length: length,
+        isDotted: isDotted,
       };
       state.durations.allIds.push(newDurationId);
     },
@@ -182,6 +184,11 @@ export const documentSlice = createSlice({
 
         thisDuration.notes.splice(0, thisDuration.notes.length);
       }
+    },
+    setDurationDotted: (state, { payload }) => {
+      const { durationId, isDotted } = payload;
+
+      state.durations.byId[durationId].isDotted = isDotted;
     },
     // TODO Refactor this to be used for inserting a new note
     addNote: (state, { payload }) => {
@@ -259,6 +266,7 @@ export const {
   addDuration,
   addNote,
   addRest,
+  setDurationDotted,
   deleteTrack,
   deleteMeasure,
   deleteDuration,

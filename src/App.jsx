@@ -29,6 +29,7 @@ import {
   tracksSelector,
   durationsSelector,
   notesSelector,
+  setDurationDotted,
 } from './slices/document';
 import {
   dispatchChangeNextSelectedDurationLengthIfNecessary,
@@ -120,7 +121,12 @@ const App = () => {
         );
 
         if (durationInMeasure?.notes.length || durationInMeasure?.isRest) {
-          return totalDuration + durationInMeasure.length;
+          return (
+            totalDuration +
+            (durationInMeasure.isDotted
+              ? durationInMeasure.length * 1.5
+              : durationInMeasure.length)
+          );
         }
 
         return totalDuration;
@@ -147,7 +153,7 @@ const App = () => {
       );
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         nextTracksFirstDurationAtSelectedMeasureNumber,
-        selectedDuration?.length
+        selectedDuration
       );
     }
     // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
@@ -168,7 +174,7 @@ const App = () => {
       );
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         previousTracksFirstDurationAtSelectedMeasureNumber,
-        selectedDuration?.length
+        selectedDuration
       );
     }
 
@@ -274,7 +280,7 @@ const App = () => {
       dispatch(selectDuration(durationIdToSelect));
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         previousMeasuresLastDuration,
-        selectedDuration?.length
+        selectedDuration
       );
     }
   }, [
@@ -309,6 +315,7 @@ const App = () => {
               measureId: selectedMeasure?.id,
               newDurationId: newDurationId,
               length: selectedDuration?.length,
+              isDotted: selectedDuration?.isDotted,
             })
           );
           dispatch(selectDuration(newDurationId));
@@ -329,7 +336,7 @@ const App = () => {
         dispatch(selectDuration(nextDuration.id));
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           nextDuration,
-          selectedDuration?.length
+          selectedDuration
         );
       }
     } else {
@@ -378,7 +385,7 @@ const App = () => {
         dispatch(selectDuration(durationIdToSelect));
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           nextMeasuresFirstDuration,
-          selectedDuration?.length
+          selectedDuration
         );
       }
     }
@@ -396,40 +403,44 @@ const App = () => {
     selectedDuration,
   ]);
 
-  const dispatchDeleteMeasure = useCallback(
-    (selectedDurationLength) => {
-      if (selectedTrack?.measures.length > 1) {
-        let newSelectedMeasureNumber;
+  const dispatchDeleteMeasure = useCallback(() => {
+    if (selectedTrack?.measures.length > 1) {
+      let newSelectedMeasureNumber;
 
-        if (selectedMeasureNumber > 0) {
-          newSelectedMeasureNumber = selectedMeasureNumber - 1;
-          dispatch(selectMeasure(newSelectedMeasureNumber));
-        } else {
-          newSelectedMeasureNumber = selectedMeasureNumber + 1;
-        }
-
-        const durationToSelect = durations.find(
-          (duration) =>
-            duration.id ===
-            measures.find(
-              (measure) =>
-                measure.id === selectedTrack?.measures[newSelectedMeasureNumber]
-            ).durations[0]
-        );
-
-        dispatch(selectDuration(durationToSelect.id));
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          durationToSelect,
-          selectedDurationLength
-        );
-
-        // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
-        // so this still deletes the correct measure after selectMeasure has executed
-        dispatch(deleteMeasure(selectedMeasureNumber));
+      if (selectedMeasureNumber > 0) {
+        newSelectedMeasureNumber = selectedMeasureNumber - 1;
+        dispatch(selectMeasure(newSelectedMeasureNumber));
+      } else {
+        newSelectedMeasureNumber = selectedMeasureNumber + 1;
       }
-    },
-    [dispatch, measures, durations, selectedTrack, selectedMeasureNumber]
-  );
+
+      const durationToSelect = durations.find(
+        (duration) =>
+          duration.id ===
+          measures.find(
+            (measure) =>
+              measure.id === selectedTrack?.measures[newSelectedMeasureNumber]
+          ).durations[0]
+      );
+
+      dispatch(selectDuration(durationToSelect.id));
+      dispatchChangeNextSelectedDurationLengthIfNecessary(
+        durationToSelect,
+        selectedDuration
+      );
+
+      // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
+      // so this still deletes the correct measure after selectMeasure has executed
+      dispatch(deleteMeasure(selectedMeasureNumber));
+    }
+  }, [
+    dispatch,
+    measures,
+    durations,
+    selectedTrack,
+    selectedMeasureNumber,
+    selectedDuration,
+  ]);
 
   const dispatchDeleteNote = useCallback(() => {
     let needToSelectNewDuration = false;
@@ -508,7 +519,7 @@ const App = () => {
       dispatch(selectDuration(durationIdToSelect));
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         durations.find((duration) => duration.id === durationIdToSelect),
-        selectedDuration?.length
+        selectedDuration
       );
     }
   }, [
@@ -618,7 +629,7 @@ const App = () => {
           case '-':
             // Delete measure
             if (event.ctrlKey) {
-              dispatchDeleteMeasure(selectedDuration?.length);
+              dispatchDeleteMeasure();
             }
             // Lengthen selected duration
             else {
@@ -639,6 +650,16 @@ const App = () => {
             ) {
               dispatchShortenDuration(selectedDurationId);
             }
+
+            break;
+          case '.':
+            // Toggle whether selected duration is dotted
+            dispatch(
+              setDurationDotted({
+                durationId: selectedDurationId,
+                isDotted: !selectedDuration.isDotted,
+              })
+            );
 
             break;
           case 'r':

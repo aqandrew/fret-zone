@@ -81,14 +81,14 @@ const GlobalView = ({ openAddTrackModal }) => {
 
                         dispatch(selectMeasure(measureNumber));
                         dispatch(selectDuration(durationIdToSelect));
-                        // TODO Figure out a better way to find the selected duration than this and App.getSelectedDuration
+                        // TODO Figure out a better way to find the selected duration
                         dispatchChangeNextSelectedDurationLengthIfNecessary(
                           durations.find(
                             (duration) => duration.id === durationIdToSelect
                           ),
                           durations.find(
                             (duration) => duration.id === selectedDurationId
-                          ).length
+                          )
                         );
                       }}
                       key={measureNumber}
@@ -140,7 +140,6 @@ const TrackControl = ({ track, trackNumber }) => {
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           durations.find((duration) => duration.id === durationIdToSelect),
           durations.find((duration) => duration.id === selectedDurationId)
-            .length
         );
       }}
     >
@@ -209,7 +208,6 @@ const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           durations.find((duration) => duration.id === durationIdToSelect),
           durations.find((duration) => duration.id === selectedDurationId)
-            .length
         );
       }}
     ></div>

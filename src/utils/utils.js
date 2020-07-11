@@ -47,3 +47,16 @@ export const roundDurationLength = (durationLength) => {
 
   return integerString + '.' + decimalString;
 };
+
+// Given
+export const formatPercentage = (n) => {
+  n *= 100;
+
+  // Assume we only want to see integer percentages
+  // Prevents funny-looking results like 1.1 * 100 === 110.00000000000001
+  if (n >= 1) {
+    n = n.toFixed(0);
+  }
+
+  return n + '%';
+};

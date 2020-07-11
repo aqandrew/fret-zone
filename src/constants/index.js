@@ -15,4 +15,41 @@ export const durationLengths = {
   [1 / 64]: { name: 'Sixty-Fourth', abbreviation: 's' },
 };
 
-export default durationLengths;
+export const zoomOptions = [
+  'Fit to Width',
+  'Fit to Page',
+  0.25,
+  0.5,
+  0.75,
+  0.9,
+  1,
+  1.1,
+  1.25,
+  1.5,
+  2,
+  3,
+  4,
+  8,
+  'Custom...',
+];
+
+export const modes = {
+  page: 'Page',
+  screen: 'Screen',
+};
+
+export const orientations = {
+  vertical: 'Vertical',
+  horizontal: 'Horizontal',
+  grid: 'Grid',
+  parchment: 'Parchment',
+};
+
+export const displayModes = [
+  { mode: modes.page, orientation: orientations.vertical },
+  { mode: modes.page, orientation: orientations.horizontal },
+  { mode: modes.page, orientation: orientations.grid },
+  { mode: modes.page, orientation: orientations.parchment },
+  { mode: modes.screen, orientation: orientations.vertical },
+  { mode: modes.screen, orientation: orientations.horizontal },
+];

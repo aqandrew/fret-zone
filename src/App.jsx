@@ -44,6 +44,7 @@ import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
 import Zoom from './components/Toolbar/Zoom';
+import DisplayModes from './components/Toolbar/DisplayModes';
 import EditionPalette from './components/EditionPalette';
 import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';
@@ -77,6 +78,7 @@ const App = () => {
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [displayModeIndex, setDisplayModeIndex] = useState(0);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
@@ -772,7 +774,10 @@ const App = () => {
             />
           </div>
           <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
-          {/* TODO Display modes select */}
+          <DisplayModes
+            displayModeIndex={displayModeIndex}
+            setDisplayModeIndex={setDisplayModeIndex}
+          />
           {/* TODO Undo/redo */}
           {/* TODO Print */}
           <div className="PlaybackControls">

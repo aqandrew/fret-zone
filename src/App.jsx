@@ -43,6 +43,7 @@ import {
 import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
+import Zoom from './components/Toolbar/Zoom';
 import EditionPalette from './components/EditionPalette';
 import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';
@@ -75,6 +76,7 @@ const App = () => {
   const [editionPaletteShown, setEditionPaletteShown] = useState(true);
   const [globalViewShown, setGlobalViewShown] = useState(true);
   const [inspectorShown, setInspectorShown] = useState(true);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
@@ -769,7 +771,7 @@ const App = () => {
               setChecked={setInspectorShown}
             />
           </div>
-          {/* TODO Zoom control */}
+          <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
           {/* TODO Display modes select */}
           {/* TODO Undo/redo */}
           {/* TODO Print */}

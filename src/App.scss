@@ -8,7 +8,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  .ToolBar {
+  .TopBar {
     background: #2a2a2a;
 
     &__ActiveFileName {
@@ -18,7 +18,7 @@
     }
   }
 
-  .ScoreControls {
+  .ToolBar {
     display: flex;
     justify-content: space-between;
 

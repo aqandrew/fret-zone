@@ -751,12 +751,12 @@ const App = () => {
   return (
     <div className="App" onKeyDown={onKeyDown}>
       <AppMenu />
-      <div className="ToolBar">
-        <div className="ToolBar__ActiveFileName">
+      <div className="TopBar">
+        <div className="TopBar__ActiveFileName">
           {activeFileName || 'untitled'}
         </div>
-        <div className="ScoreControls">
-          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--Panels">
+        <div className="ToolBar">
+          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
             <CheckboxButton
               buttonTitle="Show/Hide Edition Palette"
               isChecked={editionPaletteShown}
@@ -773,14 +773,14 @@ const App = () => {
               setChecked={setInspectorShown}
             />
           </div>
-          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--Workspace">
+          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
             <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
             <DisplayModes
               displayModeIndex={displayModeIndex}
               setDisplayModeIndex={setDisplayModeIndex}
             />
           </div>
-          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--History">
+          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
             <button>Undo</button>
             <button>Redo</button>
           </div>
@@ -812,7 +812,7 @@ const App = () => {
               {renderBarCurrentDuration()}
             </div>
           </div>
-          <div className="ScoreControls__ButtonContainer">
+          <div className="ToolBar__ButtonContainer">
             {/* TODO Buttons for fretboard/keyboard/drum view */}
           </div>
         </div>

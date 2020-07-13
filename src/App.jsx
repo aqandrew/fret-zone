@@ -756,7 +756,7 @@ const App = () => {
           {activeFileName || 'untitled'}
         </div>
         <div className="ScoreControls">
-          <div className="ScoreControls__ButtonContainer">
+          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--Panels">
             <CheckboxButton
               buttonTitle="Show/Hide Edition Palette"
               isChecked={editionPaletteShown}
@@ -773,13 +773,18 @@ const App = () => {
               setChecked={setInspectorShown}
             />
           </div>
-          <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
-          <DisplayModes
-            displayModeIndex={displayModeIndex}
-            setDisplayModeIndex={setDisplayModeIndex}
-          />
-          {/* TODO Undo/redo */}
-          {/* TODO Print */}
+          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--Workspace">
+            <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
+            <DisplayModes
+              displayModeIndex={displayModeIndex}
+              setDisplayModeIndex={setDisplayModeIndex}
+            />
+          </div>
+          <div className="ScoreControls__ButtonContainer ScoreControls__ButtonContainer--History">
+            <button>Undo</button>
+            <button>Redo</button>
+          </div>
+          <button>Print</button>
           <div className="PlaybackControls">
             <div
               className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"

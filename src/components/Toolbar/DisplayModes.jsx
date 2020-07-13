@@ -5,6 +5,11 @@ import { displayModes } from '../../constants';
 const DisplayModes = ({ displayModeIndex, setDisplayModeIndex }) => (
   <select
     className="DisplayModes"
+    title={
+      displayModes[displayModeIndex].mode +
+      ' - ' +
+      displayModes[displayModeIndex].orientation
+    }
     value={displayModeIndex}
     onChange={(event) => {
       setDisplayModeIndex(event.target.value);

@@ -756,64 +756,154 @@ const App = () => {
           {activeFileName || 'untitled'}
         </div>
         <div className="ToolBar">
-          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
-            <CheckboxButton
-              buttonTitle="Show/Hide Edition Palette"
-              isChecked={editionPaletteShown}
-              setChecked={setEditionPaletteShown}
-            />
-            <CheckboxButton
-              buttonTitle="Show/Hide Global View"
-              isChecked={globalViewShown}
-              setChecked={setGlobalViewShown}
-            />
-            <CheckboxButton
-              buttonTitle="Show/Hide Inspector"
-              isChecked={inspectorShown}
-              setChecked={setInspectorShown}
-            />
-          </div>
-          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
-            <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
-            <DisplayModes
-              displayModeIndex={displayModeIndex}
-              setDisplayModeIndex={setDisplayModeIndex}
-            />
-          </div>
-          <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
-            <button>Undo</button>
-            <button>Redo</button>
-          </div>
-          <button>Print</button>
-          <div className="PlaybackControls">
-            <div
-              className="PlaybackControls__Display PlaybackControls__Display--CurrentTrack"
-              title="Current track (Click to change)"
-            >
-              {tracks.length
-                ? `${selectedTrackNumber + 1}. ${
-                    tracks[selectedTrackNumber].fullName
-                  }`
-                : ''}
+          <div className="ToolBar__Group ToolBar__Group--Left">
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
+              <CheckboxButton
+                buttonTitle="Show/Hide Edition Palette"
+                isChecked={editionPaletteShown}
+                setChecked={setEditionPaletteShown}
+              />
+              <CheckboxButton
+                buttonTitle="Show/Hide Global View"
+                isChecked={globalViewShown}
+                setChecked={setGlobalViewShown}
+              />
+              <CheckboxButton
+                buttonTitle="Show/Hide Inspector"
+                isChecked={inspectorShown}
+                setChecked={setInspectorShown}
+              />
             </div>
-            {/* TODO Click to open "Go to" modal */}
-            <div
-              className="PlaybackControls__Display PlaybackControls__Display--BarPosition"
-              title="Bar position"
-            >
-              {selectedMeasureNumber + 1}/
-              {tracks.length ? tracks[selectedTrackNumber].measures.length : 0}
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
+              <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
+              <DisplayModes
+                displayModeIndex={displayModeIndex}
+                setDisplayModeIndex={setDisplayModeIndex}
+              />
             </div>
-            {/* TODO Click to toggle incomplete duration vs. remaining duration */}
-            <div
-              className="PlaybackControls__Display PlaybackControls__Display--BarCurrentDuration"
-              title="Bar current duration"
-            >
-              {renderBarCurrentDuration()}
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
+              <button title="Undo">↩️</button>
+              <button title="Redo">↪️</button>
+            </div>
+            <button title="Print...">🖨</button>
+          </div>
+          <div className="ToolBar__Group ToolBar__Group--Center">
+            <div className="NavigationAndPlayback">
+              <button
+                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--FirstBar"
+                title="Go to first bar"
+              >
+                ⏮
+              </button>
+              <button
+                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PreviousBar"
+                title="Go to previous bar"
+              >
+                ⏪
+              </button>
+              <button
+                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PlayPause"
+                title="Play"
+              >
+                ▶️
+              </button>
+              <button
+                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--NextBar"
+                title="Go to next bar"
+              >
+                ⏩
+              </button>
+              <button
+                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--LastBar"
+                title="Go to last bar"
+              >
+                ⏭
+              </button>
+            </div>
+            <div className="LCD">
+              {/* TODO Use a less hacky placeholder than '\xa0' (&nbsp;) */}
+              <div
+                className="LCD__Control LCD__Control--CurrentTrack"
+                title="Current track (Click to change)"
+              >
+                {tracks.length
+                  ? `${selectedTrackNumber + 1}. ${
+                      tracks[selectedTrackNumber].fullName
+                    }`
+                  : '\xa0'}
+              </div>
+              <button
+                className="LCD__Control LCD__Control--CountIn"
+                title="Activate/Deactivate count-in"
+              >
+                ⌛️
+              </button>
+              <button
+                className="LCD__Control LCD__Control--Metronome"
+                title="Activate/Deactivate metronome"
+              >
+                ⏲
+              </button>
+              <button
+                className="LCD__Control LCD__Control--MetronomeSettings"
+                title="Metronome & Count-in settings"
+              >
+                🍡
+              </button>
+              <div
+                className="LCD__Control LCD__Control--NoteAtCursor"
+                title="Note on the cursor"
+              >
+                E4
+              </div>
+              {/* TODO Click to open "Go to" modal */}
+              <button
+                className="LCD__Control LCD__Control--BarPosition"
+                title="Bar position"
+              >
+                {selectedMeasureNumber + 1}/
+                {tracks.length
+                  ? tracks[selectedTrackNumber].measures.length
+                  : 0}
+              </button>
+              {/* TODO Click to toggle incomplete duration vs. remaining duration */}
+              <button
+                className="LCD__Control LCD__Control--BarCurrentDuration"
+                title="Bar current duration"
+              >
+                {renderBarCurrentDuration()}
+              </button>
+              <div className="LCD__Control LCD__Control--Time">
+                00:00 - 00:00
+              </div>
+              <button className="LCD__Control LCD__Control--TripletFeel">
+                Triplet feel
+              </button>
+              <button className="LCD__Control LCD__Control--Tempo">
+                Tempo
+              </button>
+              <button className="LCD__Control LCD__Control--TimeSignature">
+                Time signature
+              </button>
+            </div>
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">
+              <button title="Enable loop">🔁</button>
+              <button title="Relative speed">🎵</button>
+            </div>
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--GlobalTonality">
+              <button title="Enable/Disable relative tonality">🍴</button>
             </div>
           </div>
-          <div className="ToolBar__ButtonContainer">
-            {/* TODO Buttons for fretboard/keyboard/drum view */}
+          <div className="ToolBar__Group ToolBar__Group--Right">
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--InstrumentViews">
+              <button title="Show/Hide Fretboard View">🎸</button>
+              <button title="Show/Hide Keyboard View">🎹</button>
+              <button title="Show/Hide Virtual Drum Kit">🥁</button>
+            </div>
+            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Listeners">
+              <button title="Tuner">🔔</button>
+              <button title="Line-in">🔌</button>
+            </div>
           </div>
         </div>
       </div>
@@ -824,8 +914,6 @@ const App = () => {
       />
       <div className="App__Content--Main">
         <div className="App__Content--Center">
-          {/* TODO This prop-drilling approach should be rethought */}
-          {/* Won't scale nicely--there will be a ton of setter functions to drill into the whole Edition Palette */}
           {editionPaletteShown && (
             <EditionPalette selectedDuration={selectedDuration} />
           )}

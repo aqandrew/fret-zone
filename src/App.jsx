@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import Emoji from 'a11y-react-emoji';
 
 // TODO Alphabetize imports w/ESLint
 import {
@@ -782,10 +783,16 @@ const App = () => {
               />
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
-              <button title="Undo">↩️</button>
-              <button title="Redo">↪️</button>
+              <button title="Undo">
+                <Emoji symbol="↩️" />
+              </button>
+              <button title="Redo">
+                <Emoji symbol="↪️" />
+              </button>
             </div>
-            <button title="Print...">🖨</button>
+            <button title="Print...">
+              <Emoji symbol="🖨" />
+            </button>
           </div>
           <div className="ToolBar__Group ToolBar__Group--Center">
             <div className="NavigationAndPlayback">
@@ -793,31 +800,31 @@ const App = () => {
                 className="NavigationAndPlayback__Button NavigationAndPlayback__Button--FirstBar"
                 title="Go to first bar"
               >
-                ⏮
+                <Emoji symbol="⏮" />
               </button>
               <button
                 className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PreviousBar"
                 title="Go to previous bar"
               >
-                ⏪
+                <Emoji symbol="⏪" />
               </button>
               <button
                 className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PlayPause"
                 title="Play"
               >
-                ▶️
+                <Emoji symbol="▶️" />
               </button>
               <button
                 className="NavigationAndPlayback__Button NavigationAndPlayback__Button--NextBar"
                 title="Go to next bar"
               >
-                ⏩
+                <Emoji symbol="⏩" />
               </button>
               <button
                 className="NavigationAndPlayback__Button NavigationAndPlayback__Button--LastBar"
                 title="Go to last bar"
               >
-                ⏭
+                <Emoji symbol="⏭" />
               </button>
             </div>
             <div className="LCD">
@@ -836,19 +843,19 @@ const App = () => {
                 className="LCD__Control LCD__Control--CountIn"
                 title="Activate/Deactivate count-in"
               >
-                ⌛️
+                <Emoji symbol="⌛️" />
               </button>
               <button
                 className="LCD__Control LCD__Control--Metronome"
                 title="Activate/Deactivate metronome"
               >
-                ⏲
+                <Emoji symbol="⏲" />
               </button>
               <button
                 className="LCD__Control LCD__Control--MetronomeSettings"
                 title="Metronome & Count-in settings"
               >
-                🍡
+                <Emoji symbol="🍡" />
               </button>
               <div
                 className="LCD__Control LCD__Control--NoteAtCursor"
@@ -887,22 +894,38 @@ const App = () => {
               </button>
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">
-              <button title="Enable loop">🔁</button>
-              <button title="Relative speed">🎵</button>
+              <button title="Enable loop">
+                <Emoji symbol="🔁" />
+              </button>
+              <button title="Relative speed">
+                <Emoji symbol="🎵" />
+              </button>
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--GlobalTonality">
-              <button title="Enable/Disable relative tonality">🍴</button>
+              <button title="Enable/Disable relative tonality">
+                <Emoji symbol="🍴" />
+              </button>
             </div>
           </div>
           <div className="ToolBar__Group ToolBar__Group--Right">
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--InstrumentViews">
-              <button title="Show/Hide Fretboard View">🎸</button>
-              <button title="Show/Hide Keyboard View">🎹</button>
-              <button title="Show/Hide Virtual Drum Kit">🥁</button>
+              <button title="Show/Hide Fretboard View">
+                <Emoji symbol="🎸" />
+              </button>
+              <button title="Show/Hide Keyboard View">
+                <Emoji symbol="🎹" />
+              </button>
+              <button title="Show/Hide Virtual Drum Kit">
+                <Emoji symbol="🥁" />
+              </button>
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Listeners">
-              <button title="Tuner">🔔</button>
-              <button title="Line-in">🔌</button>
+              <button title="Tuner">
+                <Emoji symbol="🔔" />
+              </button>
+              <button title="Line-in">
+                <Emoji symbol="🔌" />
+              </button>
             </div>
           </div>
         </div>

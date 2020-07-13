@@ -43,8 +43,8 @@ import {
 import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
-import Zoom from './components/Toolbar/Zoom';
-import DisplayModes from './components/Toolbar/DisplayModes';
+import Zoom from './components/ToolBar/Zoom';
+import DisplayModes from './components/ToolBar/DisplayModes';
 import EditionPalette from './components/EditionPalette';
 import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';

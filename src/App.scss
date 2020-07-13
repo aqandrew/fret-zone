@@ -8,6 +8,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  button {
+    color: white;
+  }
+
   .TopBar {
     background: #2a2a2a;
 
@@ -27,8 +31,8 @@
     }
   }
 
-  .PlaybackControls {
-    &__Display {
+  .LCD {
+    &__Control {
       background: #191c21;
       user-select: none;
 

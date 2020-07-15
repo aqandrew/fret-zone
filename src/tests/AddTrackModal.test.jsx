@@ -42,7 +42,7 @@ describe('AddTrackModal', () => {
 
     const firstInput = getByLabelText(
       screen.getByRole('dialog'),
-      'Electric Guitar - Clean',
+      'Clean Guitar',
       { exact: false }
     );
 

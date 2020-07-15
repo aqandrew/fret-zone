@@ -41,7 +41,7 @@ describe('App', () => {
       fireEvent.click(screen.getByTitle('Add Track'));
       const firstInput = getByLabelText(
         screen.getByRole('dialog'),
-        'Electric Guitar - Clean',
+        'Clean Guitar',
         { exact: false }
       );
       fireEvent.keyDown(firstInput, { key: 'Enter' });

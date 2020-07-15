@@ -883,23 +883,32 @@ const App = () => {
               >
                 {renderBarCurrentDuration()}
               </button>
-              <div className="LCD__Control LCD__Control--Time">
-                00:00 - 00:00
+              <div className="LCD__Control LCD__Control--Time" title="Time">
+                00:00 / 00:00
               </div>
-              <button className="LCD__Control LCD__Control--TripletFeel">
-                Triplet feel
+              <button
+                className="LCD__Control LCD__Control--TripletFeel"
+                title="No triplet feel"
+              >
+                <Emoji symbol="🎶" />
               </button>
-              <button className="LCD__Control LCD__Control--Tempo">
+              <button
+                className="LCD__Control LCD__Control--Tempo"
+                title="Current tempo"
+              >
                 Tempo
               </button>
-              <button className="LCD__Control LCD__Control--TimeSignature">
-                Time signature
+              <button
+                className="LCD__Control LCD__Control--TimeSignature"
+                title="Time signature"
+              >
+                4/4
               </button>
               <input
                 type="range"
                 name="time"
                 id="time"
-                className="LCD__Control LCD__Control--Time"
+                className="LCD__Control LCD__Control--TimeScrubber"
               />
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">

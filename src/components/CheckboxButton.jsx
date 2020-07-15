@@ -1,11 +1,17 @@
 import React from 'react';
 import slugify from 'slugify';
 
-const CheckboxButton = ({ buttonTitle, disabled, isChecked, setChecked }) => {
+const CheckboxButton = ({
+  buttonText,
+  buttonTitle,
+  disabled,
+  isChecked,
+  setChecked,
+}) => {
   const inputId = slugify(buttonTitle, { lower: true });
 
   return (
-    <div className="CheckboxButton">
+    <div className="CheckboxButton" title={buttonTitle}>
       <input
         type="checkbox"
         id={inputId}
@@ -15,7 +21,7 @@ const CheckboxButton = ({ buttonTitle, disabled, isChecked, setChecked }) => {
           setChecked(!isChecked);
         }}
       />
-      <label htmlFor={inputId}>{buttonTitle}</label>
+      <label htmlFor={inputId}>{buttonText || buttonTitle}</label>
     </div>
   );
 };

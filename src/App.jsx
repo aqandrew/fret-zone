@@ -41,7 +41,7 @@ import {
   sameFretNumberCutoffTime,
   durationLengths,
 } from './constants';
-import AppMenu from './components/AppMenu';
+// import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
 import Zoom from './components/ToolBar/Zoom';
@@ -751,7 +751,7 @@ const App = () => {
 
   return (
     <div className="App" onKeyDown={onKeyDown}>
-      <AppMenu />
+      {/* <AppMenu /> */}
       <div className="TopBar">
         <div className="TopBar__ActiveFileName">
           {activeFileName || 'untitled'}
@@ -896,7 +896,7 @@ const App = () => {
                 className="LCD__Control LCD__Control--Tempo"
                 title="Current tempo"
               >
-                Tempo
+                d = 120
               </button>
               <button
                 className="LCD__Control LCD__Control--TimeSignature"
@@ -916,12 +916,12 @@ const App = () => {
                 <Emoji symbol="🔁" />
               </button>
               <button title="Relative speed">
-                <Emoji symbol="🎵" />
+                <Emoji symbol="🎵" /> 100%
               </button>
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--GlobalTonality">
               <button title="Enable/Disable relative tonality">
-                <Emoji symbol="🍴" />
+                <Emoji symbol="🍴" /> 0
               </button>
             </div>
           </div>

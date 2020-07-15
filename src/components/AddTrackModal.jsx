@@ -5,7 +5,7 @@ import Modal from './Modal';
 const AddTrackModal = ({ show, onClose }) => {
   // TODO Move this object to document.js
   const defaultTrackOptions = {
-    fullName: 'Electric Guitar - Clean',
+    fullName: 'Clean Guitar',
     abbreviatedName: 'el.guit.',
     tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
   };

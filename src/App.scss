@@ -99,6 +99,10 @@
 
         &--BarCurrentDuration {
           grid-column: span 4;
+
+          .DurationSymbol {
+            font-size: 6px;
+          }
         }
 
         &--Time {

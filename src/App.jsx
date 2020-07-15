@@ -742,10 +742,17 @@ const App = () => {
       barMaximumDuration = getCurrentBarMaximumDuration();
     }
 
+    // TODO Click to toggle incomplete duration vs. remaining duration
     return (
-      roundDurationLength(barDuration) +
-      ':' +
-      roundDurationLength(barMaximumDuration)
+      <>
+        <Emoji
+          symbol={barDuration === barMaximumDuration ? '✅' : '⚠️'}
+          className="DurationSymbol"
+        />
+        {roundDurationLength(barDuration) +
+          ':' +
+          roundDurationLength(barMaximumDuration)}
+      </>
     );
   };
 
@@ -876,7 +883,6 @@ const App = () => {
                   ? tracks[selectedTrackNumber].measures.length
                   : 0}
               </button>
-              {/* TODO Click to toggle incomplete duration vs. remaining duration */}
               <button
                 className="LCD__Control LCD__Control--BarCurrentDuration"
                 title="Bar current duration"

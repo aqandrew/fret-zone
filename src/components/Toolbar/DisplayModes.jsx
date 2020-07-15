@@ -2,6 +2,8 @@ import React from 'react';
 
 import { displayModes } from '../../constants';
 
+import './DisplayModes.scss';
+
 const DisplayModes = ({ displayModeIndex, setDisplayModeIndex }) => (
   <select
     className="DisplayModes"

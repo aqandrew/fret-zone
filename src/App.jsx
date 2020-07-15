@@ -760,16 +760,19 @@ const App = () => {
           <div className="ToolBar__Group ToolBar__Group--Left">
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
               <CheckboxButton
+                buttonText="["
                 buttonTitle="Show/Hide Edition Palette"
                 isChecked={editionPaletteShown}
                 setChecked={setEditionPaletteShown}
               />
               <CheckboxButton
+                buttonText="_"
                 buttonTitle="Show/Hide Global View"
                 isChecked={globalViewShown}
                 setChecked={setGlobalViewShown}
               />
               <CheckboxButton
+                buttonText="]"
                 buttonTitle="Show/Hide Inspector"
                 isChecked={inspectorShown}
                 setChecked={setInspectorShown}
@@ -892,6 +895,12 @@ const App = () => {
               <button className="LCD__Control LCD__Control--TimeSignature">
                 Time signature
               </button>
+              <input
+                type="range"
+                name="time"
+                id="time"
+                className="LCD__Control LCD__Control--Time"
+              />
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">
               <button title="Enable loop">

@@ -760,8 +760,20 @@ const App = () => {
     <div className="App" onKeyDown={onKeyDown}>
       {/* <AppMenu /> */}
       <div className="TopBar">
-        <div className="TopBar__ActiveFileName">
-          {activeFileName || 'untitled'}
+        <div className="TopBarText">
+          <span className="TopBarText__ActiveFileName">
+            {activeFileName || 'untitled'}
+          </span>
+          <span className="TopBarText__Attribution">
+            <a
+              href="https://github.com/dawneraq/fret-zone"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="TopBarText__Link"
+            >
+              Source
+            </a>
+          </span>
         </div>
         <div className="ToolBar">
           <div className="ToolBar__Group ToolBar__Group--Left">

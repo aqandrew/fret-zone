@@ -10,11 +10,33 @@
 
   .TopBar {
     background: #2a2a2a;
+    padding: 0 12px;
 
-    &__ActiveFileName {
+    &Text {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-columns: repeat(3, 1fr);
       color: #898989;
-      text-align: center;
       padding-top: 2px;
+      padding-bottom: 10px;
+
+      &__ActiveFileName {
+        text-align: center;
+        grid-column: 2;
+      }
+
+      &__Attribution {
+        text-align: right;
+        grid-column: 3;
+      }
+
+      &__Link {
+        color: white;
+
+        &:visited {
+          color: white;
+        }
+      }
     }
   }
 

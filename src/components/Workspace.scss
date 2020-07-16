@@ -47,14 +47,16 @@
 
     &__Input {
       width: 14px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      text-align: center;
 
       &:focus {
         outline: none;
       }
 
       &--IsActive {
-        border: 1px solid black;
-        border-radius: 2px;
+        border-color: black;
         background: #f7e5b7;
       }
     }

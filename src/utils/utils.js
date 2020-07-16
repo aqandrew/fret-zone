@@ -20,7 +20,12 @@ export const dispatchChangeNextSelectedDurationLengthIfNecessary = (
     );
   }
 
-  if (nextSelectedDuration.isDotted !== selectedDuration.isDotted) {
+  // Only change the next selected duration's dotting if it's empty
+  if (
+    !nextSelectedDuration.notes.length &&
+    !nextSelectedDuration.isRest &&
+    nextSelectedDuration.isDotted !== selectedDuration.isDotted
+  ) {
     store.dispatch(
       setDurationDotted({
         durationId: nextSelectedDuration.id,

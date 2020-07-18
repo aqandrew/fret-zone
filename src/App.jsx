@@ -772,6 +772,15 @@ const App = () => {
               className="TopBarText__Link"
             >
               Source
+            </a>{' '}
+            • Made with <Emoji symbol="🤘🏽" /> by{' '}
+            <a
+              href="https://twitter.com/aqandrew"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="TopBarText__Link"
+            >
+              Andrew
             </a>
           </span>
         </div>

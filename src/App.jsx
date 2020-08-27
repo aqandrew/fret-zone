@@ -1015,6 +1015,7 @@ const App = () => {
       />
       <DeleteTrackModal
         show={showDeleteTrackModal}
+        nameOfTrackToDelete={selectedTrack?.fullName}
         onClose={(modalResult) => {
           setShowDeleteTrackModal(false);
 

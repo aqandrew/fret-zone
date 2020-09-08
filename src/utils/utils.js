@@ -53,14 +53,16 @@ export const roundDurationLength = (durationLength) => {
   return integerString + '.' + decimalString;
 };
 
-// Given
+// Given a decimal number n, return a string representing n as a percentage
+// formatPercentage(0.25) => '25%'
+// formatPercentage(2) => '200%'
 export const formatPercentage = (n) => {
   n *= 100;
 
-  // Assume we only want to see integer percentages
-  // Prevents funny-looking results like 1.1 * 100 === 110.00000000000001
+  // Assume we only want to see integer percentages if they're 100% or above
+  // Prevents funny-looking results like 1.1 * 100 => 110.00000000000001
   if (n >= 1) {
-    n = n.toFixed(0);
+    n = Math.trunc(n);
   }
 
   return n + '%';

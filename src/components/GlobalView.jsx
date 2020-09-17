@@ -129,6 +129,7 @@ const TrackControl = ({ track, trackNumber }) => {
     <div
       className={trackControlClassName}
       onClick={() => {
+        // TODO Remove duplicated code between this and .LCD__Control--CurrentTrack.onChange
         // Select first duration of track's measure at selectedMeasureNumber
         const durationIdToSelect = measures.find(
           (measure) =>

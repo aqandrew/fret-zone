@@ -67,3 +67,20 @@ export const formatPercentage = (n) => {
 
   return n + '%';
 };
+
+// Best-fit curve for strictly increasing exponential curve through the following points:
+// (0, 0.1)
+// (0.5, 1)
+// (1, 8)
+export const getZoomLevelFromSlider = (sliderValue) => {
+  const a = 18997 / 500;
+  const b = 302469 / 5000;
+  const c = -32031 / 125000;
+  const d = -327869 / 100000;
+
+  return Math.round(a * Math.pow(b, sliderValue + c) + d) / 100;
+};
+
+export const getSliderLevelFromZoom = (zoomValue) => {
+  // TODO
+};

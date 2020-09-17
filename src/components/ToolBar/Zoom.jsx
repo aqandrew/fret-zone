@@ -1,19 +1,30 @@
 import React from 'react';
+import { useState } from 'react';
 
 import { zoomOptions } from '../../constants';
-import { formatPercentage } from '../../utils';
+import { formatPercentage, getZoomLevelFromSlider } from '../../utils';
 
 import './Zoom.scss';
 
 const Zoom = ({ zoomLevel, setZoomLevel }) => {
-  const handleZoomChange = (event) => {
-    const zoomOption = event.target.value;
+  const [sliderValue, setSliderValue] = useState(0.5);
 
-    if (isNaN(zoomOption)) {
-      alert('TODO Set zoom to ' + zoomOption);
+  const handleDropdownChange = (event) => {
+    const newDropdownValue = event.target.value;
+
+    if (isNaN(newDropdownValue)) {
+      alert('TODO Set zoom to ' + newDropdownValue);
     } else {
-      setZoomLevel(zoomOption);
+      // TODO setSliderValue using inverse function of getZoomLevelFromSlider
+      setZoomLevel(+newDropdownValue);
     }
+  };
+
+  const handleSliderChange = (event) => {
+    const newSliderValue = +event.target.value;
+
+    setSliderValue(newSliderValue);
+    setZoomLevel(getZoomLevelFromSlider(newSliderValue));
   };
 
   return (
@@ -24,7 +35,7 @@ const Zoom = ({ zoomLevel, setZoomLevel }) => {
         id="zoom-dropdown"
         className="Zoom__Dropdown"
         value={zoomLevel}
-        onChange={handleZoomChange}
+        onChange={handleDropdownChange}
       >
         {zoomOptions.map((zoomOption, i) => (
           <option value={zoomOption} key={i}>
@@ -32,16 +43,16 @@ const Zoom = ({ zoomLevel, setZoomLevel }) => {
           </option>
         ))}
       </select>
-      {/* TODO Set nonlinear steps, so that 100% is in the middle */}
       <input
         type="range"
         name="zoom-slider"
         id="zoom-slider"
         className="Zoom__Slider"
-        min={0.1}
-        max={8}
-        value={zoomLevel}
-        onChange={handleZoomChange}
+        min={0}
+        max={1}
+        step="any"
+        value={sliderValue}
+        onChange={handleSliderChange}
       />
     </div>
   );

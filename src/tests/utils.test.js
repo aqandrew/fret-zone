@@ -1,4 +1,4 @@
-const { roundDurationLength } = require('../utils');
+const { roundDurationLength, getZoomLevelFromSlider } = require('../utils');
 
 describe('roundDurationLength', () => {
   it('rounds 0', () => {
@@ -49,5 +49,19 @@ describe('roundDurationLength', () => {
     it('rounds a triplet sixty-fourth note', () => {
       expect(roundDurationLength(((1 / 64) * 4 * 2) / 3)).toBe('0.0417');
     });
+  });
+});
+
+describe('getZoomLevelFromSlider', () => {
+  it('has the correct minimum zoom level', () => {
+    expect(getZoomLevelFromSlider(0)).toBe(0.1);
+  });
+
+  it('has the correct median zoom level', () => {
+    expect(getZoomLevelFromSlider(0.5)).toBe(1);
+  });
+
+  it('has the correct maximum zoom level', () => {
+    expect(getZoomLevelFromSlider(1)).toBe(8);
   });
 });

@@ -82,7 +82,7 @@ const App = () => {
   const [displayModeIndex, setDisplayModeIndex] = useState(0);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
-  const [showAddTrackModal, setShowAddTrackModal] = useState(true);
+  const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
   const [selectedTrack, setSelectedTrack] = useState(undefined);

@@ -82,7 +82,7 @@ const App = () => {
   const [displayModeIndex, setDisplayModeIndex] = useState(0);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentArtist, setDocumentArtist] = useState('');
-  const [showAddTrackModal, setShowAddTrackModal] = useState(false);
+  const [showAddTrackModal, setShowAddTrackModal] = useState(true);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
   const [selectedTrack, setSelectedTrack] = useState(undefined);
@@ -859,17 +859,41 @@ const App = () => {
               </button>
             </div>
             <div className="LCD">
-              {/* TODO Use a less hacky placeholder than '\xa0' (&nbsp;) */}
-              <div
+              <select
                 className="LCD__Control LCD__Control--CurrentTrack"
                 title="Current track (Click to change)"
+                value={selectedTrackNumber}
+                onChange={(event) => {
+                  let trackNumberToSelect = +event.target.value;
+
+                  // TODO Remove duplicated code between this and TrackControl.onClick
+                  // Select first duration of track's measure at selectedMeasureNumber
+                  const durationIdToSelect = measures.find(
+                    (measure) =>
+                      measure.id ===
+                      tracks[trackNumberToSelect].measures[
+                        selectedMeasureNumber
+                      ]
+                  ).durations[0];
+
+                  dispatch(selectTrack(trackNumberToSelect));
+                  dispatch(selectDuration(durationIdToSelect));
+                  dispatchChangeNextSelectedDurationLengthIfNecessary(
+                    durations.find(
+                      (duration) => duration.id === durationIdToSelect
+                    ),
+                    durations.find(
+                      (duration) => duration.id === selectedDurationId
+                    )
+                  );
+                }}
               >
-                {tracks.length
-                  ? `${selectedTrackNumber + 1}. ${
-                      tracks[selectedTrackNumber].fullName
-                    }`
-                  : '\xa0'}
-              </div>
+                {tracks.map((track, trackNumber) => (
+                  <option value={trackNumber} key={trackNumber}>{`${
+                    trackNumber + 1
+                  }. ${track.fullName}`}</option>
+                ))}
+              </select>
               <button
                 className="LCD__Control LCD__Control--CountIn"
                 title="Activate/Deactivate count-in"

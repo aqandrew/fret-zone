@@ -53,3 +53,33 @@ export const displayModes = [
   { mode: modes.screen, orientation: orientations.vertical },
   { mode: modes.screen, orientation: orientations.horizontal },
 ];
+
+export const notesSharp = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+];
+
+export const notesFlat = [
+  'C',
+  'Db',
+  'D',
+  'Eb',
+  'E',
+  'F',
+  'Gb',
+  'G',
+  'Ab',
+  'A',
+  'Bb',
+  'B',
+];

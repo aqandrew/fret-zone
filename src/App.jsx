@@ -40,6 +40,7 @@ import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
   durationLengths,
+  notesSharp,
 } from './constants';
 // import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
@@ -52,6 +53,7 @@ import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
 import AddTrackModal from './components/AddTrackModal';
 import DeleteTrackModal from './components/DeleteTrackModal';
+import Pitch from './components/Pitch';
 
 import './App.scss';
 
@@ -88,6 +90,40 @@ const App = () => {
   const [selectedTrack, setSelectedTrack] = useState(undefined);
   const [selectedMeasure, setSelectedMeasure] = useState(undefined);
   const [selectedDuration, setSelectedDuration] = useState(undefined);
+
+  const PitchAtCursor = () => {
+    // TODO Pitch evaluation should probably be moved to utility function,
+    // for when ability to draw staff notation is added
+
+    // If on an open string, or if there are no notes, return that string's pitch
+    const openStringPitch = selectedTrack?.tuning[selectedStringNumber];
+    let pitch = { ...openStringPitch };
+    const isNotePresent = isThereANoteAtSelectedPosition();
+
+    if (isNotePresent) {
+      let noteIndex = notesSharp.indexOf(pitch.note);
+      // TODO Remove duplicated code between this and Workspace.jsx:DurationColumn
+      const noteAtString = selectedDuration.notes
+        .map((noteId) => notes.find((note) => note.id === noteId))
+        .find((note) => note.string === selectedStringNumber);
+
+      // Add appropriate number of semitones on top of string's tuning
+      noteIndex = (noteIndex + noteAtString.fret) % notesSharp.length;
+      pitch.note = notesSharp[noteIndex];
+
+      // And increase octave as necessary
+      const openStringSemitonesToNextOctave =
+        notesSharp.length - notesSharp.indexOf(openStringPitch.note);
+
+      pitch.octave +=
+        Math.floor(
+          (noteAtString.fret - openStringSemitonesToNextOctave) /
+            notesSharp.length
+        ) + 1;
+    }
+
+    return <Pitch {...{ ...pitch, isNotePresent }} />;
+  };
 
   useEffect(() => {
     setSelectedTrack(tracks[selectedTrackNumber]);
@@ -138,6 +174,14 @@ const App = () => {
       }, 0) * currentBarMaximumDuration
     );
   }, [durations, selectedMeasure, getCurrentBarMaximumDuration]);
+
+  const isThereANoteAtSelectedPosition = useCallback(
+    () =>
+      selectedDuration?.notes
+        .map((noteId) => notes.find((note) => note.id === noteId)?.string)
+        .includes(selectedStringNumber),
+    [notes, selectedDuration, selectedStringNumber]
+  );
 
   const dispatchDeleteTrack = () => {
     // If a track that's not last is being deleted,
@@ -451,11 +495,7 @@ const App = () => {
     let needToSelectNewDuration = false;
 
     // If there is a note at this selected duration/string,
-    if (
-      selectedDuration?.notes
-        .map((noteId) => notes.find((note) => note.id === noteId).string)
-        .includes(selectedStringNumber)
-    ) {
+    if (isThereANoteAtSelectedPosition()) {
       // Delete that note
       // TODO These lines are horribly inefficient
       const selectedNoteId = selectedDuration?.notes.find(
@@ -537,6 +577,7 @@ const App = () => {
     selectedDurationId,
     selectedDuration,
     selectedStringNumber,
+    isThereANoteAtSelectedPosition,
   ]);
 
   const dispatchAddNote = useCallback(
@@ -913,10 +954,10 @@ const App = () => {
                 <Emoji symbol="🍡" />
               </button>
               <div
-                className="LCD__Control LCD__Control--NoteAtCursor"
+                className="LCD__Control LCD__Control--PitchAtCursor LCD__Control--NoHover"
                 title="Note on the cursor"
               >
-                E4
+                <PitchAtCursor />
               </div>
               {/* TODO Click to open "Go to" modal */}
               <button
@@ -934,7 +975,10 @@ const App = () => {
               >
                 {renderBarCurrentDuration()}
               </button>
-              <div className="LCD__Control LCD__Control--Time" title="Time">
+              <div
+                className="LCD__Control LCD__Control--Time LCD__Control--NoHover"
+                title="Time"
+              >
                 00:00 / 00:00
               </div>
               <button

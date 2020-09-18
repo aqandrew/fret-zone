@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
+import { notesSharp } from '../constants';
 
 import Modal from './Modal';
+import Pitch from './Pitch';
 
 const AddTrackModal = ({ show, onClose }) => {
   // TODO Move this object to document.js
   const defaultTrackOptions = {
     fullName: 'Clean Guitar',
     abbreviatedName: 'el.guit.',
-    tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+    tuning: [
+      { note: notesSharp[4], octave: 2 }, // E
+      { note: notesSharp[9], octave: 2 }, // A
+      { note: notesSharp[2], octave: 3 }, // D
+      { note: notesSharp[7], octave: 3 }, // G
+      { note: notesSharp[11], octave: 3 }, // B
+      { note: notesSharp[4], octave: 4 }, // E
+    ],
   };
 
   const [trackToAdd, setTrackToAdd] = useState(defaultTrackOptions);
@@ -37,12 +46,13 @@ const AddTrackModal = ({ show, onClose }) => {
         {defaultTrackOptions.fullName}
         <br />
         Tuning:
+        {/* TODO This can just be a dropdown with the option "Standard" instead of an ol of Pitches */}
         <ol>
-          {defaultTrackOptions.tuning
-            .reverse()
-            .map((stringTuning, stringNumber) => (
-              <li key={stringNumber}>{stringTuning}</li>
-            ))}
+          {defaultTrackOptions.tuning.reverse().map((pitch, stringNumber) => (
+            <li key={stringNumber}>
+              <Pitch {...pitch} />
+            </li>
+          ))}
         </ol>
       </label>
     </Modal>

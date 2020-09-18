@@ -103,7 +103,7 @@
           grid-column: span 1;
         }
 
-        &--NoteAtCursor {
+        &--PitchAtCursor {
           grid-column: span 2;
           display: grid;
           place-items: center;
@@ -167,6 +167,10 @@
         &--CurrentTrack {
           font-size: 14px;
           font-weight: 800;
+        }
+
+        &--NoHover:hover {
+          background: #191c21;
         }
       }
     }

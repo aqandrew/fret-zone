@@ -13,14 +13,18 @@ import { durationLengths } from '../constants';
 import './EditionPalette.scss';
 
 const EditionPalette = ({ selectedDuration }) => (
-  <div className="EditionPalette">
+  <section
+    className="EditionPalette"
+    role="region"
+    aria-label="Edition Palette"
+  >
     {/* TODO MiscEdition */}
     {/* TODO BarSymbols */}
     <NoteSymbols selectedDuration={selectedDuration} />
     {/* TODO EffectSymbols */}
     {/* TODO NotationSymbols */}
     {/* TODO AutomationSymbols */}
-  </div>
+  </section>
 );
 
 const NoteSymbols = ({ selectedDuration }) => {

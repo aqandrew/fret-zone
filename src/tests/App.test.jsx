@@ -6,6 +6,8 @@ import {
   screen,
   getByText,
   getByLabelText,
+  waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
@@ -22,6 +24,32 @@ describe('App', () => {
         </Provider>
       );
     }).not.toThrow();
+  });
+
+  describe('EditionPalette', () => {
+    it('toggles visibility via ToolBar button', () => {
+      render(
+        <Provider store={store}>
+          <App />
+        </Provider>
+      );
+
+      const editionPaletteToggle = screen.getByTitle(
+        'Show/Hide Edition Palette'
+      );
+
+      expect(screen.getByLabelText('Edition Palette')).toBeInTheDocument();
+
+      fireEvent.click(editionPaletteToggle);
+
+      expect(
+        screen.queryByLabelText('Edition Palette')
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(editionPaletteToggle);
+
+      expect(screen.getByLabelText('Edition Palette')).toBeInTheDocument();
+    });
   });
 
   describe('functions that need to know the selected measure', () => {

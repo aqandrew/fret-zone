@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import Emoji from 'a11y-react-emoji';
 
-// TODO Alphabetize imports w/ESLint
+import { appReducer } from './reducers';
+import * as actionTypes from './actionTypes';
 import {
   selectTrack,
   selectedTrackNumberSelector,
@@ -57,7 +58,14 @@ import Pitch from './components/Pitch';
 
 import './App.scss';
 
+const initialAppState = {
+  isEditionPaletteShown: true,
+  isGlobalViewShown: true,
+  isInspectorShown: true,
+};
+
 const App = () => {
+  const [appState, dispatchApp] = useReducer(appReducer, initialAppState);
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
@@ -77,9 +85,6 @@ const App = () => {
 
   // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
-  const [editionPaletteShown, setEditionPaletteShown] = useState(true);
-  const [globalViewShown, setGlobalViewShown] = useState(true);
-  const [inspectorShown, setInspectorShown] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [displayModeIndex, setDisplayModeIndex] = useState(0);
   const [documentTitle, setDocumentTitle] = useState('');
@@ -798,7 +803,7 @@ const App = () => {
   };
 
   return (
-    <div className="App" onKeyDown={onKeyDown}>
+    <div className="App" onKeyDown={onKeyDown} role="application">
       {/* <AppMenu /> */}
       <div className="TopBar">
         <div className="TopBarText">
@@ -831,20 +836,26 @@ const App = () => {
               <CheckboxButton
                 buttonText="["
                 buttonTitle="Show/Hide Edition Palette"
-                isChecked={editionPaletteShown}
-                setChecked={setEditionPaletteShown}
+                isChecked={appState.isEditionPaletteShown}
+                setChecked={() => {
+                  dispatchApp({ type: actionTypes.TOGGLE_EDITION_PALETTE });
+                }}
               />
               <CheckboxButton
                 buttonText="_"
                 buttonTitle="Show/Hide Global View"
-                isChecked={globalViewShown}
-                setChecked={setGlobalViewShown}
+                isChecked={appState.isGlobalViewShown}
+                setChecked={() =>
+                  dispatchApp({ type: actionTypes.TOGGLE_GLOBAL_VIEW })
+                }
               />
               <CheckboxButton
                 buttonText="]"
                 buttonTitle="Show/Hide Inspector"
-                isChecked={inspectorShown}
-                setChecked={setInspectorShown}
+                isChecked={appState.isInspectorShown}
+                setChecked={() =>
+                  dispatchApp({ type: actionTypes.TOGGLE_INSPECTOR })
+                }
               />
             </div>
             <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
@@ -1050,21 +1061,21 @@ const App = () => {
       />
       <div className="App__Content--Main">
         <div className="App__Content--Center">
-          {editionPaletteShown && (
+          {appState.isEditionPaletteShown && (
             <EditionPalette selectedDuration={selectedDuration} />
           )}
           <Workspace
             documentTitle={documentTitle}
             documentArtist={documentArtist}
           />
-          {inspectorShown && (
+          {appState.isInspectorShown && (
             <Inspector
               setDocumentTitle={setDocumentTitle}
               setDocumentArtist={setDocumentArtist}
             />
           )}
         </div>
-        {globalViewShown && (
+        {appState.isGlobalViewShown && (
           <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
         )}
       </div>

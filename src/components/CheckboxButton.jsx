@@ -11,17 +11,19 @@ const CheckboxButton = ({
   const inputId = slugify(buttonTitle, { lower: true });
 
   return (
-    <div className="CheckboxButton" title={buttonTitle}>
-      <input
-        type="checkbox"
-        id={inputId}
-        disabled={disabled}
-        checked={isChecked}
-        onChange={() => {
-          setChecked(!isChecked);
-        }}
-      />
-      <label htmlFor={inputId}>{buttonText || buttonTitle}</label>
+    <div className="CheckboxButton">
+      <label title={buttonTitle}>
+        <input
+          type="checkbox"
+          id={inputId}
+          disabled={disabled}
+          checked={isChecked}
+          onChange={() => {
+            setChecked(!isChecked);
+          }}
+        />
+        {buttonText || buttonTitle}
+      </label>
     </div>
   );
 };

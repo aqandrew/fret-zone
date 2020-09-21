@@ -5,16 +5,7 @@ import Emoji from 'a11y-react-emoji';
 
 import { appReducer } from './reducers';
 import * as actionTypes from './actionTypes';
-import {
-  selectTrack,
-  selectedTrackNumberSelector,
-  selectMeasure,
-  selectedMeasureNumberSelector,
-  selectDuration,
-  selectedDurationIdSelector,
-  selectString,
-  selectedStringNumberSelector,
-} from './slices/ui';
+import AppContext from './AppContext';
 import {
   addTrack,
   deleteTrack,
@@ -62,19 +53,29 @@ const initialAppState = {
   isEditionPaletteShown: true,
   isGlobalViewShown: true,
   isInspectorShown: true,
+  selectedTrackNumber: 0,
+  selectedMeasureNumber: 0,
+  selectedDurationId: undefined,
+  selectedStringNumber: 0,
 };
 
 const App = () => {
   const [appState, dispatchApp] = useReducer(appReducer, initialAppState);
+  const {
+    isEditionPaletteShown,
+    isGlobalViewShown,
+    isInspectorShown,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+    selectedDurationId,
+    selectedStringNumber,
+  } = appState;
+
   const dispatch = useDispatch();
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
   const notes = useSelector(notesSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
-  const selectedStringNumber = useSelector(selectedStringNumberSelector);
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
@@ -202,9 +203,10 @@ const App = () => {
       );
 
       // Select first duration of next track's measure at selectedMeasureNumber
-      dispatch(
-        selectDuration(nextTracksFirstDurationAtSelectedMeasureNumber.id)
-      );
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId: nextTracksFirstDurationAtSelectedMeasureNumber.id,
+      });
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         nextTracksFirstDurationAtSelectedMeasureNumber,
         selectedDuration
@@ -222,10 +224,14 @@ const App = () => {
           ).durations[0]
       );
 
-      dispatch(selectTrack(selectedTrackNumber - 1));
-      dispatch(
-        selectDuration(previousTracksFirstDurationAtSelectedMeasureNumber.id)
-      );
+      dispatchApp({
+        type: actionTypes.SELECT_TRACK,
+        trackNumber: selectedTrackNumber - 1,
+      });
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId: previousTracksFirstDurationAtSelectedMeasureNumber.id,
+      });
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         previousTracksFirstDurationAtSelectedMeasureNumber,
         selectedDuration
@@ -291,34 +297,35 @@ const App = () => {
   );
 
   const dispatchSelectPreviousString = useCallback(() => {
-    dispatch(
-      selectString(
+    dispatchApp({
+      type: actionTypes.SELECT_STRING,
+      stringNumber:
         selectedStringNumber === 0
           ? selectedTrack?.tuning.length - 1
-          : selectedStringNumber - 1
-      )
-    );
-  }, [dispatch, selectedTrack, selectedStringNumber]);
+          : selectedStringNumber - 1,
+    });
+  }, [selectedTrack, selectedStringNumber]);
 
   const dispatchSelectNextString = useCallback(() => {
-    dispatch(
-      selectString((selectedStringNumber + 1) % selectedTrack?.tuning.length)
-    );
-  }, [dispatch, selectedTrack, selectedStringNumber]);
+    dispatchApp({
+      type: actionTypes.SELECT_STRING,
+      stringNumber: (selectedStringNumber + 1) % selectedTrack?.tuning.length,
+    });
+  }, [selectedTrack, selectedStringNumber]);
 
   const dispatchSelectPreviousDuration = useCallback(() => {
     // If currently selected duration is NOT first in the measure,
     if (selectedDurationId !== selectedMeasure?.durations[0]) {
       // Select the previous duration
-      dispatch(
-        selectDuration(
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId:
           selectedMeasure?.durations[
             selectedMeasure?.durations.findIndex(
               (durationId) => durationId === selectedDurationId
             ) - 1
-          ]
-        )
-      );
+          ],
+      });
     } else if (selectedMeasureNumber > 0) {
       const previousMeasure = measures.find(
         (measure) =>
@@ -330,15 +337,20 @@ const App = () => {
       );
 
       // Select the last duration of the previous measure
-      dispatch(selectMeasure(selectedMeasureNumber - 1));
-      dispatch(selectDuration(durationIdToSelect));
+      dispatchApp({
+        type: actionTypes.SELECT_MEASURE,
+        measureNumber: selectedMeasureNumber - 1,
+      });
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId: durationIdToSelect,
+      });
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         previousMeasuresLastDuration,
         selectedDuration
       );
     }
   }, [
-    dispatch,
     measures,
     durations,
     selectedTrack,
@@ -372,7 +384,10 @@ const App = () => {
               isDotted: selectedDuration?.isDotted,
             })
           );
-          dispatch(selectDuration(newDurationId));
+          dispatchApp({
+            type: actionTypes.SELECT_DURATION,
+            durationId: newDurationId,
+          });
         }
       }
       // Select the next duration in this measure
@@ -387,7 +402,10 @@ const App = () => {
             ]
         );
 
-        dispatch(selectDuration(nextDuration.id));
+        dispatchApp({
+          type: actionTypes.SELECT_DURATION,
+          durationId: nextDuration.id,
+        });
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           nextDuration,
           selectedDuration
@@ -418,8 +436,14 @@ const App = () => {
             durationLength: selectedDuration?.length,
           })
         );
-        dispatch(selectMeasure(selectedMeasureNumber + 1));
-        dispatch(selectDuration(trackMeasureIds[selectedTrack?.id].durationId));
+        dispatchApp({
+          type: actionTypes.SELECT_MEASURE,
+          measureNumber: selectedMeasureNumber + 1,
+        });
+        dispatchApp({
+          type: actionTypes.SELECT_DURATION,
+          durationId: trackMeasureIds[selectedTrack?.id].durationId,
+        });
       }
       // Select the next measure
       else {
@@ -435,8 +459,14 @@ const App = () => {
               .durations[0]
         );
 
-        dispatch(selectMeasure(selectedMeasureNumber + 1));
-        dispatch(selectDuration(durationIdToSelect));
+        dispatchApp({
+          type: actionTypes.SELECT_MEASURE,
+          measureNumber: selectedMeasureNumber + 1,
+        });
+        dispatchApp({
+          type: actionTypes.SELECT_DURATION,
+          durationId: durationIdToSelect,
+        });
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           nextMeasuresFirstDuration,
           selectedDuration
@@ -463,7 +493,10 @@ const App = () => {
 
       if (selectedMeasureNumber > 0) {
         newSelectedMeasureNumber = selectedMeasureNumber - 1;
-        dispatch(selectMeasure(newSelectedMeasureNumber));
+        dispatchApp({
+          type: actionTypes.SELECT_MEASURE,
+          measureNumber: newSelectedMeasureNumber,
+        });
       } else {
         newSelectedMeasureNumber = selectedMeasureNumber + 1;
       }
@@ -477,14 +510,17 @@ const App = () => {
           ).durations[0]
       );
 
-      dispatch(selectDuration(durationToSelect.id));
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId: durationToSelect.id,
+      });
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         durationToSelect,
         selectedDuration
       );
 
       // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
-      // so this still deletes the correct measure after selectMeasure has executed
+      // so this still deletes the correct measure after SELECT_MEASURE has executed
       dispatch(deleteMeasure(selectedMeasureNumber));
     }
   }, [
@@ -554,7 +590,10 @@ const App = () => {
             selectedMeasureNumber - 1
           ].durations.slice(-1)[0];
 
-          dispatch(selectMeasure(selectedMeasureNumber - 1));
+          dispatchApp({
+            type: actionTypes.SELECT_MEASURE,
+            measureNumber: selectedMeasureNumber - 1,
+          });
         }
       } else {
         // Select this measure's previous duration
@@ -566,7 +605,10 @@ const App = () => {
           ];
       }
 
-      dispatch(selectDuration(durationIdToSelect));
+      dispatchApp({
+        type: actionTypes.SELECT_DURATION,
+        durationId: durationIdToSelect,
+      });
       dispatchChangeNextSelectedDurationLengthIfNecessary(
         durations.find((duration) => duration.id === durationIdToSelect),
         selectedDuration
@@ -803,307 +845,330 @@ const App = () => {
   };
 
   return (
-    <div className="App" onKeyDown={onKeyDown} role="application">
-      {/* <AppMenu /> */}
-      <div className="TopBar">
-        <div className="TopBarText">
-          <span className="TopBarText__ActiveFileName">
-            {activeFileName || 'untitled'}
-          </span>
-          <span className="TopBarText__Attribution">
-            <a
-              href="https://github.com/dawneraq/fret-zone"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="TopBarText__Link"
-            >
-              Source
-            </a>{' '}
-            • Made with <Emoji symbol="🤘🏽" /> by{' '}
-            <a
-              href="https://twitter.com/aqandrew"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="TopBarText__Link"
-            >
-              Andrew
-            </a>
-          </span>
-        </div>
-        <div className="ToolBar">
-          <div className="ToolBar__Group ToolBar__Group--Left">
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
-              <CheckboxButton
-                buttonText="["
-                buttonTitle="Show/Hide Edition Palette"
-                isChecked={appState.isEditionPaletteShown}
-                setChecked={() => {
-                  dispatchApp({ type: actionTypes.TOGGLE_EDITION_PALETTE });
-                }}
-              />
-              <CheckboxButton
-                buttonText="_"
-                buttonTitle="Show/Hide Global View"
-                isChecked={appState.isGlobalViewShown}
-                setChecked={() =>
-                  dispatchApp({ type: actionTypes.TOGGLE_GLOBAL_VIEW })
-                }
-              />
-              <CheckboxButton
-                buttonText="]"
-                buttonTitle="Show/Hide Inspector"
-                isChecked={appState.isInspectorShown}
-                setChecked={() =>
-                  dispatchApp({ type: actionTypes.TOGGLE_INSPECTOR })
-                }
-              />
-            </div>
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
-              <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
-              <DisplayModes
-                displayModeIndex={displayModeIndex}
-                setDisplayModeIndex={setDisplayModeIndex}
-              />
-            </div>
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
-              <button title="Undo">
-                <Emoji symbol="↩️" />
-              </button>
-              <button title="Redo">
-                <Emoji symbol="↪️" />
-              </button>
-            </div>
-            <button title="Print...">
-              <Emoji symbol="🖨" />
-            </button>
+    <AppContext.Provider value={dispatchApp}>
+      <div className="App" onKeyDown={onKeyDown} role="application">
+        {/* <AppMenu /> */}
+        <div className="TopBar">
+          <div className="TopBarText">
+            <span className="TopBarText__ActiveFileName">
+              {activeFileName || 'untitled'}
+            </span>
+            <span className="TopBarText__Attribution">
+              <a
+                href="https://github.com/dawneraq/fret-zone"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="TopBarText__Link"
+              >
+                Source
+              </a>{' '}
+              • Made with <Emoji symbol="🤘🏽" /> by{' '}
+              <a
+                href="https://twitter.com/aqandrew"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="TopBarText__Link"
+              >
+                Andrew
+              </a>
+            </span>
           </div>
-          <div className="ToolBar__Group ToolBar__Group--Center">
-            <div className="NavigationAndPlayback">
-              <button
-                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--FirstBar"
-                title="Go to first bar"
-              >
-                <Emoji symbol="⏮" />
-              </button>
-              <button
-                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PreviousBar"
-                title="Go to previous bar"
-              >
-                <Emoji symbol="⏪" />
-              </button>
-              <button
-                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PlayPause"
-                title="Play"
-              >
-                <Emoji symbol="▶️" />
-              </button>
-              <button
-                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--NextBar"
-                title="Go to next bar"
-              >
-                <Emoji symbol="⏩" />
-              </button>
-              <button
-                className="NavigationAndPlayback__Button NavigationAndPlayback__Button--LastBar"
-                title="Go to last bar"
-              >
-                <Emoji symbol="⏭" />
-              </button>
-            </div>
-            <div className="LCD">
-              <select
-                className="LCD__Control LCD__Control--CurrentTrack"
-                title="Current track (Click to change)"
-                value={selectedTrackNumber}
-                onChange={(event) => {
-                  let trackNumberToSelect = +event.target.value;
-
-                  // TODO Remove duplicated code between this and TrackControl.onClick
-                  // Select first duration of track's measure at selectedMeasureNumber
-                  const durationIdToSelect = measures.find(
-                    (measure) =>
-                      measure.id ===
-                      tracks[trackNumberToSelect].measures[
-                        selectedMeasureNumber
-                      ]
-                  ).durations[0];
-
-                  dispatch(selectTrack(trackNumberToSelect));
-                  dispatch(selectDuration(durationIdToSelect));
-                  dispatchChangeNextSelectedDurationLengthIfNecessary(
-                    durations.find(
-                      (duration) => duration.id === durationIdToSelect
-                    ),
-                    durations.find(
-                      (duration) => duration.id === selectedDurationId
-                    )
-                  );
-                }}
-              >
-                {tracks.map((track, trackNumber) => (
-                  <option value={trackNumber} key={trackNumber}>{`${
-                    trackNumber + 1
-                  }. ${track.fullName}`}</option>
-                ))}
-              </select>
-              <button
-                className="LCD__Control LCD__Control--CountIn"
-                title="Activate/Deactivate count-in"
-              >
-                <Emoji symbol="⌛️" />
-              </button>
-              <button
-                className="LCD__Control LCD__Control--Metronome"
-                title="Activate/Deactivate metronome"
-              >
-                <Emoji symbol="⏲" />
-              </button>
-              <button
-                className="LCD__Control LCD__Control--MetronomeSettings"
-                title="Metronome & Count-in settings"
-              >
-                <Emoji symbol="🍡" />
-              </button>
-              <div
-                className="LCD__Control LCD__Control--PitchAtCursor LCD__Control--NoHover"
-                title="Note on the cursor"
-              >
-                <PitchAtCursor />
+          <div className="ToolBar">
+            <div className="ToolBar__Group ToolBar__Group--Left">
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
+                <CheckboxButton
+                  buttonText="["
+                  buttonTitle="Show/Hide Edition Palette"
+                  isChecked={isEditionPaletteShown}
+                  setChecked={() => {
+                    dispatchApp({ type: actionTypes.TOGGLE_EDITION_PALETTE });
+                  }}
+                />
+                <CheckboxButton
+                  buttonText="_"
+                  buttonTitle="Show/Hide Global View"
+                  isChecked={isGlobalViewShown}
+                  setChecked={() =>
+                    dispatchApp({ type: actionTypes.TOGGLE_GLOBAL_VIEW })
+                  }
+                />
+                <CheckboxButton
+                  buttonText="]"
+                  buttonTitle="Show/Hide Inspector"
+                  isChecked={isInspectorShown}
+                  setChecked={() =>
+                    dispatchApp({ type: actionTypes.TOGGLE_INSPECTOR })
+                  }
+                />
               </div>
-              {/* TODO Click to open "Go to" modal */}
-              <button
-                className="LCD__Control LCD__Control--BarPosition"
-                title="Bar position"
-              >
-                {selectedMeasureNumber + 1}/
-                {tracks.length
-                  ? tracks[selectedTrackNumber].measures.length
-                  : 0}
-              </button>
-              <button
-                className="LCD__Control LCD__Control--BarCurrentDuration"
-                title="Bar current duration"
-              >
-                {renderBarCurrentDuration()}
-              </button>
-              <div
-                className="LCD__Control LCD__Control--Time LCD__Control--NoHover"
-                title="Time"
-              >
-                00:00 / 00:00
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">
+                <Zoom zoomLevel={zoomLevel} setZoomLevel={setZoomLevel} />
+                <DisplayModes
+                  displayModeIndex={displayModeIndex}
+                  setDisplayModeIndex={setDisplayModeIndex}
+                />
               </div>
-              <button
-                className="LCD__Control LCD__Control--TripletFeel"
-                title="No triplet feel"
-              >
-                <Emoji symbol="🎶" />
-              </button>
-              <button
-                className="LCD__Control LCD__Control--Tempo"
-                title="Current tempo"
-              >
-                d = 120
-              </button>
-              <button
-                className="LCD__Control LCD__Control--TimeSignature"
-                title="Time signature"
-              >
-                4/4
-              </button>
-              <input
-                type="range"
-                name="time"
-                id="time"
-                className="LCD__Control LCD__Control--TimeScrubber"
-              />
-            </div>
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">
-              <button title="Enable loop">
-                <Emoji symbol="🔁" />
-              </button>
-              <button title="Relative speed">
-                <Emoji symbol="🎵" /> 100%
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--History">
+                <button title="Undo">
+                  <Emoji symbol="↩️" />
+                </button>
+                <button title="Redo">
+                  <Emoji symbol="↪️" />
+                </button>
+              </div>
+              <button title="Print...">
+                <Emoji symbol="🖨" />
               </button>
             </div>
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--GlobalTonality">
-              <button title="Enable/Disable relative tonality">
-                <Emoji symbol="🍴" /> 0
-              </button>
+            <div className="ToolBar__Group ToolBar__Group--Center">
+              <div className="NavigationAndPlayback">
+                <button
+                  className="NavigationAndPlayback__Button NavigationAndPlayback__Button--FirstBar"
+                  title="Go to first bar"
+                >
+                  <Emoji symbol="⏮" />
+                </button>
+                <button
+                  className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PreviousBar"
+                  title="Go to previous bar"
+                >
+                  <Emoji symbol="⏪" />
+                </button>
+                <button
+                  className="NavigationAndPlayback__Button NavigationAndPlayback__Button--PlayPause"
+                  title="Play"
+                >
+                  <Emoji symbol="▶️" />
+                </button>
+                <button
+                  className="NavigationAndPlayback__Button NavigationAndPlayback__Button--NextBar"
+                  title="Go to next bar"
+                >
+                  <Emoji symbol="⏩" />
+                </button>
+                <button
+                  className="NavigationAndPlayback__Button NavigationAndPlayback__Button--LastBar"
+                  title="Go to last bar"
+                >
+                  <Emoji symbol="⏭" />
+                </button>
+              </div>
+              <div className="LCD">
+                <select
+                  className="LCD__Control LCD__Control--CurrentTrack"
+                  title="Current track (Click to change)"
+                  value={selectedTrackNumber}
+                  onChange={(event) => {
+                    let trackNumberToSelect = +event.target.value;
+
+                    // TODO Remove duplicated code between this and TrackControl.onClick
+                    // Select first duration of track's measure at selectedMeasureNumber
+                    const durationIdToSelect = measures.find(
+                      (measure) =>
+                        measure.id ===
+                        tracks[trackNumberToSelect].measures[
+                          selectedMeasureNumber
+                        ]
+                    ).durations[0];
+
+                    dispatchApp({
+                      type: actionTypes.SELECT_TRACK,
+                      trackNumber: trackNumberToSelect,
+                    });
+                    dispatchApp({
+                      type: actionTypes.SELECT_DURATION,
+                      durationId: durationIdToSelect,
+                    });
+                    dispatchChangeNextSelectedDurationLengthIfNecessary(
+                      durations.find(
+                        (duration) => duration.id === durationIdToSelect
+                      ),
+                      durations.find(
+                        (duration) => duration.id === selectedDurationId
+                      )
+                    );
+                  }}
+                >
+                  {tracks.map((track, trackNumber) => (
+                    <option value={trackNumber} key={trackNumber}>{`${
+                      trackNumber + 1
+                    }. ${track.fullName}`}</option>
+                  ))}
+                </select>
+                <button
+                  className="LCD__Control LCD__Control--CountIn"
+                  title="Activate/Deactivate count-in"
+                >
+                  <Emoji symbol="⌛️" />
+                </button>
+                <button
+                  className="LCD__Control LCD__Control--Metronome"
+                  title="Activate/Deactivate metronome"
+                >
+                  <Emoji symbol="⏲" />
+                </button>
+                <button
+                  className="LCD__Control LCD__Control--MetronomeSettings"
+                  title="Metronome & Count-in settings"
+                >
+                  <Emoji symbol="🍡" />
+                </button>
+                <div
+                  className="LCD__Control LCD__Control--PitchAtCursor LCD__Control--NoHover"
+                  title="Note on the cursor"
+                >
+                  <PitchAtCursor />
+                </div>
+                {/* TODO Click to open "Go to" modal */}
+                <button
+                  className="LCD__Control LCD__Control--BarPosition"
+                  title="Bar position"
+                >
+                  {selectedMeasureNumber + 1}/
+                  {tracks.length
+                    ? tracks[selectedTrackNumber].measures.length
+                    : 0}
+                </button>
+                <button
+                  className="LCD__Control LCD__Control--BarCurrentDuration"
+                  title="Bar current duration"
+                >
+                  {renderBarCurrentDuration()}
+                </button>
+                <div
+                  className="LCD__Control LCD__Control--Time LCD__Control--NoHover"
+                  title="Time"
+                >
+                  00:00 / 00:00
+                </div>
+                <button
+                  className="LCD__Control LCD__Control--TripletFeel"
+                  title="No triplet feel"
+                >
+                  <Emoji symbol="🎶" />
+                </button>
+                <button
+                  className="LCD__Control LCD__Control--Tempo"
+                  title="Current tempo"
+                >
+                  d = 120
+                </button>
+                <button
+                  className="LCD__Control LCD__Control--TimeSignature"
+                  title="Time signature"
+                >
+                  4/4
+                </button>
+                <input
+                  type="range"
+                  name="time"
+                  id="time"
+                  className="LCD__Control LCD__Control--TimeScrubber"
+                />
+              </div>
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--LoopAndPlaybackSettings">
+                <button title="Enable loop">
+                  <Emoji symbol="🔁" />
+                </button>
+                <button title="Relative speed">
+                  <Emoji symbol="🎵" /> 100%
+                </button>
+              </div>
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--GlobalTonality">
+                <button title="Enable/Disable relative tonality">
+                  <Emoji symbol="🍴" /> 0
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="ToolBar__Group ToolBar__Group--Right">
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--InstrumentViews">
-              <button title="Show/Hide Fretboard View">
-                <Emoji symbol="🎸" />
-              </button>
-              <button title="Show/Hide Keyboard View">
-                <Emoji symbol="🎹" />
-              </button>
-              <button title="Show/Hide Virtual Drum Kit">
-                <Emoji symbol="🥁" />
-              </button>
-            </div>
-            <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Listeners">
-              <button title="Tuner">
-                <Emoji symbol="🔔" />
-              </button>
-              <button title="Line-in">
-                <Emoji symbol="🔌" />
-              </button>
+            <div className="ToolBar__Group ToolBar__Group--Right">
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--InstrumentViews">
+                <button title="Show/Hide Fretboard View">
+                  <Emoji symbol="🎸" />
+                </button>
+                <button title="Show/Hide Keyboard View">
+                  <Emoji symbol="🎹" />
+                </button>
+                <button title="Show/Hide Virtual Drum Kit">
+                  <Emoji symbol="🥁" />
+                </button>
+              </div>
+              <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Listeners">
+                <button title="Tuner">
+                  <Emoji symbol="🔔" />
+                </button>
+                <button title="Line-in">
+                  <Emoji symbol="🔌" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <TabBar
-        files={dummyFileList}
-        activeFileName={activeFileName}
-        setActiveFileName={setActiveFileName}
-      />
-      <div className="App__Content--Main">
-        <div className="App__Content--Center">
-          {appState.isEditionPaletteShown && (
-            <EditionPalette selectedDuration={selectedDuration} />
-          )}
-          <Workspace
-            documentTitle={documentTitle}
-            documentArtist={documentArtist}
-          />
-          {appState.isInspectorShown && (
-            <Inspector
-              setDocumentTitle={setDocumentTitle}
-              setDocumentArtist={setDocumentArtist}
+        <TabBar
+          files={dummyFileList}
+          activeFileName={activeFileName}
+          setActiveFileName={setActiveFileName}
+        />
+        <div className="App__Content--Main">
+          <div className="App__Content--Center">
+            {isEditionPaletteShown && (
+              <EditionPalette selectedDuration={selectedDuration} />
+            )}
+            <Workspace
+              documentTitle={documentTitle}
+              documentArtist={documentArtist}
+              selectedTrackNumber={selectedTrackNumber}
+              selectedMeasureNumber={selectedMeasureNumber}
+              selectedDurationId={selectedDurationId}
+              selectedStringNumber={selectedStringNumber}
+            />
+            {isInspectorShown && (
+              <Inspector
+                setDocumentTitle={setDocumentTitle}
+                setDocumentArtist={setDocumentArtist}
+              />
+            )}
+          </div>
+          {isGlobalViewShown && (
+            <GlobalView
+              selectedTrackNumber={selectedTrackNumber}
+              selectedMeasureNumber={selectedMeasureNumber}
+              selectedDurationId={selectedDurationId}
+              openAddTrackModal={() => setShowAddTrackModal(true)}
             />
           )}
         </div>
-        {appState.isGlobalViewShown && (
-          <GlobalView openAddTrackModal={() => setShowAddTrackModal(true)} />
-        )}
+        <AddTrackModal
+          show={showAddTrackModal}
+          onClose={(modalResult) => {
+            setShowAddTrackModal(false);
+
+            if (modalResult) {
+              const { durationIdToSelect } = dispatchAddTrack(modalResult);
+
+              dispatchApp({
+                type: actionTypes.SELECT_TRACK,
+                trackNumber: tracks.length,
+              });
+              dispatchApp({
+                type: actionTypes.SELECT_DURATION,
+                durationId: durationIdToSelect,
+              });
+            }
+          }}
+        />
+        <DeleteTrackModal
+          show={showDeleteTrackModal}
+          nameOfTrackToDelete={selectedTrack?.fullName}
+          onClose={(modalResult) => {
+            setShowDeleteTrackModal(false);
+
+            if (modalResult) {
+              dispatchDeleteTrack();
+            }
+          }}
+        />
       </div>
-      <AddTrackModal
-        show={showAddTrackModal}
-        onClose={(modalResult) => {
-          setShowAddTrackModal(false);
-
-          if (modalResult) {
-            const { durationIdToSelect } = dispatchAddTrack(modalResult);
-
-            dispatch(selectTrack(tracks.length));
-            dispatch(selectDuration(durationIdToSelect));
-          }
-        }}
-      />
-      <DeleteTrackModal
-        show={showDeleteTrackModal}
-        nameOfTrackToDelete={selectedTrack?.fullName}
-        onClose={(modalResult) => {
-          setShowDeleteTrackModal(false);
-
-          if (modalResult) {
-            dispatchDeleteTrack();
-          }
-        }}
-      />
-    </div>
+    </AppContext.Provider>
   );
 };
 

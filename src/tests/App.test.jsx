@@ -94,6 +94,15 @@ describe('App', () => {
       // This means that the innerText will really be '0.0:4.0', not '0.0:1.0' as expected
       expect(barCurrentDuration).toHaveTextContent(/0\.0(?=:)/);
 
+      // Create a new track with default options
+      fireEvent.click(screen.getByTitle('Add Track'));
+      const firstInput = getByLabelText(
+        screen.getByRole('dialog'),
+        'Clean Guitar',
+        { exact: false }
+      );
+      fireEvent.keyDown(firstInput, { key: 'Enter' });
+
       // Add a note
       fireEvent.keyDown(container, { key: '0' });
 

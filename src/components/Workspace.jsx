@@ -1,16 +1,8 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 
-import {
-  selectedTrackNumberSelector,
-  // selectTrack,
-  selectedMeasureNumberSelector,
-  selectMeasure,
-  selectedStringNumberSelector,
-  selectString,
-  selectDuration,
-  selectedDurationIdSelector,
-} from '../slices/ui';
+import { SELECT_MEASURE, SELECT_DURATION, SELECT_STRING } from '../actionTypes';
+import AppContext from '../AppContext';
 import {
   measuresSelector,
   tracksSelector,
@@ -21,16 +13,19 @@ import { durationLengths } from '../constants';
 
 import './Workspace.scss';
 
-const Workspace = ({ documentTitle, documentArtist }) => {
-  const dispatch = useDispatch();
+const Workspace = ({
+  documentTitle,
+  documentArtist,
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedStringNumber,
+  selectedDurationId,
+}) => {
+  const dispatchApp = useContext(AppContext);
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
   const notes = useSelector(notesSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedStringNumber = useSelector(selectedStringNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];
@@ -72,9 +67,9 @@ const Workspace = ({ documentTitle, documentArtist }) => {
                   : '-'
               }
               onClick={() => {
-                dispatch(selectMeasure(measureNumber));
-                dispatch(selectString(stringNumber));
-                dispatch(selectDuration(duration.id));
+                dispatchApp({ type: SELECT_MEASURE, measureNumber });
+                dispatchApp({ type: SELECT_STRING, stringNumber });
+                dispatchApp({ type: SELECT_DURATION, durationId: duration.id });
               }}
               key={stringNumber}
             />

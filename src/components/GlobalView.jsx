@@ -1,14 +1,8 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
+import AppContext from '../AppContext';
 
-import {
-  selectTrack,
-  selectedTrackNumberSelector,
-  selectMeasure,
-  selectedMeasureNumberSelector,
-  selectDuration,
-  selectedDurationIdSelector,
-} from '../slices/ui';
+import { SELECT_TRACK, SELECT_MEASURE, SELECT_DURATION } from '../actionTypes';
 import {
   tracksSelector,
   measuresSelector,
@@ -18,18 +12,27 @@ import { dispatchChangeNextSelectedDurationLengthIfNecessary } from '../utils';
 
 import './GlobalView.scss';
 
-const GlobalView = ({ openAddTrackModal }) => {
-  const dispatch = useDispatch();
+const GlobalView = ({
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedDurationId,
+  openAddTrackModal,
+}) => {
+  const dispatchApp = useContext(AppContext);
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
-      <TrackControl track={track} trackNumber={trackNumber} key={trackNumber} />
+      <TrackControl
+        track={track}
+        trackNumber={trackNumber}
+        selectedTrackNumber={selectedTrackNumber}
+        selectedMeasureNumber={selectedMeasureNumber}
+        selectedDurationId={selectedDurationId}
+        key={trackNumber}
+      />
     ));
 
   const renderMeasureTable = () =>
@@ -37,6 +40,9 @@ const GlobalView = ({ openAddTrackModal }) => {
       <MeasureTableRow
         track={track}
         trackNumber={TrackNumber}
+        selectedTrackNumber={selectedTrackNumber}
+        selectedMeasureNumber={selectedMeasureNumber}
+        selectedDurationId={selectedDurationId}
         key={TrackNumber}
       />
     ));
@@ -79,8 +85,11 @@ const GlobalView = ({ openAddTrackModal }) => {
                           (measure) => measure.id === measureId
                         ).durations[0];
 
-                        dispatch(selectMeasure(measureNumber));
-                        dispatch(selectDuration(durationIdToSelect));
+                        dispatchApp({ type: SELECT_MEASURE, measureNumber });
+                        dispatchApp({
+                          type: SELECT_DURATION,
+                          durationId: durationIdToSelect,
+                        });
                         // TODO Figure out a better way to find the selected duration
                         dispatchChangeNextSelectedDurationLengthIfNecessary(
                           durations.find(
@@ -109,14 +118,17 @@ const GlobalView = ({ openAddTrackModal }) => {
   );
 };
 
-const TrackControl = ({ track, trackNumber }) => {
-  const dispatch = useDispatch();
+const TrackControl = ({
+  track,
+  trackNumber,
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedDurationId,
+}) => {
+  const dispatchApp = useContext(AppContext);
   const tracks = useSelector(tracksSelector);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   let trackControlClassName = 'TrackControl';
 
@@ -136,8 +148,8 @@ const TrackControl = ({ track, trackNumber }) => {
             measure.id === tracks[trackNumber].measures[selectedMeasureNumber]
         ).durations[0];
 
-        dispatch(selectTrack(trackNumber));
-        dispatch(selectDuration(durationIdToSelect));
+        dispatchApp({ type: SELECT_TRACK, trackNumber });
+        dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           durations.find((duration) => duration.id === durationIdToSelect),
           durations.find((duration) => duration.id === selectedDurationId)
@@ -151,26 +163,40 @@ const TrackControl = ({ track, trackNumber }) => {
   );
 };
 
-const MeasureTableRow = ({ track, trackNumber }) => (
+// TODO Remove prop drilling; MeasureTableRow doesn't need to know about the selected track/measure/duration
+const MeasureTableRow = ({
+  track,
+  trackNumber,
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedDurationId,
+}) => (
   <div className="MeasureTable__Row">
     {track.measures.map((measureId, measureNumber) => (
       <MeasureTableCell
         measureId={measureId}
         measureNumber={measureNumber}
         trackNumber={trackNumber}
+        selectedTrackNumber={selectedTrackNumber}
+        selectedMeasureNumber={selectedMeasureNumber}
+        selectedDurationId={selectedDurationId}
         key={measureId}
       />
     ))}
   </div>
 );
 
-const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
-  const dispatch = useDispatch();
+const MeasureTableCell = ({
+  measureId,
+  measureNumber,
+  trackNumber,
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedDurationId,
+}) => {
+  const dispatchApp = useContext(AppContext);
   const measures = useSelector(measuresSelector);
   const durations = useSelector(durationsSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
 
   const getMeasure = () => measures.find((measure) => measure.id === measureId);
 
@@ -203,9 +229,9 @@ const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
       onClick={() => {
         const durationIdToSelect = getMeasure().durations[0];
 
-        dispatch(selectTrack(trackNumber));
-        dispatch(selectMeasure(measureNumber));
-        dispatch(selectDuration(durationIdToSelect));
+        dispatchApp({ type: SELECT_TRACK, trackNumber });
+        dispatchApp({ type: SELECT_MEASURE, measureNumber });
+        dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
         dispatchChangeNextSelectedDurationLengthIfNecessary(
           durations.find((duration) => duration.id === durationIdToSelect),
           durations.find((duration) => duration.id === selectedDurationId)

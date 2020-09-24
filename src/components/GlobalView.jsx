@@ -1,13 +1,9 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import AppContext from '../AppContext';
 
+import DispatchContext from '../DispatchContext';
+import AppStateContext from '../AppStateContext';
+import { useDocument } from '../hooks/useDocument';
 import { SELECT_TRACK, SELECT_MEASURE, SELECT_DURATION } from '../actionTypes';
-import {
-  tracksSelector,
-  measuresSelector,
-  durationsSelector,
-} from '../slices/document';
 import { dispatchChangeNextSelectedDurationLengthIfNecessary } from '../utils';
 
 import './GlobalView.scss';
@@ -18,10 +14,9 @@ const GlobalView = ({
   selectedDurationId,
   openAddTrackModal,
 }) => {
-  const dispatchApp = useContext(AppContext);
-  const tracks = useSelector(tracksSelector);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
+  const dispatchApp = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const { tracks, measures, durations } = useDocument(appState);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
@@ -125,10 +120,10 @@ const TrackControl = ({
   selectedMeasureNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(AppContext);
-  const tracks = useSelector(tracksSelector);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
+  const dispatchApp = useContext(DispatchContext);
+
+  const appState = useContext(AppStateContext);
+  const { tracks, measures, durations } = useDocument(appState);
 
   let trackControlClassName = 'TrackControl';
 
@@ -194,9 +189,9 @@ const MeasureTableCell = ({
   selectedMeasureNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(AppContext);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
+  const dispatchApp = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const { measures, durations } = useDocument(appState);
 
   const getMeasure = () => measures.find((measure) => measure.id === measureId);
 

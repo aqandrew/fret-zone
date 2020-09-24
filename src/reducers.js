@@ -83,7 +83,7 @@ export const appReducer = (state, action) => {
         ...state,
         selectedStringNumber: action.stringNumber,
       };
-    case actionTypes.ADD_TRACK:
+    case actionTypes.ADD_TRACK: {
       const { type, durationIds, durationLength, ...newTrack } = action;
 
       const measureIds = newTrack.measures;
@@ -143,7 +143,59 @@ export const appReducer = (state, action) => {
           allIds: [...state.durations.allIds, ...durationIds],
         },
       };
-    // TODO DELETE_TRACK
+    }
+    case actionTypes.DELETE_TRACK: {
+      const { trackId } = action;
+      const { [trackId]: deletedTrack, ...trackIdMap } = state.tracks.byId;
+      const deletedMeasureIds = deletedTrack.measures;
+      const deletedDurationIds = deletedMeasureIds
+        .map((id) => state.measures.byId[id].durations)
+        .flat();
+      const deletedNoteIds = deletedDurationIds
+        .map((id) => state.durations.byId[id].notes)
+        .flat();
+
+      return {
+        ...state,
+        tracks: {
+          byId: trackIdMap,
+          allIds: state.tracks.allIds.filter((id) => id !== trackId),
+        },
+        measures: {
+          byId: deletedMeasureIds.reduce((measureIdMap, id) => {
+            const { [id]: deletedMeasure, ...remainingMeasures } = measureIdMap;
+
+            return remainingMeasures;
+          }, state.measures.byId),
+          allIds: state.measures.allIds.filter(
+            (id) => !deletedMeasureIds.includes(id)
+          ),
+        },
+        durations: {
+          byId: deletedDurationIds.reduce((durationIdMap, id) => {
+            const {
+              [id]: deletedDuration,
+              ...remainingDurations
+            } = durationIdMap;
+
+            return remainingDurations;
+          }, state.durations.byId),
+          allIds: state.durations.allIds.filter(
+            (id) => !deletedDurationIds.includes(id)
+          ),
+        },
+        notes: {
+          byId: deletedNoteIds.reduce((noteIdMap, id) => {
+            const { [id]: deletedNote, ...remainingNotes } = noteIdMap;
+
+            return remainingNotes;
+          }, state.notes.byId),
+          allIds: state.notes.allIds.filter(
+            (id) => !deletedNoteIds.includes(id)
+          ),
+        },
+      };
+    }
     // TODO ADD_MEASURE
     // TODO DELETE_MEASURE
     // TODO ADD_DURATION

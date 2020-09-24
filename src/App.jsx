@@ -1,13 +1,12 @@
 import React, { useState, useCallback, useEffect, useReducer } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import Emoji from 'a11y-react-emoji';
 
-import { appReducer } from './reducers';
+import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import AppContext from './AppContext';
 import {
-  addTrack,
   deleteTrack,
   addMeasure,
   deleteMeasure,
@@ -18,10 +17,6 @@ import {
   markDurationAsNotRest,
   deleteNote,
   setDurationLength,
-  measuresSelector,
-  tracksSelector,
-  durationsSelector,
-  notesSelector,
   setDurationDotted,
 } from './slices/document';
 import {
@@ -49,16 +44,6 @@ import Pitch from './components/Pitch';
 
 import './App.scss';
 
-const initialAppState = {
-  isEditionPaletteShown: true,
-  isGlobalViewShown: true,
-  isInspectorShown: true,
-  selectedTrackNumber: 0,
-  selectedMeasureNumber: 0,
-  selectedDurationId: undefined,
-  selectedStringNumber: 0,
-};
-
 const App = () => {
   const [appState, dispatchApp] = useReducer(appReducer, initialAppState);
   const {
@@ -72,10 +57,15 @@ const App = () => {
   } = appState;
 
   const dispatch = useDispatch();
-  const tracks = useSelector(tracksSelector);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
-  const notes = useSelector(notesSelector);
+  // TODO Write custom hook for tracks/measures/durations/notes?
+  const tracks = appState.tracks.allIds.map((id) => appState.tracks.byId[id]);
+  const measures = appState.measures.allIds.map(
+    (id) => appState.measures.byId[id]
+  );
+  const durations = appState.durations.allIds.map(
+    (id) => appState.durations.byId[id]
+  );
+  const notes = appState.notes.allIds.map((id) => appState.notes.byId[id]);
 
   // TODO Put fileList in Redux store
   const dummyFileList = [
@@ -254,22 +244,21 @@ const App = () => {
           ? [uuidv4()]
           : tracks[0].measures.map((measure) => uuidv4());
 
-      dispatch(
-        addTrack({
-          id: newTrackId,
-          measures: measureIds,
-          durationIds: durationIds,
-          durationLength: selectedDuration?.length,
-          ...trackToAdd,
-        })
-      );
+      dispatchApp({
+        type: actionTypes.ADD_TRACK,
+        id: newTrackId,
+        measures: measureIds,
+        durationIds: durationIds,
+        durationLength: selectedDuration?.length,
+        ...trackToAdd,
+      });
 
       return {
         newTrackId: newTrackId,
         durationIdToSelect: durationIds[selectedMeasureNumber],
       };
     },
-    [dispatch, selectedMeasureNumber, selectedDuration, tracks]
+    [selectedMeasureNumber, selectedDuration, tracks]
   );
 
   const dispatchShortenDuration = useCallback(
@@ -673,8 +662,6 @@ const App = () => {
         (event.target.tagName !== 'INPUT' ||
           event.target.classList.contains('Measure__Input'))
       ) {
-        console.log(event);
-
         switch (event.key) {
           case 'ArrowUp':
             event.preventDefault();

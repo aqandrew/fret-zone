@@ -1,14 +1,9 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 
 import { SELECT_MEASURE, SELECT_DURATION, SELECT_STRING } from '../actionTypes';
-import AppContext from '../AppContext';
-import {
-  measuresSelector,
-  tracksSelector,
-  durationsSelector,
-  notesSelector,
-} from '../slices/document';
+import AppStateContext from '../AppStateContext';
+import DispatchContext from '../DispatchContext';
+import { useDocument } from '../hooks/useDocument';
 import { durationLengths } from '../constants';
 
 import './Workspace.scss';
@@ -21,11 +16,9 @@ const Workspace = ({
   selectedStringNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(AppContext);
-  const tracks = useSelector(tracksSelector);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
-  const notes = useSelector(notesSelector);
+  const dispatchApp = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const { tracks, measures, durations, notes } = useDocument(appState);
 
   const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];

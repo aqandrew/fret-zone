@@ -8,7 +8,6 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  deleteTrack,
   addMeasure,
   deleteMeasure,
   addDuration,
@@ -221,7 +220,10 @@ const App = () => {
       );
     }
 
-    dispatch(deleteTrack(tracks[selectedTrackNumber].id));
+    dispatchApp({
+      type: actionTypes.DELETE_TRACK,
+      trackId: tracks[selectedTrackNumber].id,
+    });
   };
 
   const dispatchAddTrack = useCallback(

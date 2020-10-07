@@ -196,7 +196,72 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO ADD_MEASURE
+    case actionTypes.ADD_MEASURE: {
+      // TODO Refactor this to be used for inserting a new measure
+      const { trackMeasureIds, durationLength } = action;
+
+      return {
+        ...state,
+        // Add new measure IDs to each track
+        tracks: {
+          ...state.tracks,
+          byId: state.tracks.allIds.reduce((tracks, trackId) => {
+            const track = state.tracks.byId[trackId];
+
+            return {
+              ...tracks,
+              [trackId]: {
+                ...track,
+                measures: [
+                  ...track.measures,
+                  trackMeasureIds[trackId].measureId,
+                ],
+              },
+            };
+          }, state.tracks.byId),
+        },
+        // Add a new measure to each track
+        measures: {
+          byId: Object.values(trackMeasureIds).reduce(
+            (measures, idMapping) => ({
+              ...measures,
+              [idMapping.measureId]: {
+                ...defaultMeasureOptions,
+                id: idMapping.measureId,
+                durations: [idMapping.durationId],
+              },
+            }),
+            state.measures.byId
+          ),
+          allIds: [
+            ...state.measures.allIds,
+            ...Object.values(trackMeasureIds).map(
+              (idMapping) => idMapping.measureId
+            ),
+          ],
+        },
+        // Add a new duration for each measure added
+        durations: {
+          byId: Object.values(trackMeasureIds).reduce(
+            (durations, idMapping) => ({
+              ...durations,
+              [idMapping.durationId]: {
+                ...defaultDurationOptions,
+                id: idMapping.durationId,
+                length: durationLength,
+              },
+            }),
+            state.durations.byId
+          ),
+          allIds: [
+            ...state.durations.allIds,
+            ...Object.values(trackMeasureIds).map(
+              (idMapping) => idMapping.durationId
+            ),
+          ],
+        },
+      };
+    }
     // TODO DELETE_MEASURE
     // TODO ADD_DURATION
     // TODO ADD_REST

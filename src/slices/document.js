@@ -133,7 +133,6 @@ export const documentSlice = createSlice({
         state.measures.allIds.push(newMeasureId);
 
         // Add a new duration for each measure
-        // TODO Added duration should have the same length as the last selected duration
         state.durations.byId[newDurationId] = {
           id: newDurationId,
           ...defaultDurationOptions,

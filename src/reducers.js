@@ -146,7 +146,7 @@ export const appReducer = (state, action) => {
     }
     case actionTypes.DELETE_TRACK: {
       const { trackId } = action;
-      const { [trackId]: deletedTrack, ...trackIdMap } = state.tracks.byId;
+      const { [trackId]: deletedTrack, ...remainingTracks } = state.tracks.byId;
       const deletedMeasureIds = deletedTrack.measures;
       const deletedDurationIds = deletedMeasureIds
         .map((id) => state.measures.byId[id].durations)
@@ -158,7 +158,7 @@ export const appReducer = (state, action) => {
       return {
         ...state,
         tracks: {
-          byId: trackIdMap,
+          byId: remainingTracks,
           allIds: state.tracks.allIds.filter((id) => id !== trackId),
         },
         measures: {
@@ -262,7 +262,77 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO DELETE_MEASURE
+    // TODO How to share code with DELETE_TRACK?
+    case actionTypes.DELETE_MEASURE: {
+      // TODO We already know that measureNumber === state.selectedMeasureNumber
+      const { measureNumber } = action;
+      const deletedMeasureIds = state.tracks.allIds.map(
+        (id) => state.tracks.byId[id].measures[measureNumber]
+      );
+      const deletedDurationIds = deletedMeasureIds
+        .map((id) => state.measures.byId[id].durations)
+        .flat();
+      const deletedNoteIds = deletedDurationIds
+        .map((id) => state.durations.byId[id].notes)
+        .flat();
+
+      return {
+        ...state,
+        // Remove (measureNumber)th measure IDs from tracks
+        tracks: {
+          ...state.tracks,
+          byId: state.tracks.allIds.reduce((tracks, id) => {
+            const track = tracks[id];
+
+            return {
+              ...tracks,
+              [id]: {
+                ...track,
+                measures: track.measures.filter(
+                  (measureId, i) => i !== measureNumber
+                ),
+              },
+            };
+          }, state.tracks.byId),
+        },
+        // Remove each measure that has measureNumber
+        measures: {
+          byId: deletedMeasureIds.reduce((measureIdMap, id) => {
+            const { [id]: deletedMeasure, ...remainingMeasures } = measureIdMap;
+
+            return remainingMeasures;
+          }, state.measures.byId),
+          allIds: state.measures.allIds.filter(
+            (id) => !deletedMeasureIds.includes(id)
+          ),
+        },
+        // Remove each duration that was in each deleted measure
+        durations: {
+          byId: deletedDurationIds.reduce((durationIdMap, id) => {
+            const {
+              [id]: deletedDuration,
+              ...remainingDurations
+            } = durationIdMap;
+
+            return remainingDurations;
+          }, state.durations.byId),
+          allIds: state.durations.allIds.filter(
+            (id) => !deletedDurationIds.includes(id)
+          ),
+        },
+        // Remove each note that was in each deleted duration
+        notes: {
+          byId: deletedNoteIds.reduce((noteIdMap, id) => {
+            const { [id]: deletedNote, ...remainingNotes } = noteIdMap;
+
+            return remainingNotes;
+          }, state.notes.byId),
+          allIds: state.notes.allIds.filter(
+            (id) => !deletedNoteIds.includes(id)
+          ),
+        },
+      };
+    }
     // TODO ADD_DURATION
     // TODO ADD_REST
     // TODO SET_DURATION_DOTTED

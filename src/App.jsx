@@ -8,7 +8,6 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  deleteMeasure,
   addDuration,
   addNote,
   addRest,
@@ -503,10 +502,12 @@ const App = () => {
 
       // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
       // so this still deletes the correct measure after SELECT_MEASURE has executed
-      dispatch(deleteMeasure(selectedMeasureNumber));
+      dispatchApp({
+        type: actionTypes.DELETE_MEASURE,
+        measureNumber: selectedMeasureNumber,
+      });
     }
   }, [
-    dispatch,
     measures,
     durations,
     selectedTrack,

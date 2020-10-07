@@ -8,7 +8,6 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  addMeasure,
   deleteMeasure,
   addDuration,
   addNote,
@@ -414,12 +413,11 @@ const App = () => {
         }, {});
 
         // TODO Pass in current measure's time signature
-        dispatch(
-          addMeasure({
-            trackMeasureIds: trackMeasureIds,
-            durationLength: selectedDuration?.length,
-          })
-        );
+        dispatchApp({
+          type: actionTypes.ADD_MEASURE,
+          trackMeasureIds: trackMeasureIds,
+          durationLength: selectedDuration?.length,
+        });
         dispatchApp({
           type: actionTypes.SELECT_MEASURE,
           measureNumber: selectedMeasureNumber + 1,

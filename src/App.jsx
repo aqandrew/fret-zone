@@ -9,7 +9,6 @@ import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
   addNote,
-  addRest,
   deleteDuration,
   markDurationAsNotRest,
   deleteNote,
@@ -530,7 +529,10 @@ const App = () => {
       // If the deleted note was the last one in the selected duration,
       if (selectedDuration?.notes.length === 1) {
         // Turn the duration into a rest
-        dispatch(addRest(selectedDurationId));
+        dispatchApp({
+          type: actionTypes.ADD_REST,
+          durationId: selectedDurationId,
+        });
       } else {
         needToSelectNewDuration = true;
       }
@@ -735,7 +737,10 @@ const App = () => {
             break;
           case 'r':
             // Turn selected duration into rest
-            dispatch(addRest(selectedDurationId));
+            dispatchApp({
+              type: actionTypes.ADD_REST,
+              durationId: selectedDurationId,
+            });
 
             break;
           case 'Backspace':

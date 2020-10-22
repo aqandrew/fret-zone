@@ -13,7 +13,6 @@ import {
   markDurationAsNotRest,
   deleteNote,
   setDurationLength,
-  setDurationDotted,
 } from './slices/document';
 import {
   dispatchChangeNextSelectedDurationLengthIfNecessary,
@@ -727,12 +726,11 @@ const App = () => {
             break;
           case '.':
             // Toggle whether selected duration is dotted
-            dispatch(
-              setDurationDotted({
-                durationId: selectedDurationId,
-                isDotted: !selectedDuration.isDotted,
-              })
-            );
+            dispatchApp({
+              type: actionTypes.SET_DURATION_DOTTED,
+              durationId: selectedDurationId,
+              isDotted: !selectedDuration.isDotted,
+            });
 
             break;
           case 'r':
@@ -779,7 +777,6 @@ const App = () => {
       }
     },
     [
-      dispatch,
       dispatchShortenDuration,
       dispatchLengthenDuration,
       tracks,

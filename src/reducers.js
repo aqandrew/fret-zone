@@ -298,7 +298,26 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO ADD_REST
+    case actionTypes.ADD_REST: {
+      // TODO We already know that durationId === state.selectedDurationId
+      const { durationId } = action;
+      const duration = state.durations.byId[durationId];
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: { ...duration, isRest: true },
+          },
+        },
+        // If this duration has notes, delete all of the duration's notes
+        notes: duration.notes.length
+          ? getRemainingNotes(duration.notes)
+          : state.notes,
+      };
+    }
     // TODO SET_DURATION_DOTTED
     // TODO ADD_NOTE
     // TODO DELETE_NOTE

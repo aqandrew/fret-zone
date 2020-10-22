@@ -8,7 +8,6 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  addDuration,
   addNote,
   addRest,
   deleteDuration,
@@ -358,14 +357,13 @@ const App = () => {
         else {
           let newDurationId = uuidv4();
 
-          dispatch(
-            addDuration({
-              measureId: selectedMeasure?.id,
-              newDurationId: newDurationId,
-              length: selectedDuration?.length,
-              isDotted: selectedDuration?.isDotted,
-            })
-          );
+          dispatchApp({
+            type: actionTypes.ADD_DURATION,
+            measureId: selectedMeasure?.id,
+            newDurationId: newDurationId,
+            length: selectedDuration?.length,
+            isDotted: selectedDuration?.isDotted,
+          });
           dispatchApp({
             type: actionTypes.SELECT_DURATION,
             durationId: newDurationId,
@@ -455,7 +453,6 @@ const App = () => {
       }
     }
   }, [
-    dispatch,
     getCurrentBarDuration,
     getCurrentBarMaximumDuration,
     tracks,

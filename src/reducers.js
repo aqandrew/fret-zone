@@ -318,7 +318,21 @@ export const appReducer = (state, action) => {
           : state.notes,
       };
     }
-    // TODO SET_DURATION_DOTTED
+    case actionTypes.SET_DURATION_DOTTED: {
+      // TODO We already know that durationId === state.selectedDurationId
+      const { durationId, isDotted } = action;
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: { ...state.durations.byId[durationId], isDotted },
+          },
+        },
+      };
+    }
     // TODO ADD_NOTE
     // TODO DELETE_NOTE
     // TODO DELETE_DURATION

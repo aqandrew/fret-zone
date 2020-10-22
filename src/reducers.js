@@ -269,7 +269,35 @@ export const appReducer = (state, action) => {
         notes: getRemainingNotes(state, deletedNoteIds),
       };
     }
-    // TODO ADD_DURATION
+    case actionTypes.ADD_DURATION: {
+      const { measureId, newDurationId, length, isDotted } = action;
+      const measure = state.measures.byId[measureId];
+
+      return {
+        ...state,
+        measures: {
+          ...state.measures,
+          byId: {
+            ...state.measures.byId,
+            [measureId]: {
+              ...measure,
+              durations: [...measure.durations, newDurationId],
+            },
+          },
+        },
+        durations: {
+          byId: {
+            ...state.durations.byId,
+            [newDurationId]: {
+              ...defaultDurationOptions,
+              length,
+              isDotted,
+            },
+          },
+          allIds: [...state.durations.allIds, newDurationId],
+        },
+      };
+    }
     // TODO ADD_REST
     // TODO SET_DURATION_DOTTED
     // TODO ADD_NOTE

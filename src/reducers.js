@@ -405,7 +405,24 @@ export const appReducer = (state, action) => {
         durations: getRemainingDurations(state, [durationId]),
       };
     }
-    // TODO MARK_DURATION_AS_NOT_REST
+    case actionTypes.MARK_DURATION_AS_NOT_REST: {
+      // TODO We already know that durationId === selectedDurationId
+      const { durationId } = action;
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: {
+              ...state.durations.byId[durationId],
+              isRest: false,
+            },
+          },
+        },
+      };
+    }
     // TODO SET_DURATION_LENGTH
     default:
       return state;

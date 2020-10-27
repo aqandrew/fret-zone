@@ -7,7 +7,7 @@ import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
-import { markDurationAsNotRest, setDurationLength } from './slices/document';
+import { setDurationLength } from './slices/document';
 import {
   dispatchChangeNextSelectedDurationLengthIfNecessary,
   roundDurationLength,
@@ -535,7 +535,10 @@ const App = () => {
         // If this is the only duration in the measure,
         if (selectedMeasure?.durations.length === 1) {
           // Change the duration to NOT a rest
-          dispatch(markDurationAsNotRest(selectedDurationId));
+          dispatchApp({
+            type: actionTypes.MARK_DURATION_AS_NOT_REST,
+            durationId: selectedDurationId,
+          });
         } else {
           // Delete that duration
           dispatchApp({
@@ -593,7 +596,6 @@ const App = () => {
       );
     }
   }, [
-    dispatch,
     measures,
     durations,
     notes,

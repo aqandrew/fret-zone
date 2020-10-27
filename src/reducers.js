@@ -333,7 +333,31 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO ADD_NOTE
+    case actionTypes.ADD_NOTE: {
+      const { durationId, type, ...note } = action;
+      const duration = state.durations.byId[durationId];
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: {
+              ...duration,
+              notes: [...duration.notes, note.id],
+            },
+          },
+        },
+        notes: {
+          byId: {
+            ...state.notes.byId,
+            [note.id]: note,
+          },
+          allIds: [...state.notes.allIds, note.id],
+        },
+      };
+    }
     // TODO DELETE_NOTE
     // TODO DELETE_DURATION
     // TODO MARK_DURATION_AS_NOT_REST

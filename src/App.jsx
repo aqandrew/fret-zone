@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useReducer } from 'react';
-import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import Emoji from 'a11y-react-emoji';
 
@@ -7,7 +6,6 @@ import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
-import { setDurationLength } from './slices/document';
 import {
   dispatchChangeNextSelectedDurationLengthIfNecessary,
   roundDurationLength,
@@ -46,7 +44,6 @@ const App = () => {
     selectedStringNumber,
   } = appState;
 
-  const dispatch = useDispatch();
   const { tracks, measures, durations, notes } = useDocument(appState);
 
   const dummyFileList = [
@@ -247,26 +244,24 @@ const App = () => {
 
   const dispatchShortenDuration = useCallback(
     (durationId) => {
-      dispatch(
-        setDurationLength({
-          durationId: durationId,
-          newLength: selectedDuration?.length / 2,
-        })
-      );
+      dispatchApp({
+        type: actionTypes.SET_DURATION_LENGTH,
+        durationId: durationId,
+        newLength: selectedDuration?.length / 2,
+      });
     },
-    [dispatch, selectedDuration]
+    [selectedDuration]
   );
 
   const dispatchLengthenDuration = useCallback(
     (durationId) => {
-      dispatch(
-        setDurationLength({
-          durationId: durationId,
-          newLength: selectedDuration?.length * 2,
-        })
-      );
+      dispatchApp({
+        type: actionTypes.SET_DURATION_LENGTH,
+        durationId: durationId,
+        newLength: selectedDuration?.length * 2,
+      });
     },
-    [dispatch, selectedDuration]
+    [selectedDuration]
   );
 
   const dispatchSelectPreviousString = useCallback(() => {

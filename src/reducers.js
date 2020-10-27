@@ -423,7 +423,23 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO SET_DURATION_LENGTH
+    case actionTypes.SET_DURATION_LENGTH: {
+      const { durationId, newLength } = action;
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: {
+              ...state.durations.byId[durationId],
+              length: newLength,
+            },
+          },
+        },
+      };
+    }
     default:
       return state;
   }

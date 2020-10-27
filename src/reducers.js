@@ -358,7 +358,29 @@ export const appReducer = (state, action) => {
         },
       };
     }
-    // TODO DELETE_NOTE
+    case actionTypes.DELETE_NOTE: {
+      // TODO We already know that noteId === selectedNoteId
+      const { noteId } = action;
+      const durationId = state.durations.allIds.find((id) =>
+        state.durations.byId[id].notes.includes(noteId)
+      );
+      const duration = state.durations.byId[durationId];
+
+      return {
+        ...state,
+        durations: {
+          ...state.durations,
+          byId: {
+            ...state.durations.byId,
+            [durationId]: {
+              ...duration,
+              notes: duration.notes.filter((id) => id !== noteId),
+            },
+          },
+        },
+        notes: getRemainingNotes(state, [noteId]),
+      };
+    }
     // TODO DELETE_DURATION
     // TODO MARK_DURATION_AS_NOT_REST
     // TODO SET_DURATION_LENGTH

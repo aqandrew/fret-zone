@@ -10,7 +10,6 @@ import AppStateContext from './AppStateContext';
 import {
   deleteDuration,
   markDurationAsNotRest,
-  deleteNote,
   setDurationLength,
 } from './slices/document';
 import {
@@ -522,7 +521,7 @@ const App = () => {
           selectedStringNumber
       );
 
-      dispatch(deleteNote(selectedNoteId));
+      dispatchApp({ type: actionTypes.DELETE_NOTE, noteId: selectedNoteId });
 
       // If the deleted note was the last one in the selected duration,
       if (selectedDuration?.notes.length === 1) {

@@ -7,11 +7,7 @@ import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
-import {
-  deleteDuration,
-  markDurationAsNotRest,
-  setDurationLength,
-} from './slices/document';
+import { markDurationAsNotRest, setDurationLength } from './slices/document';
 import {
   dispatchChangeNextSelectedDurationLengthIfNecessary,
   roundDurationLength,
@@ -542,7 +538,10 @@ const App = () => {
           dispatch(markDurationAsNotRest(selectedDurationId));
         } else {
           // Delete that duration
-          dispatch(deleteDuration(selectedDurationId));
+          dispatchApp({
+            type: actionTypes.DELETE_DURATION,
+            durationId: selectedDurationId,
+          });
 
           needToSelectNewDuration = true;
         }

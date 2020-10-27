@@ -290,6 +290,7 @@ export const appReducer = (state, action) => {
             ...state.durations.byId,
             [newDurationId]: {
               ...defaultDurationOptions,
+              id: newDurationId,
               length,
               isDotted,
             },

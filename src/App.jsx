@@ -8,7 +8,6 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  addNote,
   deleteDuration,
   markDurationAsNotRest,
   deleteNote,
@@ -624,21 +623,19 @@ const App = () => {
       const enteredFretNumber = parseInt(fretNumber);
       const newFretNumber = currentFretNumber * 10 + enteredFretNumber;
 
-      dispatch(
-        addNote({
-          durationId: selectedDurationId,
-          id: uuidv4(),
-          string: selectedStringNumber,
-          fret:
-            fretInputTime - lastFretInputTime < sameFretNumberCutoffTime &&
-            newFretNumber <= maximumFretNumber
-              ? newFretNumber
-              : enteredFretNumber,
-        })
-      );
+      dispatchApp({
+        type: actionTypes.ADD_NOTE,
+        durationId: selectedDurationId,
+        id: uuidv4(),
+        string: selectedStringNumber,
+        fret:
+          fretInputTime - lastFretInputTime < sameFretNumberCutoffTime &&
+          newFretNumber <= maximumFretNumber
+            ? newFretNumber
+            : enteredFretNumber,
+      });
     },
     [
-      dispatch,
       notes,
       selectedDurationId,
       selectedDuration,

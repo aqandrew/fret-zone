@@ -7,12 +7,12 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "a11y-react-emoji": "^1.1.2",
+    "nanoid": "^3.1.16",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "slugify": "^1.4.0",
-    "uuid": "^7.0.3"
+    "slugify": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -15,7 +15,7 @@ const GlobalView = ({
 }) => {
   const dispatchApp = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
-  const { tracks, measures, durations } = useDocument(appState);
+  const { tracks, measures } = useDocument(appState);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
@@ -113,7 +113,7 @@ const TrackControl = ({
   const dispatchApp = useContext(DispatchContext);
 
   const appState = useContext(AppStateContext);
-  const { tracks, measures, durations } = useDocument(appState);
+  const { tracks, measures } = useDocument(appState);
 
   let trackControlClassName = 'TrackControl';
 

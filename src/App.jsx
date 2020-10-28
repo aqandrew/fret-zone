@@ -289,9 +289,6 @@ const App = () => {
           measure.id === selectedTrack?.measures[selectedMeasureNumber - 1]
       );
       const durationIdToSelect = previousMeasure.durations.slice(-1)[0];
-      const previousMeasuresLastDuration = durations.find(
-        (duration) => duration.id === durationIdToSelect
-      );
 
       // Select the last duration of the previous measure
       dispatchApp({
@@ -305,12 +302,10 @@ const App = () => {
     }
   }, [
     measures,
-    durations,
     selectedTrack,
     selectedMeasureNumber,
     selectedMeasure,
     selectedDurationId,
-    selectedDuration,
   ]);
 
   const dispatchSelectNextDuration = useCallback(() => {
@@ -399,12 +394,6 @@ const App = () => {
             measure.id === selectedTrack?.measures[selectedMeasureNumber + 1]
         );
         const durationIdToSelect = nextMeasure.durations[0];
-        const nextMeasuresFirstDuration = durations.find(
-          (duration) =>
-            duration.id ===
-            measures.find((measure) => measure.id === nextMeasure.id)
-              .durations[0]
-        );
 
         dispatchApp({
           type: actionTypes.SELECT_MEASURE,
@@ -464,13 +453,7 @@ const App = () => {
         measureNumber: selectedMeasureNumber,
       });
     }
-  }, [
-    measures,
-    durations,
-    selectedTrack,
-    selectedMeasureNumber,
-    selectedDuration,
-  ]);
+  }, [measures, durations, selectedTrack, selectedMeasureNumber]);
 
   const dispatchDeleteNote = useCallback(() => {
     let needToSelectNewDuration = false;
@@ -561,7 +544,6 @@ const App = () => {
     }
   }, [
     measures,
-    durations,
     notes,
     selectedMeasureNumber,
     selectedMeasure,

@@ -339,12 +339,12 @@ export const appReducer = (state, action) => {
           ...state.durations,
           byId: {
             ...state.durations.byId,
-            [durationId]: { ...duration, isRest: true },
+            [durationId]: { ...duration, isRest: true, notes: [] },
           },
         },
         // If this duration has notes, delete all of the duration's notes
         notes: duration.notes.length
-          ? getRemainingNotes(duration.notes)
+          ? getRemainingNotes(state, duration.notes)
           : state.notes,
       };
     }
@@ -367,6 +367,19 @@ export const appReducer = (state, action) => {
       const { durationId, type, ...note } = action;
       const duration = state.durations.byId[durationId];
 
+      // If this duration already has a note at the specified string,
+      // Delete the existing note
+      const deletedNoteId = state.notes.allIds.find(
+        (id) => state.notes.byId[id].string === note.string
+      );
+      const positionAlreadyHasNote = deletedNoteId !== undefined;
+      const notesToAddTo = positionAlreadyHasNote
+        ? getRemainingNotes(state, [deletedNoteId])
+        : { ...state.notes };
+      const notesInDuration = positionAlreadyHasNote
+        ? duration.notes.filter((id) => id !== deletedNoteId)
+        : [...duration.notes];
+
       return {
         ...state,
         durations: {
@@ -375,16 +388,17 @@ export const appReducer = (state, action) => {
             ...state.durations.byId,
             [durationId]: {
               ...duration,
-              notes: [...duration.notes, note.id],
+              isRest: false,
+              notes: [...notesInDuration, note.id],
             },
           },
         },
         notes: {
           byId: {
-            ...state.notes.byId,
+            ...notesToAddTo.byId,
             [note.id]: note,
           },
-          allIds: [...state.notes.allIds, note.id],
+          allIds: [...notesToAddTo.allIds, note.id],
         },
       };
     }

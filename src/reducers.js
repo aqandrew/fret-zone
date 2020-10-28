@@ -73,11 +73,40 @@ export const appReducer = (state, action) => {
         ...state,
         selectedMeasureNumber: action.measureNumber,
       };
-    case actionTypes.SELECT_DURATION:
+    case actionTypes.SELECT_DURATION: {
+      const { durationId } = action;
+      const selectedDuration = state.durations.byId[state.selectedDurationId];
+
+      if (!selectedDuration) {
+        return {
+          ...state,
+          selectedDurationId: durationId,
+        };
+      }
+
+      // If the next selected duration has no notes and isn't a rest, it will take the length and dottedness of the selected duration
+      const nextSelectedDuration = state.durations.byId[durationId];
+      const nextSelectedDurationIsEmpty =
+        !nextSelectedDuration.notes.length && !nextSelectedDuration.isRest;
+
       return {
         ...state,
-        selectedDurationId: action.durationId,
+        selectedDurationId: durationId,
+        durations: {
+          ...state.durations,
+          byId: nextSelectedDurationIsEmpty
+            ? {
+                ...state.durations.byId,
+                [durationId]: {
+                  ...nextSelectedDuration,
+                  length: selectedDuration.length,
+                  isDotted: selectedDuration.isDotted,
+                },
+              }
+            : state.durations.byId,
+        },
       };
+    }
     case actionTypes.SELECT_STRING:
       return {
         ...state,

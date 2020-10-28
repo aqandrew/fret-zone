@@ -4,7 +4,6 @@ import DispatchContext from '../DispatchContext';
 import AppStateContext from '../AppStateContext';
 import { useDocument } from '../hooks/useDocument';
 import { SELECT_TRACK, SELECT_MEASURE, SELECT_DURATION } from '../actionTypes';
-import { dispatchChangeNextSelectedDurationLengthIfNecessary } from '../utils';
 
 import './GlobalView.scss';
 
@@ -85,15 +84,6 @@ const GlobalView = ({
                           type: SELECT_DURATION,
                           durationId: durationIdToSelect,
                         });
-                        // TODO Figure out a better way to find the selected duration
-                        dispatchChangeNextSelectedDurationLengthIfNecessary(
-                          durations.find(
-                            (duration) => duration.id === durationIdToSelect
-                          ),
-                          durations.find(
-                            (duration) => duration.id === selectedDurationId
-                          )
-                        );
                       }}
                       key={measureNumber}
                     >
@@ -145,10 +135,6 @@ const TrackControl = ({
 
         dispatchApp({ type: SELECT_TRACK, trackNumber });
         dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          durations.find((duration) => duration.id === durationIdToSelect),
-          durations.find((duration) => duration.id === selectedDurationId)
-        );
       }}
     >
       <div className="TrackControl__ColorTab"></div>
@@ -227,10 +213,6 @@ const MeasureTableCell = ({
         dispatchApp({ type: SELECT_TRACK, trackNumber });
         dispatchApp({ type: SELECT_MEASURE, measureNumber });
         dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          durations.find((duration) => duration.id === durationIdToSelect),
-          durations.find((duration) => duration.id === selectedDurationId)
-        );
       }}
     ></div>
   );

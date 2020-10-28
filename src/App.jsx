@@ -6,10 +6,7 @@ import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
-import {
-  dispatchChangeNextSelectedDurationLengthIfNecessary,
-  roundDurationLength,
-} from './utils';
+import { roundDurationLength } from './utils';
 import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
@@ -175,10 +172,6 @@ const App = () => {
         type: actionTypes.SELECT_DURATION,
         durationId: nextTracksFirstDurationAtSelectedMeasureNumber.id,
       });
-      dispatchChangeNextSelectedDurationLengthIfNecessary(
-        nextTracksFirstDurationAtSelectedMeasureNumber,
-        selectedDuration
-      );
     }
     // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
     else if (selectedTrackNumber !== 0) {
@@ -200,10 +193,6 @@ const App = () => {
         type: actionTypes.SELECT_DURATION,
         durationId: previousTracksFirstDurationAtSelectedMeasureNumber.id,
       });
-      dispatchChangeNextSelectedDurationLengthIfNecessary(
-        previousTracksFirstDurationAtSelectedMeasureNumber,
-        selectedDuration
-      );
     }
 
     dispatchApp({
@@ -313,10 +302,6 @@ const App = () => {
         type: actionTypes.SELECT_DURATION,
         durationId: durationIdToSelect,
       });
-      dispatchChangeNextSelectedDurationLengthIfNecessary(
-        previousMeasuresLastDuration,
-        selectedDuration
-      );
     }
   }, [
     measures,
@@ -373,10 +358,6 @@ const App = () => {
           type: actionTypes.SELECT_DURATION,
           durationId: nextDuration.id,
         });
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          nextDuration,
-          selectedDuration
-        );
       }
     } else {
       shouldCheckIfMeasureIsLast = true;
@@ -433,10 +414,6 @@ const App = () => {
           type: actionTypes.SELECT_DURATION,
           durationId: durationIdToSelect,
         });
-        dispatchChangeNextSelectedDurationLengthIfNecessary(
-          nextMeasuresFirstDuration,
-          selectedDuration
-        );
       }
     }
   }, [
@@ -479,10 +456,6 @@ const App = () => {
         type: actionTypes.SELECT_DURATION,
         durationId: durationToSelect.id,
       });
-      dispatchChangeNextSelectedDurationLengthIfNecessary(
-        durationToSelect,
-        selectedDuration
-      );
 
       // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
       // so this still deletes the correct measure after SELECT_MEASURE has executed
@@ -585,10 +558,6 @@ const App = () => {
         type: actionTypes.SELECT_DURATION,
         durationId: durationIdToSelect,
       });
-      dispatchChangeNextSelectedDurationLengthIfNecessary(
-        durations.find((duration) => duration.id === durationIdToSelect),
-        selectedDuration
-      );
     }
   }, [
     measures,
@@ -952,14 +921,6 @@ const App = () => {
                         type: actionTypes.SELECT_DURATION,
                         durationId: durationIdToSelect,
                       });
-                      dispatchChangeNextSelectedDurationLengthIfNecessary(
-                        durations.find(
-                          (duration) => duration.id === durationIdToSelect
-                        ),
-                        durations.find(
-                          (duration) => duration.id === selectedDurationId
-                        )
-                      );
                     }}
                   >
                     {tracks.map((track, trackNumber) => (

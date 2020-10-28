@@ -32,16 +32,15 @@ import './App.scss';
 const App = () => {
   const [appState, dispatchApp] = useReducer(appReducer, initialAppState);
   const {
-    isEditionPaletteShown,
-    isGlobalViewShown,
-    isInspectorShown,
     selectedTrackNumber,
     selectedMeasureNumber,
     selectedDurationId,
     selectedStringNumber,
   } = appState;
-
   const { tracks, measures, durations, notes } = useDocument(appState);
+  const [isEditionPaletteShown, setIsEditionPaletteShown] = useState(true);
+  const [isGlobalViewShown, setIsGlobalViewShown] = useState(true);
+  const [isInspectorShown, setIsInspectorShown] = useState(true);
 
   const dummyFileList = [
     { id: 0, name: '' },
@@ -804,25 +803,19 @@ const App = () => {
                     buttonText="["
                     buttonTitle="Show/Hide Edition Palette"
                     isChecked={isEditionPaletteShown}
-                    setChecked={() => {
-                      dispatchApp({ type: actionTypes.TOGGLE_EDITION_PALETTE });
-                    }}
+                    setChecked={setIsEditionPaletteShown}
                   />
                   <CheckboxButton
                     buttonText="_"
                     buttonTitle="Show/Hide Global View"
                     isChecked={isGlobalViewShown}
-                    setChecked={() =>
-                      dispatchApp({ type: actionTypes.TOGGLE_GLOBAL_VIEW })
-                    }
+                    setChecked={setIsGlobalViewShown}
                   />
                   <CheckboxButton
                     buttonText="]"
                     buttonTitle="Show/Hide Inspector"
                     isChecked={isInspectorShown}
-                    setChecked={() =>
-                      dispatchApp({ type: actionTypes.TOGGLE_INSPECTOR })
-                    }
+                    setChecked={setIsInspectorShown}
                   />
                 </div>
                 <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Workspace">

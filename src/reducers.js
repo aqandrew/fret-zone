@@ -367,7 +367,9 @@ export const appReducer = (state, action) => {
       // If this duration already has a note at the specified string,
       // Delete the existing note
       const deletedNoteId = state.notes.allIds.find(
-        (id) => state.notes.byId[id].string === note.string
+        (id) =>
+          duration.notes.includes(id) &&
+          state.notes.byId[id].string === note.string
       );
       const positionAlreadyHasNote = deletedNoteId !== undefined;
       const notesToAddTo = positionAlreadyHasNote

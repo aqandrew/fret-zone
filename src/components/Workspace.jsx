@@ -40,8 +40,6 @@ const Workspace = ({
             inputClassname += ` ${inputClassname}--IsActive`;
           }
 
-          debugger;
-
           let noteAtString = duration.notes
             .map((noteId) => notes.find((note) => note.id === noteId))
             .find((note) => note.string === stringNumber);

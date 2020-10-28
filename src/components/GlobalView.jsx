@@ -13,7 +13,7 @@ const GlobalView = ({ openAddTrackModal }) => {
   const {
     tracks,
     measures,
-    selectedTrackNumber,
+    selectedTrack,
     selectedMeasureNumber,
   } = useDocument(appState);
 
@@ -52,36 +52,34 @@ const GlobalView = ({ openAddTrackModal }) => {
       <div className="MeasureTable">
         <div className="MeasureTable__Header">
           {tracks.length
-            ? tracks[selectedTrackNumber].measures.map(
-                (measureId, measureNumber) => {
-                  let measureNumberClassName = 'MeasureTable__MeasureNumber';
+            ? selectedTrack.measures.map((measureId, measureNumber) => {
+                let measureNumberClassName = 'MeasureTable__MeasureNumber';
 
-                  // TODO Refactor using classnames utility
-                  if (measureNumber === selectedMeasureNumber) {
-                    measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
-                  }
-
-                  return (
-                    <div
-                      className={measureNumberClassName}
-                      onClick={() => {
-                        const durationIdToSelect = measures.find(
-                          (measure) => measure.id === measureId
-                        ).durations[0];
-
-                        dispatch({ type: SELECT_MEASURE, measureNumber });
-                        dispatch({
-                          type: SELECT_DURATION,
-                          durationId: durationIdToSelect,
-                        });
-                      }}
-                      key={measureNumber}
-                    >
-                      {measureNumber + 1}
-                    </div>
-                  );
+                // TODO Refactor using classnames utility
+                if (measureNumber === selectedMeasureNumber) {
+                  measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
                 }
-              )
+
+                return (
+                  <div
+                    className={measureNumberClassName}
+                    onClick={() => {
+                      const durationIdToSelect = measures.find(
+                        (measure) => measure.id === measureId
+                      ).durations[0];
+
+                      dispatch({ type: SELECT_MEASURE, measureNumber });
+                      dispatch({
+                        type: SELECT_DURATION,
+                        durationId: durationIdToSelect,
+                      });
+                    }}
+                    key={measureNumber}
+                  >
+                    {measureNumber + 1}
+                  </div>
+                );
+              })
             : null}
         </div>
         {renderMeasureTable()}
@@ -132,7 +130,6 @@ const TrackControl = ({ track, trackNumber }) => {
   );
 };
 
-// TODO Remove prop drilling; MeasureTableRow doesn't need to know about the selected track/measure/duration
 const MeasureTableRow = ({ track, trackNumber }) => (
   <div className="MeasureTable__Row">
     {track.measures.map((measureId, measureNumber) => (

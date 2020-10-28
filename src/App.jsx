@@ -32,15 +32,18 @@ import './App.scss';
 const App = () => {
   const [appState, dispatch] = useReducer(appReducer, initialAppState);
   const {
+    tracks,
+    measures,
+    durations,
+    notes,
     selectedTrackNumber,
+    selectedTrack,
     selectedMeasureNumber,
+    selectedMeasure,
     selectedDurationId,
+    selectedDuration,
     selectedStringNumber,
-  } = appState;
-  const { tracks, measures, durations, notes } = useDocument(appState);
-  const [isEditionPaletteShown, setIsEditionPaletteShown] = useState(true);
-  const [isGlobalViewShown, setIsGlobalViewShown] = useState(true);
-  const [isInspectorShown, setIsInspectorShown] = useState(true);
+  } = useDocument(appState);
 
   const dummyFileList = [
     { id: 0, name: '' },
@@ -50,6 +53,9 @@ const App = () => {
 
   // TODO Determine active file via id, not name
   const [activeFileName, setActiveFileName] = useState(dummyFileList[0].name);
+  const [isEditionPaletteShown, setIsEditionPaletteShown] = useState(true);
+  const [isGlobalViewShown, setIsGlobalViewShown] = useState(true);
+  const [isInspectorShown, setIsInspectorShown] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [displayModeIndex, setDisplayModeIndex] = useState(0);
   const [documentTitle, setDocumentTitle] = useState('');
@@ -57,9 +63,6 @@ const App = () => {
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
-  const [selectedTrack, setSelectedTrack] = useState(undefined);
-  const [selectedMeasure, setSelectedMeasure] = useState(undefined);
-  const [selectedDuration, setSelectedDuration] = useState(undefined);
 
   const PitchAtCursor = () => {
     // TODO Pitch evaluation should probably be moved to utility function,
@@ -94,26 +97,6 @@ const App = () => {
 
     return <Pitch {...{ ...pitch, isNotePresent }} />;
   };
-
-  useEffect(() => {
-    setSelectedTrack(tracks[selectedTrackNumber]);
-  }, [tracks, selectedTrackNumber]);
-
-  useEffect(() => {
-    setSelectedMeasure(
-      measures.find(
-        (measure) =>
-          measure.id ===
-          tracks[selectedTrackNumber].measures[selectedMeasureNumber]
-      )
-    );
-  }, [tracks, measures, selectedTrackNumber, selectedMeasureNumber]);
-
-  useEffect(() => {
-    setSelectedDuration(
-      durations.find((duration) => duration.id === selectedDurationId)
-    );
-  }, [durations, selectedDurationId]);
 
   const getCurrentBarMaximumDuration = useCallback(
     () =>
@@ -1019,9 +1002,7 @@ const App = () => {
           />
           <div className="App__Content--Main">
             <div className="App__Content--Center">
-              {isEditionPaletteShown && (
-                <EditionPalette selectedDuration={selectedDuration} />
-              )}
+              {isEditionPaletteShown && <EditionPalette />}
               <Workspace
                 documentTitle={documentTitle}
                 documentArtist={documentArtist}

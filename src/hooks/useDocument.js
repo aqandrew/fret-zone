@@ -5,12 +5,19 @@ export const useDocument = (state) => {
     (id) => state.durations.byId[id]
   );
   const notes = state.notes.allIds.map((id) => state.notes.byId[id]);
+
   const {
     selectedTrackNumber,
     selectedMeasureNumber,
     selectedDurationId,
     selectedStringNumber,
   } = state;
+  const selectedTrack = tracks[selectedTrackNumber];
+  const selectedMeasure = measures.find(
+    (measure) =>
+      measure.id === tracks[selectedTrackNumber].measures[selectedMeasureNumber]
+  );
+  const selectedDuration = state.durations.byId[selectedDurationId];
 
   return {
     tracks,
@@ -18,8 +25,11 @@ export const useDocument = (state) => {
     durations,
     notes,
     selectedTrackNumber,
+    selectedTrack,
     selectedMeasureNumber,
+    selectedMeasure,
     selectedDurationId,
+    selectedDuration,
     selectedStringNumber,
   };
 };

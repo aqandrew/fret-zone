@@ -1025,10 +1025,6 @@ const App = () => {
               <Workspace
                 documentTitle={documentTitle}
                 documentArtist={documentArtist}
-                selectedTrackNumber={selectedTrackNumber}
-                selectedMeasureNumber={selectedMeasureNumber}
-                selectedDurationId={selectedDurationId}
-                selectedStringNumber={selectedStringNumber}
               />
               {isInspectorShown && (
                 <Inspector
@@ -1039,9 +1035,6 @@ const App = () => {
             </div>
             {isGlobalViewShown && (
               <GlobalView
-                selectedTrackNumber={selectedTrackNumber}
-                selectedMeasureNumber={selectedMeasureNumber}
-                selectedDurationId={selectedDurationId}
                 openAddTrackModal={() => setShowAddTrackModal(true)}
               />
             )}

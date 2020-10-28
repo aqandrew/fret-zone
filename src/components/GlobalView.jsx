@@ -7,26 +7,19 @@ import { SELECT_TRACK, SELECT_MEASURE, SELECT_DURATION } from '../actionTypes';
 
 import './GlobalView.scss';
 
-const GlobalView = ({
-  selectedTrackNumber,
-  selectedMeasureNumber,
-  selectedDurationId,
-  openAddTrackModal,
-}) => {
+const GlobalView = ({ openAddTrackModal }) => {
   const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
-  const { tracks, measures } = useDocument(appState);
+  const {
+    tracks,
+    measures,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+  } = useDocument(appState);
 
   const renderTrackControls = () =>
     tracks.map((track, trackNumber) => (
-      <TrackControl
-        track={track}
-        trackNumber={trackNumber}
-        selectedTrackNumber={selectedTrackNumber}
-        selectedMeasureNumber={selectedMeasureNumber}
-        selectedDurationId={selectedDurationId}
-        key={trackNumber}
-      />
+      <TrackControl track={track} trackNumber={trackNumber} key={trackNumber} />
     ));
 
   const renderMeasureTable = () =>
@@ -34,9 +27,6 @@ const GlobalView = ({
       <MeasureTableRow
         track={track}
         trackNumber={TrackNumber}
-        selectedTrackNumber={selectedTrackNumber}
-        selectedMeasureNumber={selectedMeasureNumber}
-        selectedDurationId={selectedDurationId}
         key={TrackNumber}
       />
     ));
@@ -103,17 +93,15 @@ const GlobalView = ({
   );
 };
 
-const TrackControl = ({
-  track,
-  trackNumber,
-  selectedTrackNumber,
-  selectedMeasureNumber,
-  selectedDurationId,
-}) => {
+const TrackControl = ({ track, trackNumber }) => {
   const dispatch = useContext(DispatchContext);
-
   const appState = useContext(AppStateContext);
-  const { tracks, measures } = useDocument(appState);
+  const {
+    tracks,
+    measures,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+  } = useDocument(appState);
 
   let trackControlClassName = 'TrackControl';
 
@@ -145,39 +133,28 @@ const TrackControl = ({
 };
 
 // TODO Remove prop drilling; MeasureTableRow doesn't need to know about the selected track/measure/duration
-const MeasureTableRow = ({
-  track,
-  trackNumber,
-  selectedTrackNumber,
-  selectedMeasureNumber,
-  selectedDurationId,
-}) => (
+const MeasureTableRow = ({ track, trackNumber }) => (
   <div className="MeasureTable__Row">
     {track.measures.map((measureId, measureNumber) => (
       <MeasureTableCell
         measureId={measureId}
         measureNumber={measureNumber}
         trackNumber={trackNumber}
-        selectedTrackNumber={selectedTrackNumber}
-        selectedMeasureNumber={selectedMeasureNumber}
-        selectedDurationId={selectedDurationId}
         key={measureId}
       />
     ))}
   </div>
 );
 
-const MeasureTableCell = ({
-  measureId,
-  measureNumber,
-  trackNumber,
-  selectedTrackNumber,
-  selectedMeasureNumber,
-  selectedDurationId,
-}) => {
+const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
   const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
-  const { measures, durations } = useDocument(appState);
+  const {
+    measures,
+    durations,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+  } = useDocument(appState);
 
   const getMeasure = () => measures.find((measure) => measure.id === measureId);
 

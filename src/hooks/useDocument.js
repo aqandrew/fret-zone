@@ -5,7 +5,21 @@ export const useDocument = (state) => {
     (id) => state.durations.byId[id]
   );
   const notes = state.notes.allIds.map((id) => state.notes.byId[id]);
-  // TODO Would it be good to put selected track/measure/duration/note here?
+  const {
+    selectedTrackNumber,
+    selectedMeasureNumber,
+    selectedDurationId,
+    selectedStringNumber,
+  } = state;
 
-  return { tracks, measures, durations, notes };
+  return {
+    tracks,
+    measures,
+    durations,
+    notes,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+    selectedDurationId,
+    selectedStringNumber,
+  };
 };

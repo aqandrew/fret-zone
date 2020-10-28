@@ -8,17 +8,19 @@ import { durationLengths } from '../constants';
 
 import './Workspace.scss';
 
-const Workspace = ({
-  documentTitle,
-  documentArtist,
-  selectedTrackNumber,
-  selectedMeasureNumber,
-  selectedStringNumber,
-  selectedDurationId,
-}) => {
+const Workspace = ({ documentTitle, documentArtist }) => {
   const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
-  const { tracks, measures, durations, notes } = useDocument(appState);
+  const {
+    tracks,
+    measures,
+    durations,
+    notes,
+    selectedTrackNumber,
+    selectedMeasureNumber,
+    selectedDurationId,
+    selectedStringNumber,
+  } = useDocument(appState);
 
   const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];

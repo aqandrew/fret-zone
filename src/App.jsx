@@ -30,7 +30,7 @@ import Pitch from './components/Pitch';
 import './App.scss';
 
 const App = () => {
-  const [appState, dispatchApp] = useReducer(appReducer, initialAppState);
+  const [appState, dispatch] = useReducer(appReducer, initialAppState);
   const {
     selectedTrackNumber,
     selectedMeasureNumber,
@@ -167,7 +167,7 @@ const App = () => {
       );
 
       // Select first duration of next track's measure at selectedMeasureNumber
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId: nextTracksFirstDurationAtSelectedMeasureNumber.id,
       });
@@ -184,17 +184,17 @@ const App = () => {
           ).durations[0]
       );
 
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_TRACK,
         trackNumber: selectedTrackNumber - 1,
       });
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId: previousTracksFirstDurationAtSelectedMeasureNumber.id,
       });
     }
 
-    dispatchApp({
+    dispatch({
       type: actionTypes.DELETE_TRACK,
       trackId: tracks[selectedTrackNumber].id,
     });
@@ -213,7 +213,7 @@ const App = () => {
           ? [uuidv4()]
           : tracks[0].measures.map((measure) => uuidv4());
 
-      dispatchApp({
+      dispatch({
         type: actionTypes.ADD_TRACK,
         id: newTrackId,
         measures: measureIds,
@@ -232,7 +232,7 @@ const App = () => {
 
   const dispatchShortenDuration = useCallback(
     (durationId) => {
-      dispatchApp({
+      dispatch({
         type: actionTypes.SET_DURATION_LENGTH,
         durationId: durationId,
         newLength: selectedDuration?.length / 2,
@@ -243,7 +243,7 @@ const App = () => {
 
   const dispatchLengthenDuration = useCallback(
     (durationId) => {
-      dispatchApp({
+      dispatch({
         type: actionTypes.SET_DURATION_LENGTH,
         durationId: durationId,
         newLength: selectedDuration?.length * 2,
@@ -253,7 +253,7 @@ const App = () => {
   );
 
   const dispatchSelectPreviousString = useCallback(() => {
-    dispatchApp({
+    dispatch({
       type: actionTypes.SELECT_STRING,
       stringNumber:
         selectedStringNumber === 0
@@ -263,7 +263,7 @@ const App = () => {
   }, [selectedTrack, selectedStringNumber]);
 
   const dispatchSelectNextString = useCallback(() => {
-    dispatchApp({
+    dispatch({
       type: actionTypes.SELECT_STRING,
       stringNumber: (selectedStringNumber + 1) % selectedTrack?.tuning.length,
     });
@@ -273,7 +273,7 @@ const App = () => {
     // If currently selected duration is NOT first in the measure,
     if (selectedDurationId !== selectedMeasure?.durations[0]) {
       // Select the previous duration
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId:
           selectedMeasure?.durations[
@@ -290,11 +290,11 @@ const App = () => {
       const durationIdToSelect = previousMeasure.durations.slice(-1)[0];
 
       // Select the last duration of the previous measure
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_MEASURE,
         measureNumber: selectedMeasureNumber - 1,
       });
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId: durationIdToSelect,
       });
@@ -323,14 +323,14 @@ const App = () => {
         else {
           let newDurationId = uuidv4();
 
-          dispatchApp({
+          dispatch({
             type: actionTypes.ADD_DURATION,
             measureId: selectedMeasure?.id,
             newDurationId: newDurationId,
             length: selectedDuration?.length,
             isDotted: selectedDuration?.isDotted,
           });
-          dispatchApp({
+          dispatch({
             type: actionTypes.SELECT_DURATION,
             durationId: newDurationId,
           });
@@ -348,7 +348,7 @@ const App = () => {
             ]
         );
 
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_DURATION,
           durationId: nextDuration.id,
         });
@@ -372,16 +372,16 @@ const App = () => {
         }, {});
 
         // TODO Pass in current measure's time signature
-        dispatchApp({
+        dispatch({
           type: actionTypes.ADD_MEASURE,
           trackMeasureIds: trackMeasureIds,
           durationLength: selectedDuration?.length,
         });
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_MEASURE,
           measureNumber: selectedMeasureNumber + 1,
         });
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_DURATION,
           durationId: trackMeasureIds[selectedTrack?.id].durationId,
         });
@@ -394,11 +394,11 @@ const App = () => {
         );
         const durationIdToSelect = nextMeasure.durations[0];
 
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_MEASURE,
           measureNumber: selectedMeasureNumber + 1,
         });
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_DURATION,
           durationId: durationIdToSelect,
         });
@@ -423,7 +423,7 @@ const App = () => {
 
       if (selectedMeasureNumber > 0) {
         newSelectedMeasureNumber = selectedMeasureNumber - 1;
-        dispatchApp({
+        dispatch({
           type: actionTypes.SELECT_MEASURE,
           measureNumber: newSelectedMeasureNumber,
         });
@@ -440,14 +440,14 @@ const App = () => {
           ).durations[0]
       );
 
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId: durationToSelect.id,
       });
 
       // Even though dispatch runs synchronously, selectedMeasureNumber does not change within this closure,
       // so this still deletes the correct measure after SELECT_MEASURE has executed
-      dispatchApp({
+      dispatch({
         type: actionTypes.DELETE_MEASURE,
         measureNumber: selectedMeasureNumber,
       });
@@ -467,12 +467,12 @@ const App = () => {
           selectedStringNumber
       );
 
-      dispatchApp({ type: actionTypes.DELETE_NOTE, noteId: selectedNoteId });
+      dispatch({ type: actionTypes.DELETE_NOTE, noteId: selectedNoteId });
 
       // If the deleted note was the last one in the selected duration,
       if (selectedDuration?.notes.length === 1) {
         // Turn the duration into a rest
-        dispatchApp({
+        dispatch({
           type: actionTypes.ADD_REST,
           durationId: selectedDurationId,
         });
@@ -485,13 +485,13 @@ const App = () => {
         // If this is the only duration in the measure,
         if (selectedMeasure?.durations.length === 1) {
           // Change the duration to NOT a rest
-          dispatchApp({
+          dispatch({
             type: actionTypes.MARK_DURATION_AS_NOT_REST,
             durationId: selectedDurationId,
           });
         } else {
           // Delete that duration
-          dispatchApp({
+          dispatch({
             type: actionTypes.DELETE_DURATION,
             durationId: selectedDurationId,
           });
@@ -521,7 +521,7 @@ const App = () => {
             selectedMeasureNumber - 1
           ].durations.slice(-1)[0];
 
-          dispatchApp({
+          dispatch({
             type: actionTypes.SELECT_MEASURE,
             measureNumber: selectedMeasureNumber - 1,
           });
@@ -536,7 +536,7 @@ const App = () => {
           ];
       }
 
-      dispatchApp({
+      dispatch({
         type: actionTypes.SELECT_DURATION,
         durationId: durationIdToSelect,
       });
@@ -568,7 +568,7 @@ const App = () => {
       const enteredFretNumber = parseInt(fretNumber);
       const newFretNumber = currentFretNumber * 10 + enteredFretNumber;
 
-      dispatchApp({
+      dispatch({
         type: actionTypes.ADD_NOTE,
         durationId: selectedDurationId,
         id: uuidv4(),
@@ -668,7 +668,7 @@ const App = () => {
             break;
           case '.':
             // Toggle whether selected duration is dotted
-            dispatchApp({
+            dispatch({
               type: actionTypes.SET_DURATION_DOTTED,
               durationId: selectedDurationId,
               isDotted: !selectedDuration.isDotted,
@@ -677,7 +677,7 @@ const App = () => {
             break;
           case 'r':
             // Turn selected duration into rest
-            dispatchApp({
+            dispatch({
               type: actionTypes.ADD_REST,
               durationId: selectedDurationId,
             });
@@ -768,7 +768,7 @@ const App = () => {
 
   return (
     <AppStateContext.Provider value={appState}>
-      <DispatchContext.Provider value={dispatchApp}>
+      <DispatchContext.Provider value={dispatch}>
         <div className="App" onKeyDown={onKeyDown} role="application">
           {/* <AppMenu /> */}
           <div className="TopBar">
@@ -888,11 +888,11 @@ const App = () => {
                           ]
                       ).durations[0];
 
-                      dispatchApp({
+                      dispatch({
                         type: actionTypes.SELECT_TRACK,
                         trackNumber: trackNumberToSelect,
                       });
-                      dispatchApp({
+                      dispatch({
                         type: actionTypes.SELECT_DURATION,
                         durationId: durationIdToSelect,
                       });
@@ -1054,11 +1054,11 @@ const App = () => {
               if (modalResult) {
                 const { durationIdToSelect } = dispatchAddTrack(modalResult);
 
-                dispatchApp({
+                dispatch({
                   type: actionTypes.SELECT_TRACK,
                   trackNumber: tracks.length,
                 });
-                dispatchApp({
+                dispatch({
                   type: actionTypes.SELECT_DURATION,
                   durationId: durationIdToSelect,
                 });

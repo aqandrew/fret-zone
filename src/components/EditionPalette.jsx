@@ -20,7 +20,7 @@ const EditionPalette = ({ selectedDuration }) => (
 );
 
 const NoteSymbols = ({ selectedDuration }) => {
-  const dispatchApp = useContext(DispatchContext);
+  const dispatch = useContext(DispatchContext);
 
   return (
     <div className="NoteSymbols">
@@ -31,7 +31,7 @@ const NoteSymbols = ({ selectedDuration }) => {
           disabled={!selectedDuration}
           isChecked={selectedDuration?.length === +length}
           onChange={() =>
-            dispatchApp({
+            dispatch({
               type: actionTypes.SET_DURATION_LENGTH,
               durationId: selectedDuration.id,
               newLength: +length,
@@ -46,7 +46,7 @@ const NoteSymbols = ({ selectedDuration }) => {
         isChecked={selectedDuration?.isRest || false}
         setChecked={(isNotRest) => {
           if (isNotRest) {
-            dispatchApp({
+            dispatch({
               type: actionTypes.ADD_REST,
               durationId: selectedDuration.id,
             });
@@ -58,7 +58,7 @@ const NoteSymbols = ({ selectedDuration }) => {
         disabled={!selectedDuration}
         isChecked={selectedDuration?.isDotted || false}
         setChecked={(isDotted) => {
-          dispatchApp({
+          dispatch({
             type: actionTypes.SET_DURATION_DOTTED,
             durationId: selectedDuration.id,
             isDotted: isDotted,

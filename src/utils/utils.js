@@ -1,6 +1,3 @@
-import store from '../store';
-import { setDurationLength, setDurationDotted } from '../slices/document';
-
 // Display minimum 1 decimal place, rounded, not truncated
 // Up to 3 decimal places, unless there's a leading 0;
 // in which case up to 4 decimal places

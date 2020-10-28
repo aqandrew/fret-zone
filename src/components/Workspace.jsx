@@ -16,7 +16,7 @@ const Workspace = ({
   selectedStringNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(DispatchContext);
+  const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
   const { tracks, measures, durations, notes } = useDocument(appState);
 
@@ -62,9 +62,9 @@ const Workspace = ({
                   : '-'
               }
               onClick={() => {
-                dispatchApp({ type: SELECT_MEASURE, measureNumber });
-                dispatchApp({ type: SELECT_STRING, stringNumber });
-                dispatchApp({ type: SELECT_DURATION, durationId: duration.id });
+                dispatch({ type: SELECT_MEASURE, measureNumber });
+                dispatch({ type: SELECT_STRING, stringNumber });
+                dispatch({ type: SELECT_DURATION, durationId: duration.id });
               }}
               key={stringNumber}
             />

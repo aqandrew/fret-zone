@@ -13,7 +13,7 @@ const GlobalView = ({
   selectedDurationId,
   openAddTrackModal,
 }) => {
-  const dispatchApp = useContext(DispatchContext);
+  const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
   const { tracks, measures } = useDocument(appState);
 
@@ -79,8 +79,8 @@ const GlobalView = ({
                           (measure) => measure.id === measureId
                         ).durations[0];
 
-                        dispatchApp({ type: SELECT_MEASURE, measureNumber });
-                        dispatchApp({
+                        dispatch({ type: SELECT_MEASURE, measureNumber });
+                        dispatch({
                           type: SELECT_DURATION,
                           durationId: durationIdToSelect,
                         });
@@ -110,7 +110,7 @@ const TrackControl = ({
   selectedMeasureNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(DispatchContext);
+  const dispatch = useContext(DispatchContext);
 
   const appState = useContext(AppStateContext);
   const { tracks, measures } = useDocument(appState);
@@ -133,8 +133,8 @@ const TrackControl = ({
             measure.id === tracks[trackNumber].measures[selectedMeasureNumber]
         ).durations[0];
 
-        dispatchApp({ type: SELECT_TRACK, trackNumber });
-        dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
+        dispatch({ type: SELECT_TRACK, trackNumber });
+        dispatch({ type: SELECT_DURATION, durationId: durationIdToSelect });
       }}
     >
       <div className="TrackControl__ColorTab"></div>
@@ -175,7 +175,7 @@ const MeasureTableCell = ({
   selectedMeasureNumber,
   selectedDurationId,
 }) => {
-  const dispatchApp = useContext(DispatchContext);
+  const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
   const { measures, durations } = useDocument(appState);
 
@@ -210,9 +210,9 @@ const MeasureTableCell = ({
       onClick={() => {
         const durationIdToSelect = getMeasure().durations[0];
 
-        dispatchApp({ type: SELECT_TRACK, trackNumber });
-        dispatchApp({ type: SELECT_MEASURE, measureNumber });
-        dispatchApp({ type: SELECT_DURATION, durationId: durationIdToSelect });
+        dispatch({ type: SELECT_TRACK, trackNumber });
+        dispatch({ type: SELECT_MEASURE, measureNumber });
+        dispatch({ type: SELECT_DURATION, durationId: durationIdToSelect });
       }}
     ></div>
   );

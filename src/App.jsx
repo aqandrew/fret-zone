@@ -16,6 +16,7 @@ import { useDocument } from './hooks/useDocument';
 // import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
+import ToolBar from './components/ToolBar/ToolBar';
 import Zoom from './components/ToolBar/Zoom';
 import DisplayModes from './components/ToolBar/DisplayModes';
 import BarCurrentDuration from './components/ToolBar/BarCurrentDuration';
@@ -728,7 +729,7 @@ const App = () => {
                 </a>
               </span>
             </div>
-            <div className="ToolBar">
+            <ToolBar>
               <div className="ToolBar__Group ToolBar__Group--Left">
                 <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
                   <CheckboxButton
@@ -937,7 +938,7 @@ const App = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </ToolBar>
           </div>
           <TabBar
             files={dummyFileList}

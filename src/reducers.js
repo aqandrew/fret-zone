@@ -1,9 +1,6 @@
 import * as actionTypes from './actionTypes';
 
 export const initialAppState = {
-  isEditionPaletteShown: true,
-  isGlobalViewShown: true,
-  isInspectorShown: true,
   selectedTrackNumber: 0,
   selectedMeasureNumber: 0,
   selectedDurationId: undefined,

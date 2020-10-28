@@ -2,25 +2,28 @@ import React, { useContext } from 'react';
 
 import * as actionTypes from '../actionTypes';
 import DispatchContext from '../DispatchContext';
+import AppStateContext from '../AppStateContext';
+import { useDocument } from '../hooks/useDocument';
 import RadioButton from './RadioButton';
 import CheckboxButton from './CheckboxButton';
 import { durationLengths } from '../constants';
 
 import './EditionPalette.scss';
 
-const EditionPalette = ({ selectedDuration }) => (
+const EditionPalette = () => (
   <section className="EditionPalette" aria-label="Edition Palette">
     {/* TODO MiscEdition */}
     {/* TODO BarSymbols */}
-    <NoteSymbols selectedDuration={selectedDuration} />
+    <NoteSymbols />
     {/* TODO EffectSymbols */}
     {/* TODO NotationSymbols */}
     {/* TODO AutomationSymbols */}
   </section>
 );
-
-const NoteSymbols = ({ selectedDuration }) => {
+const NoteSymbols = () => {
   const dispatch = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const { selectedDuration } = useDocument(appState);
 
   return (
     <div className="NoteSymbols">

@@ -17,14 +17,13 @@ const Workspace = ({ documentTitle, documentArtist }) => {
     durations,
     notes,
     selectedTrackNumber,
+    selectedTrack,
     selectedMeasureNumber,
     selectedDurationId,
     selectedStringNumber,
   } = useDocument(appState);
 
   const renderDurationColumn = (measureNumber, duration) => {
-    const selectedTrack = tracks[selectedTrackNumber];
-
     return (
       <div
         className="Measure__DurationColumn"

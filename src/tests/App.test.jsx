@@ -10,29 +10,19 @@ import {
   waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
 
-import store from '../store';
 import App from '../App';
 
 describe('App', () => {
   it('renders without throwing errors', () => {
     expect(() => {
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      render(<App />);
     }).not.toThrow();
   });
 
   describe('EditionPalette', () => {
     it('toggles visibility via ToolBar button', () => {
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      render(<App />);
 
       const editionPaletteToggle = screen.getByTitle(
         'Show/Hide Edition Palette'
@@ -54,11 +44,7 @@ describe('App', () => {
 
   describe('functions that need to know the selected measure', () => {
     it('getCurrentBarMaximumDuration', () => {
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      render(<App />);
 
       const barCurrentDuration = screen.getByTitle('Bar current duration');
 
@@ -79,11 +65,7 @@ describe('App', () => {
     });
 
     it('getCurrentBarDuration', () => {
-      const { container } = render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      const { container } = render(<App />);
 
       const barCurrentDuration = screen.getByTitle('Bar current duration');
 

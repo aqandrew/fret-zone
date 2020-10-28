@@ -1,36 +1,24 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
 
-import {
-  selectedTrackNumberSelector,
-  // selectTrack,
-  selectedMeasureNumberSelector,
-  selectMeasure,
-  selectedStringNumberSelector,
-  selectString,
-  selectDuration,
-  selectedDurationIdSelector,
-} from '../slices/ui';
-import {
-  measuresSelector,
-  tracksSelector,
-  durationsSelector,
-  notesSelector,
-} from '../slices/document';
+import { SELECT_MEASURE, SELECT_DURATION, SELECT_STRING } from '../actionTypes';
+import AppStateContext from '../AppStateContext';
+import DispatchContext from '../DispatchContext';
+import { useDocument } from '../hooks/useDocument';
 import { durationLengths } from '../constants';
 
 import './Workspace.scss';
 
-const Workspace = ({ documentTitle, documentArtist }) => {
-  const dispatch = useDispatch();
-  const tracks = useSelector(tracksSelector);
-  const measures = useSelector(measuresSelector);
-  const durations = useSelector(durationsSelector);
-  const notes = useSelector(notesSelector);
-  const selectedTrackNumber = useSelector(selectedTrackNumberSelector);
-  const selectedMeasureNumber = useSelector(selectedMeasureNumberSelector);
-  const selectedStringNumber = useSelector(selectedStringNumberSelector);
-  const selectedDurationId = useSelector(selectedDurationIdSelector);
+const Workspace = ({
+  documentTitle,
+  documentArtist,
+  selectedTrackNumber,
+  selectedMeasureNumber,
+  selectedStringNumber,
+  selectedDurationId,
+}) => {
+  const dispatch = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const { tracks, measures, durations, notes } = useDocument(appState);
 
   const renderDurationColumn = (measureNumber, duration) => {
     const selectedTrack = tracks[selectedTrackNumber];
@@ -52,6 +40,8 @@ const Workspace = ({ documentTitle, documentArtist }) => {
             inputClassname += ` ${inputClassname}--IsActive`;
           }
 
+          debugger;
+
           let noteAtString = duration.notes
             .map((noteId) => notes.find((note) => note.id === noteId))
             .find((note) => note.string === stringNumber);
@@ -72,9 +62,9 @@ const Workspace = ({ documentTitle, documentArtist }) => {
                   : '-'
               }
               onClick={() => {
-                dispatch(selectMeasure(measureNumber));
-                dispatch(selectString(stringNumber));
-                dispatch(selectDuration(duration.id));
+                dispatch({ type: SELECT_MEASURE, measureNumber });
+                dispatch({ type: SELECT_STRING, stringNumber });
+                dispatch({ type: SELECT_DURATION, durationId: duration.id });
               }}
               key={stringNumber}
             />

@@ -1,11 +1,7 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
 
-import {
-  addRest,
-  setDurationLength,
-  setDurationDotted,
-} from '../slices/document';
+import * as actionTypes from '../actionTypes';
+import DispatchContext from '../DispatchContext';
 import RadioButton from './RadioButton';
 import CheckboxButton from './CheckboxButton';
 import { durationLengths } from '../constants';
@@ -13,18 +9,18 @@ import { durationLengths } from '../constants';
 import './EditionPalette.scss';
 
 const EditionPalette = ({ selectedDuration }) => (
-  <div className="EditionPalette">
+  <section className="EditionPalette" aria-label="Edition Palette">
     {/* TODO MiscEdition */}
     {/* TODO BarSymbols */}
     <NoteSymbols selectedDuration={selectedDuration} />
     {/* TODO EffectSymbols */}
     {/* TODO NotationSymbols */}
     {/* TODO AutomationSymbols */}
-  </div>
+  </section>
 );
 
 const NoteSymbols = ({ selectedDuration }) => {
-  const dispatch = useDispatch();
+  const dispatch = useContext(DispatchContext);
 
   return (
     <div className="NoteSymbols">
@@ -35,12 +31,11 @@ const NoteSymbols = ({ selectedDuration }) => {
           disabled={!selectedDuration}
           isChecked={selectedDuration?.length === +length}
           onChange={() =>
-            dispatch(
-              setDurationLength({
-                durationId: selectedDuration.id,
-                newLength: +length,
-              })
-            )
+            dispatch({
+              type: actionTypes.SET_DURATION_LENGTH,
+              durationId: selectedDuration.id,
+              newLength: +length,
+            })
           }
           key={length}
         />
@@ -51,7 +46,10 @@ const NoteSymbols = ({ selectedDuration }) => {
         isChecked={selectedDuration?.isRest || false}
         setChecked={(isNotRest) => {
           if (isNotRest) {
-            dispatch(addRest(selectedDuration.id));
+            dispatch({
+              type: actionTypes.ADD_REST,
+              durationId: selectedDuration.id,
+            });
           }
         }}
       />
@@ -60,12 +58,11 @@ const NoteSymbols = ({ selectedDuration }) => {
         disabled={!selectedDuration}
         isChecked={selectedDuration?.isDotted || false}
         setChecked={(isDotted) => {
-          dispatch(
-            setDurationDotted({
-              durationId: selectedDuration.id,
-              isDotted: isDotted,
-            })
-          );
+          dispatch({
+            type: actionTypes.SET_DURATION_DOTTED,
+            durationId: selectedDuration.id,
+            isDotted: isDotted,
+          });
         }}
       />
     </div>

@@ -6,31 +6,45 @@ import {
   screen,
   getByText,
   getByLabelText,
+  waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
 
-import store from '../store';
 import App from '../App';
 
 describe('App', () => {
   it('renders without throwing errors', () => {
     expect(() => {
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      render(<App />);
     }).not.toThrow();
+  });
+
+  describe('EditionPalette', () => {
+    it('toggles visibility via ToolBar button', () => {
+      render(<App />);
+
+      const editionPaletteToggle = screen.getByTitle(
+        'Show/Hide Edition Palette'
+      );
+
+      expect(screen.getByLabelText('Edition Palette')).toBeInTheDocument();
+
+      fireEvent.click(editionPaletteToggle);
+
+      expect(
+        screen.queryByLabelText('Edition Palette')
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(editionPaletteToggle);
+
+      expect(screen.getByLabelText('Edition Palette')).toBeInTheDocument();
+    });
   });
 
   describe('functions that need to know the selected measure', () => {
     it('getCurrentBarMaximumDuration', () => {
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      render(<App />);
 
       const barCurrentDuration = screen.getByTitle('Bar current duration');
 
@@ -51,11 +65,7 @@ describe('App', () => {
     });
 
     it('getCurrentBarDuration', () => {
-      const { container } = render(
-        <Provider store={store}>
-          <App />
-        </Provider>
-      );
+      const { container } = render(<App />);
 
       const barCurrentDuration = screen.getByTitle('Bar current duration');
 
@@ -65,6 +75,15 @@ describe('App', () => {
       // has already inserted a new track
       // This means that the innerText will really be '0.0:4.0', not '0.0:1.0' as expected
       expect(barCurrentDuration).toHaveTextContent(/0\.0(?=:)/);
+
+      // Create a new track with default options
+      fireEvent.click(screen.getByTitle('Add Track'));
+      const firstInput = getByLabelText(
+        screen.getByRole('dialog'),
+        'Clean Guitar',
+        { exact: false }
+      );
+      fireEvent.keyDown(firstInput, { key: 'Enter' });
 
       // Add a note
       fireEvent.keyDown(container, { key: '0' });

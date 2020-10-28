@@ -7,18 +7,12 @@ import {
   getByLabelText,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
 
-import store from '../store';
 import App from '../App';
 
 describe('AddTrackModal', () => {
   it(`can be opened by clicking the '+' button in GlobalView`, () => {
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
+    render(<App />);
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
@@ -30,11 +24,7 @@ describe('AddTrackModal', () => {
   });
 
   it('creates a new track on confirm', () => {
-    const { container } = render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
+    const { container } = render(<App />);
 
     expect(container.querySelector('.TrackControl')).not.toBeInTheDocument();
 

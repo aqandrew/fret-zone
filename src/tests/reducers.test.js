@@ -1,33 +1,21 @@
 import {
-  documentSlice,
-  initialState as initialDocumentState,
+  appReducer,
+  initialAppState,
   defaultTrackOptions,
   defaultMeasureOptions,
   defaultDurationOptions,
-} from '../slices/document';
-import { initialState as initialUiState } from '../slices/ui';
-import rootReducer from '../slices';
+} from '../reducers';
+import * as actionTypes from '../actionTypes';
 
 describe('reducers', () => {
-  it('initializes document state correctly', () => {
-    expect(rootReducer(undefined, {}).document).toEqual(initialDocumentState);
-  });
-
-  it('initializes UI state correctly', () => {
-    expect(rootReducer(undefined, {}).ui).toEqual(initialUiState);
-  });
-
   it('adds a track', () => {
-    const documentWithOneTrack = documentSlice.reducer(
-      initialDocumentState,
-      documentSlice.actions.addTrack({
-        id: 'foo',
-        measures: ['bar'],
-        durationIds: ['baz'],
-        durationLength: defaultDurationOptions.length,
-        ...defaultTrackOptions,
-      })
-    );
+    const documentWithOneTrack = appReducer(initialAppState, {
+      ...defaultTrackOptions,
+      type: actionTypes.ADD_TRACK,
+      id: 'foo',
+      measures: ['bar'],
+      durationIds: ['baz'],
+    });
 
     expect(documentWithOneTrack.tracks.allIds.length).toBe(1);
     expect(documentWithOneTrack.tracks.allIds[0]).toBe('foo');

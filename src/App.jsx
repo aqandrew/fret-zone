@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useReducer } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import Emoji from 'a11y-react-emoji';
 
 import { appReducer, initialAppState } from './reducers';
@@ -202,16 +202,16 @@ const App = () => {
 
   const dispatchAddTrack = useCallback(
     (trackToAdd) => {
-      let newTrackId = uuidv4();
+      let newTrackId = nanoid();
       // TODO Turn ID array generation into a function
       let measureIds =
         tracks.length === 0
-          ? [uuidv4()]
-          : tracks[0].measures.map((measure) => uuidv4());
+          ? [nanoid()]
+          : tracks[0].measures.map((measure) => nanoid());
       let durationIds =
         tracks.length === 0
-          ? [uuidv4()]
-          : tracks[0].measures.map((measure) => uuidv4());
+          ? [nanoid()]
+          : tracks[0].measures.map((measure) => nanoid());
 
       dispatch({
         type: actionTypes.ADD_TRACK,
@@ -321,7 +321,7 @@ const App = () => {
         }
         // Add a new duration to this measure
         else {
-          let newDurationId = uuidv4();
+          let newDurationId = nanoid();
 
           dispatch({
             type: actionTypes.ADD_DURATION,
@@ -365,8 +365,8 @@ const App = () => {
         // Create a mapping from track IDs to new measure IDs
         let trackMeasureIds = tracks.reduce((map, track) => {
           map[track.id] = {
-            measureId: uuidv4(),
-            durationId: uuidv4(),
+            measureId: nanoid(),
+            durationId: nanoid(),
           };
           return map;
         }, {});
@@ -571,7 +571,7 @@ const App = () => {
       dispatch({
         type: actionTypes.ADD_NOTE,
         durationId: selectedDurationId,
-        id: uuidv4(),
+        id: nanoid(),
         string: selectedStringNumber,
         fret:
           fretInputTime - lastFretInputTime < sameFretNumberCutoffTime &&

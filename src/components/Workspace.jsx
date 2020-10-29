@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import clsx from 'clsx';
 
 import { SELECT_MEASURE, SELECT_DURATION, SELECT_STRING } from '../actionTypes';
 import AppStateContext from '../AppStateContext';
@@ -78,24 +79,20 @@ const DurationColumn = ({ measureNumber, duration }) => {
   return (
     <div className="Measure__DurationColumn">
       {selectedTrack.tuning.map((stringTuning, stringNumber) => {
-        let inputClassname = 'Measure__Input';
-
-        // TODO Refactor using classnames utility
-        if (
-          measureNumber === selectedMeasureNumber &&
-          stringNumber === selectedStringNumber &&
-          duration.id === selectedDurationId
-        ) {
-          inputClassname += ` ${inputClassname}--IsActive`;
-        }
-
+        const baseClassname = 'Measure__Input';
         const noteAtString = duration.notes
           .map((noteId) => notes.find((note) => note.id === noteId))
           .find((note) => note.string === stringNumber);
 
         return (
           <input
-            className={inputClassname}
+            className={clsx(
+              baseClassname,
+              measureNumber === selectedMeasureNumber &&
+                stringNumber === selectedStringNumber &&
+                duration.id === selectedDurationId &&
+                `${baseClassname}--IsActive`
+            )}
             type="text"
             readOnly
             value={

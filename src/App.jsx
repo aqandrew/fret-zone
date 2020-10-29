@@ -65,7 +65,7 @@ const App = () => {
   const [documentArtist, setDocumentArtist] = useState('');
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
-  const [lastFretInputTime, setLastFretInputTime] = useState(Date.now());
+  const [lastFretInputTime, setLastFretInputTime] = useState(() => Date.now());
 
   const PitchAtCursor = () => {
     // TODO Pitch evaluation should probably be moved to utility function,

@@ -39,7 +39,7 @@ const SelectedTrackNotation = () => {
           );
 
           return (
-            <div className="Measure" key={measureNumber}>
+            <div className="Measure" aria-label="Measure" key={measureNumber}>
               {durationsInMeasure.map((duration) => (
                 <DurationColumn
                   measureNumber={measureNumber}
@@ -77,23 +77,25 @@ const DurationColumn = ({ measureNumber, duration }) => {
   } = useDocument(appState);
 
   return (
-    <div className="Measure__DurationColumn">
+    <div className="Measure__DurationColumn" aria-label="Duration">
       {selectedTrack.tuning.map((stringTuning, stringNumber) => {
         const baseClassname = 'Measure__Input';
         const noteAtString = duration.notes
           .map((noteId) => notes.find((note) => note.id === noteId))
           .find((note) => note.string === stringNumber);
+        const isActive =
+          measureNumber === selectedMeasureNumber &&
+          stringNumber === selectedStringNumber &&
+          duration.id === selectedDurationId;
 
         return (
           <input
             className={clsx(
               baseClassname,
-              measureNumber === selectedMeasureNumber &&
-                stringNumber === selectedStringNumber &&
-                duration.id === selectedDurationId &&
-                `${baseClassname}--IsActive`
+              isActive && `${baseClassname}--IsActive`
             )}
             type="text"
+            aria-label={`Measure input${isActive ? ' (Selected)' : ''}`}
             readOnly
             value={
               duration

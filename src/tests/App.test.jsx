@@ -9,6 +9,16 @@ import '@testing-library/jest-dom/extend-expect';
 
 import App from '../App';
 
+const createDefaultTrack = () => {
+  fireEvent.click(screen.getByTitle('Add Track'));
+  const firstInput = getByLabelText(
+    screen.getByRole('dialog'),
+    'Clean Guitar',
+    { exact: false }
+  );
+  fireEvent.keyDown(firstInput, { key: 'Enter' });
+};
+
 describe('App', () => {
   it('renders without throwing errors', () => {
     expect(() => {
@@ -40,19 +50,11 @@ describe('App', () => {
 
   test('bar current duration', () => {
     const { container } = render(<App />);
-
     const barCurrentDuration = screen.getByTitle('Bar current duration');
 
     expect(barCurrentDuration).toHaveTextContent('0.0:1.0');
 
-    // Create a new track with default options
-    fireEvent.click(screen.getByTitle('Add Track'));
-    const firstInput = getByLabelText(
-      screen.getByRole('dialog'),
-      'Clean Guitar',
-      { exact: false }
-    );
-    fireEvent.keyDown(firstInput, { key: 'Enter' });
+    createDefaultTrack();
 
     // Default time signature is 4/4
     expect(barCurrentDuration).toHaveTextContent('0.0:4.0');
@@ -68,5 +70,18 @@ describe('App', () => {
 
     // Expect additional measure's length also to be 0.0 initially
     expect(barCurrentDuration).toHaveTextContent('0.0:4.0');
+  });
+
+  describe('manipulating notes', () => {
+    it('adds a note with fret >= 10 if numbers are pressed rapidly', () => {
+      const { container } = render(<App />);
+      createDefaultTrack();
+
+      fireEvent.keyDown(container, { key: '1' });
+      fireEvent.keyDown(container, { key: '2' });
+
+      const noteInput = screen.getByLabelText('Measure input (Selected)');
+      expect(noteInput).toHaveValue('12');
+    });
   });
 });

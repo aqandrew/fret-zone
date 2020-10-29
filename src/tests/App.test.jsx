@@ -8,6 +8,7 @@ import {
 import '@testing-library/jest-dom/extend-expect';
 
 import App from '../App';
+import { SAME_FRET_NUMBER_CUTOFF_TIME } from '../constants';
 
 const createDefaultTrack = () => {
   fireEvent.click(screen.getByTitle('Add Track'));
@@ -82,6 +83,22 @@ describe('App', () => {
 
       const noteInput = screen.getByLabelText('Measure input (Selected)');
       expect(noteInput).toHaveValue('12');
+    });
+
+    it(`overwrites notes if there's >= 1s delay between number presses`, () => {
+      // 'modern' will be default in Jest 27
+      jest.useFakeTimers('modern');
+
+      const { container } = render(<App />);
+      createDefaultTrack();
+      const noteInput = screen.getByLabelText('Measure input (Selected)');
+
+      fireEvent.keyDown(container, { key: '1' });
+
+      jest.advanceTimersByTime(SAME_FRET_NUMBER_CUTOFF_TIME);
+
+      fireEvent.keyDown(container, { key: '2' });
+      expect(noteInput).toHaveValue('2');
     });
   });
 });

@@ -1,13 +1,9 @@
 import React from 'react';
-import { unmountComponentAtNode } from 'react-dom';
 import {
   render,
   fireEvent,
   screen,
-  getByText,
   getByLabelText,
-  waitForElementToBeRemoved,
-  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 

@@ -7,10 +7,10 @@ import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
 import {
-  maximumFretNumber,
-  sameFretNumberCutoffTime,
-  durationLengths,
-  notesSharp,
+  MAXIMUM_FRET_NUMBER,
+  SAME_FRET_NUMBER_CUTOFF_TIME,
+  DURATION_LENGTHS,
+  NOTES_SHARP,
 } from './constants';
 import { useDocument } from './hooks/useDocument';
 // import AppMenu from './components/AppMenu';
@@ -77,24 +77,24 @@ const App = () => {
     const isNotePresent = isThereANoteAtSelectedPosition();
 
     if (isNotePresent) {
-      let noteIndex = notesSharp.indexOf(pitch.note);
+      let noteIndex = NOTES_SHARP.indexOf(pitch.note);
       // TODO Remove duplicated code between this and Workspace.jsx:DurationColumn
       const noteAtString = selectedDuration.notes
         .map((noteId) => notes.find((note) => note.id === noteId))
         .find((note) => note.string === selectedStringNumber);
 
       // Add appropriate number of semitones on top of string's tuning
-      noteIndex = (noteIndex + noteAtString.fret) % notesSharp.length;
-      pitch.note = notesSharp[noteIndex];
+      noteIndex = (noteIndex + noteAtString.fret) % NOTES_SHARP.length;
+      pitch.note = NOTES_SHARP[noteIndex];
 
       // And increase octave as necessary
       const openStringSemitonesToNextOctave =
-        notesSharp.length - notesSharp.indexOf(openStringPitch.note);
+        NOTES_SHARP.length - NOTES_SHARP.indexOf(openStringPitch.note);
 
       pitch.octave +=
         Math.floor(
           (noteAtString.fret - openStringSemitonesToNextOctave) /
-            notesSharp.length
+            NOTES_SHARP.length
         ) + 1;
     }
 
@@ -530,8 +530,8 @@ const App = () => {
         id: nanoid(),
         string: selectedStringNumber,
         fret:
-          fretInputTime - lastFretInputTime < sameFretNumberCutoffTime &&
-          newFretNumber <= maximumFretNumber
+          fretInputTime - lastFretInputTime < SAME_FRET_NUMBER_CUTOFF_TIME &&
+          newFretNumber <= MAXIMUM_FRET_NUMBER
             ? newFretNumber
             : enteredFretNumber,
       });
@@ -589,7 +589,7 @@ const App = () => {
             else {
               if (
                 selectedDuration?.length >
-                Math.min(...Object.keys(durationLengths))
+                Math.min(...Object.keys(DURATION_LENGTHS))
               ) {
                 dispatchShortenDuration(selectedDurationId);
               }
@@ -605,7 +605,7 @@ const App = () => {
             else {
               if (
                 selectedDuration?.length <
-                Math.max(...Object.keys(durationLengths))
+                Math.max(...Object.keys(DURATION_LENGTHS))
               ) {
                 dispatchLengthenDuration(selectedDurationId);
               }
@@ -616,7 +616,7 @@ const App = () => {
             // Shorten selected duration
             if (
               selectedDuration?.length >
-              Math.min(...Object.keys(durationLengths))
+              Math.min(...Object.keys(DURATION_LENGTHS))
             ) {
               dispatchShortenDuration(selectedDurationId);
             }

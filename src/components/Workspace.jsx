@@ -5,7 +5,7 @@ import { SELECT_MEASURE, SELECT_DURATION, SELECT_STRING } from '../actionTypes';
 import AppStateContext from '../AppStateContext';
 import DispatchContext from '../DispatchContext';
 import { useDocument } from '../hooks/useDocument';
-import { durationLengths } from '../constants';
+import { DURATION_LENGTHS } from '../constants';
 
 import './Workspace.scss';
 
@@ -122,7 +122,7 @@ const DurationColumn = ({ measureNumber, duration }) => {
 const DurationMarker = ({ duration }) => (
   <span className="Measure__DurationMarker">
     {/* TODO Account for triplet length */}
-    {durationLengths[duration.length].abbreviation}
+    {DURATION_LENGTHS[duration.length].abbreviation}
     {duration.isDotted && '.'}
   </span>
 );

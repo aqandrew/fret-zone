@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { notesSharp } from '../constants';
+import { NOTES_SHARP } from '../constants';
 
 import Modal from './Modal';
 import Pitch from './Pitch';
@@ -10,12 +10,12 @@ const AddTrackModal = ({ show, onClose }) => {
     fullName: 'Clean Guitar',
     abbreviatedName: 'el.guit.',
     tuning: [
-      { note: notesSharp[4], octave: 2 }, // E
-      { note: notesSharp[9], octave: 2 }, // A
-      { note: notesSharp[2], octave: 3 }, // D
-      { note: notesSharp[7], octave: 3 }, // G
-      { note: notesSharp[11], octave: 3 }, // B
-      { note: notesSharp[4], octave: 4 }, // E
+      { note: NOTES_SHARP[4], octave: 2 }, // E
+      { note: NOTES_SHARP[9], octave: 2 }, // A
+      { note: NOTES_SHARP[2], octave: 3 }, // D
+      { note: NOTES_SHARP[7], octave: 3 }, // G
+      { note: NOTES_SHARP[11], octave: 3 }, // B
+      { note: NOTES_SHARP[4], octave: 4 }, // E
     ],
   };
 

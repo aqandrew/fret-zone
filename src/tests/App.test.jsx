@@ -4,19 +4,11 @@ import {
   fireEvent,
   screen,
   getByLabelText,
-  act,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import App from '../App';
 import { SAME_FRET_NUMBER_CUTOFF_TIME } from '../constants';
-
-afterEach(() => {
-  if (setTimeout._isMockFunction) {
-    act(() => jest.runOnlyPendingTimers())
-    jest.useRealTimers()
-  }
-})
 
 const createDefaultTrack = () => {
   fireEvent.click(screen.getByTitle('Add Track'));
@@ -94,29 +86,19 @@ describe('App', () => {
     });
 
     it(`overwrites notes if there's >= 1s delay between number presses`, () => {
-      jest.useFakeTimers();
+      // 'modern' will be default in Jest 27
+      jest.useFakeTimers('modern');
 
       const { container } = render(<App />);
       createDefaultTrack();
       const noteInput = screen.getByLabelText('Measure input (Selected)');
 
       fireEvent.keyDown(container, { key: '1' });
-      
-      jest.advanceTimersByTime(SAME_FRET_NUMBER_CUTOFF_TIME)
+
+      jest.advanceTimersByTime(SAME_FRET_NUMBER_CUTOFF_TIME);
 
       fireEvent.keyDown(container, { key: '2' });
       expect(noteInput).toHaveValue('2');
-
-      // VERSION 2 (assertion passes no matter what expected value is)
-      // https://jestjs.io/docs/en/api#testname-fn-timeout
-      // new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     fireEvent.keyDown(container, { key: '2' });
-      //     resolve(true);
-      //   }, SAME_FRET_NUMBER_CUTOFF_TIME * 2);
-      // }).then(() => {
-      //   expect(noteInput).toHaveValue('666');
-      // });
     });
   });
 });

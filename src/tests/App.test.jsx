@@ -8,6 +8,7 @@ import {
 import '@testing-library/jest-dom/extend-expect';
 
 import App from '../App';
+import { SAME_FRET_NUMBER_CUTOFF_TIME } from '../constants';
 
 const createDefaultTrack = () => {
   fireEvent.click(screen.getByTitle('Add Track'));
@@ -82,6 +83,44 @@ describe('App', () => {
 
       const noteInput = screen.getByLabelText('Measure input (Selected)');
       expect(noteInput).toHaveValue('12');
+    });
+
+    it(`overwrites notes if there's >= 1s delay between number presses`, () => {
+      const { container } = render(<App />);
+      createDefaultTrack();
+      const noteInput = screen.getByLabelText('Measure input (Selected)');
+
+      fireEvent.keyDown(container, { key: '1' });
+
+      // VERSION 1 (assertion fails)
+      // https://jestjs.io/docs/en/timer-mocks.html#run-all-timers
+      jest.useFakeTimers();
+      const callback = jest.fn();
+
+      const press2AfterDelay = (callback) => {
+        setTimeout(() => {
+          fireEvent.keyDown(container, { key: '2' });
+          callback && callback();
+        }, SAME_FRET_NUMBER_CUTOFF_TIME * 2);
+      };
+
+      press2AfterDelay(callback);
+
+      jest.runAllTimers();
+
+      expect(callback).toHaveBeenCalledTimes(1);
+      expect(noteInput).toHaveValue('2');
+
+      // VERSION 2 (assertion passes no matter what expected value is)
+      // https://jestjs.io/docs/en/api#testname-fn-timeout
+      // new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     fireEvent.keyDown(container, { key: '2' });
+      //     resolve(true);
+      //   }, SAME_FRET_NUMBER_CUTOFF_TIME * 2);
+      // }).then(() => {
+      //   expect(noteInput).toHaveValue('666');
+      // });
     });
   });
 });

@@ -8,28 +8,8 @@ import { SELECT_TRACK, SELECT_MEASURE, SELECT_DURATION } from '../actionTypes';
 import './GlobalView.scss';
 
 const GlobalView = ({ openAddTrackModal }) => {
-  const dispatch = useContext(DispatchContext);
   const appState = useContext(AppStateContext);
-  const {
-    tracks,
-    measures,
-    selectedTrack,
-    selectedMeasureNumber,
-  } = useDocument(appState);
-
-  const renderTrackControls = () =>
-    tracks.map((track, trackNumber) => (
-      <TrackControl track={track} trackNumber={trackNumber} key={trackNumber} />
-    ));
-
-  const renderMeasureTable = () =>
-    tracks.map((track, TrackNumber) => (
-      <MeasureTableRow
-        track={track}
-        trackNumber={TrackNumber}
-        key={TrackNumber}
-      />
-    ));
+  const { tracks } = useDocument(appState);
 
   return (
     <div className="GlobalView">
@@ -44,49 +24,18 @@ const GlobalView = ({ openAddTrackModal }) => {
           </button>
           <span className="TrackControls__Heading">Tracks</span>
         </div>
-        {renderTrackControls()}
+        {tracks.map((track, trackNumber) => (
+          <TrackControl
+            track={track}
+            trackNumber={trackNumber}
+            key={trackNumber}
+          />
+        ))}
         <div className="TrackControls__Footer">
           <span className="TrackControls__Heading">Master</span>
         </div>
       </div>
-      <div className="MeasureTable">
-        <div className="MeasureTable__Header">
-          {tracks.length
-            ? selectedTrack.measures.map((measureId, measureNumber) => {
-                let measureNumberClassName = 'MeasureTable__MeasureNumber';
-
-                // TODO Refactor using classnames utility
-                if (measureNumber === selectedMeasureNumber) {
-                  measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
-                }
-
-                return (
-                  <div
-                    className={measureNumberClassName}
-                    onClick={() => {
-                      const durationIdToSelect = measures.find(
-                        (measure) => measure.id === measureId
-                      ).durations[0];
-
-                      dispatch({ type: SELECT_MEASURE, measureNumber });
-                      dispatch({
-                        type: SELECT_DURATION,
-                        durationId: durationIdToSelect,
-                      });
-                    }}
-                    key={measureNumber}
-                  >
-                    {measureNumber + 1}
-                  </div>
-                );
-              })
-            : null}
-        </div>
-        {renderMeasureTable()}
-        <div className="MeasureTable__Footer">
-          {/* TODO Show section names */}
-        </div>
-      </div>
+      <MeasureTable />
     </div>
   );
 };
@@ -130,18 +79,68 @@ const TrackControl = ({ track, trackNumber }) => {
   );
 };
 
-const MeasureTableRow = ({ track, trackNumber }) => (
-  <div className="MeasureTable__Row">
-    {track.measures.map((measureId, measureNumber) => (
-      <MeasureTableCell
-        measureId={measureId}
-        measureNumber={measureNumber}
-        trackNumber={trackNumber}
-        key={measureId}
-      />
-    ))}
-  </div>
-);
+const MeasureTable = () => {
+  const dispatch = useContext(DispatchContext);
+  const appState = useContext(AppStateContext);
+  const {
+    tracks,
+    measures,
+    selectedTrack,
+    selectedMeasureNumber,
+  } = useDocument(appState);
+
+  return (
+    <div className="MeasureTable">
+      <div className="MeasureTable__Header">
+        {tracks.length
+          ? selectedTrack.measures.map((measureId, measureNumber) => {
+              let measureNumberClassName = 'MeasureTable__MeasureNumber';
+
+              // TODO Refactor using classnames utility
+              if (measureNumber === selectedMeasureNumber) {
+                measureNumberClassName += ` ${measureNumberClassName}--IsSelected`;
+              }
+
+              return (
+                <div
+                  className={measureNumberClassName}
+                  onClick={() => {
+                    const durationIdToSelect = measures.find(
+                      (measure) => measure.id === measureId
+                    ).durations[0];
+
+                    dispatch({ type: SELECT_MEASURE, measureNumber });
+                    dispatch({
+                      type: SELECT_DURATION,
+                      durationId: durationIdToSelect,
+                    });
+                  }}
+                  key={measureNumber}
+                >
+                  {measureNumber + 1}
+                </div>
+              );
+            })
+          : null}
+      </div>
+      {tracks.map((track, trackNumber) => (
+        <div className="MeasureTable__Row" key={trackNumber}>
+          {track.measures.map((measureId, measureNumber) => (
+            <MeasureTableCell
+              measureId={measureId}
+              measureNumber={measureNumber}
+              trackNumber={trackNumber}
+              key={measureId}
+            />
+          ))}
+        </div>
+      ))}
+      <div className="MeasureTable__Footer">
+        {/* TODO Show section names */}
+      </div>
+    </div>
+  );
+};
 
 const MeasureTableCell = ({ measureId, measureNumber, trackNumber }) => {
   const dispatch = useContext(DispatchContext);

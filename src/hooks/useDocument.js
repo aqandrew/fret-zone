@@ -19,6 +19,27 @@ export const useDocument = (state) => {
   );
   const selectedDuration = state.durations.byId[selectedDurationId];
 
+  const currentBarMaximumDuration =
+    (selectedMeasure?.timeSignature.beatUnit / 4) *
+    selectedMeasure?.timeSignature.beatsPerMeasure;
+  const currentBarDuration =
+    selectedMeasure?.durations.reduce((totalDuration, durationId) => {
+      let durationInMeasure = durations.find(
+        (duration) => duration.id === durationId
+      );
+
+      if (durationInMeasure?.notes.length || durationInMeasure?.isRest) {
+        return (
+          totalDuration +
+          (durationInMeasure.isDotted
+            ? durationInMeasure.length * 1.5
+            : durationInMeasure.length)
+        );
+      }
+
+      return totalDuration;
+    }, 0) * currentBarMaximumDuration;
+
   return {
     tracks,
     measures,
@@ -31,5 +52,7 @@ export const useDocument = (state) => {
     selectedDurationId,
     selectedDuration,
     selectedStringNumber,
+    currentBarDuration,
+    currentBarMaximumDuration,
   };
 };

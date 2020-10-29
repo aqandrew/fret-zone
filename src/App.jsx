@@ -6,7 +6,6 @@ import { appReducer, initialAppState } from './reducers';
 import * as actionTypes from './actionTypes';
 import DispatchContext from './DispatchContext';
 import AppStateContext from './AppStateContext';
-import { roundDurationLength } from './utils';
 import {
   maximumFretNumber,
   sameFretNumberCutoffTime,
@@ -17,8 +16,10 @@ import { useDocument } from './hooks/useDocument';
 // import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
+import ToolBar from './components/ToolBar/ToolBar';
 import Zoom from './components/ToolBar/Zoom';
 import DisplayModes from './components/ToolBar/DisplayModes';
+import BarCurrentDuration from './components/ToolBar/BarCurrentDuration';
 import EditionPalette from './components/EditionPalette';
 import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';
@@ -43,6 +44,8 @@ const App = () => {
     selectedDurationId,
     selectedDuration,
     selectedStringNumber,
+    currentBarDuration,
+    currentBarMaximumDuration,
   } = useDocument(appState);
 
   const dummyFileList = [
@@ -97,36 +100,6 @@ const App = () => {
 
     return <Pitch {...{ ...pitch, isNotePresent }} />;
   };
-
-  const getCurrentBarMaximumDuration = useCallback(
-    () =>
-      (selectedMeasure?.timeSignature.beatUnit / 4) *
-      selectedMeasure?.timeSignature.beatsPerMeasure,
-    [selectedMeasure]
-  );
-
-  const getCurrentBarDuration = useCallback(() => {
-    const currentBarMaximumDuration = getCurrentBarMaximumDuration();
-
-    return (
-      selectedMeasure?.durations.reduce((totalDuration, durationId) => {
-        let durationInMeasure = durations.find(
-          (duration) => duration.id === durationId
-        );
-
-        if (durationInMeasure?.notes.length || durationInMeasure?.isRest) {
-          return (
-            totalDuration +
-            (durationInMeasure.isDotted
-              ? durationInMeasure.length * 1.5
-              : durationInMeasure.length)
-          );
-        }
-
-        return totalDuration;
-      }, 0) * currentBarMaximumDuration
-    );
-  }, [durations, selectedMeasure, getCurrentBarMaximumDuration]);
 
   const isThereANoteAtSelectedPosition = useCallback(
     () =>
@@ -299,7 +272,7 @@ const App = () => {
       // If this is the last duration,
       if (selectedDurationId === selectedMeasure?.durations.slice(-1)[0]) {
         // If the measure's total length === maximum,
-        if (getCurrentBarDuration() === getCurrentBarMaximumDuration()) {
+        if (currentBarDuration === currentBarMaximumDuration) {
           shouldCheckIfMeasureIsLast = true;
         }
         // Add a new duration to this measure
@@ -388,8 +361,6 @@ const App = () => {
       }
     }
   }, [
-    getCurrentBarDuration,
-    getCurrentBarMaximumDuration,
     tracks,
     measures,
     durations,
@@ -398,6 +369,8 @@ const App = () => {
     selectedMeasure,
     selectedDurationId,
     selectedDuration,
+    currentBarDuration,
+    currentBarMaximumDuration,
   ]);
 
   const dispatchDeleteMeasure = useCallback(() => {
@@ -726,29 +699,6 @@ const App = () => {
     };
   }, [onKeyDown]);
 
-  const renderBarCurrentDuration = () => {
-    let barDuration = 0;
-    let barMaximumDuration = 1;
-
-    if (tracks.length && measures.length) {
-      barDuration = getCurrentBarDuration();
-      barMaximumDuration = getCurrentBarMaximumDuration();
-    }
-
-    // TODO Click to toggle incomplete duration vs. remaining duration
-    return (
-      <>
-        <Emoji
-          symbol={barDuration === barMaximumDuration ? '✅' : '⚠️'}
-          className="DurationSymbol"
-        />
-        {roundDurationLength(barDuration) +
-          ':' +
-          roundDurationLength(barMaximumDuration)}
-      </>
-    );
-  };
-
   return (
     <AppStateContext.Provider value={appState}>
       <DispatchContext.Provider value={dispatch}>
@@ -779,7 +729,7 @@ const App = () => {
                 </a>
               </span>
             </div>
-            <div className="ToolBar">
+            <ToolBar>
               <div className="ToolBar__Group ToolBar__Group--Left">
                 <div className="ToolBar__ButtonContainer ToolBar__ButtonContainer--Panels">
                   <CheckboxButton
@@ -921,12 +871,7 @@ const App = () => {
                       ? tracks[selectedTrackNumber].measures.length
                       : 0}
                   </button>
-                  <button
-                    className="LCD__Control LCD__Control--BarCurrentDuration"
-                    title="Bar current duration"
-                  >
-                    {renderBarCurrentDuration()}
-                  </button>
+                  <BarCurrentDuration />
                   <div
                     className="LCD__Control LCD__Control--Time LCD__Control--NoHover"
                     title="Time"
@@ -993,7 +938,7 @@ const App = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </ToolBar>
           </div>
           <TabBar
             files={dummyFileList}

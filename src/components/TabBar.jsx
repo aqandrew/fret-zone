@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 import './TabBar.scss';
 
@@ -6,22 +7,20 @@ import './TabBar.scss';
 const TabBar = ({ files, activeFileName, setActiveFileName }) => (
   <ol className="TabBar">
     {files.map((file) => {
-      let tabClassName = 'TabBar__Tab';
-
-      // TODO Refactor using classnames utility
-      if (file.name === activeFileName) {
-        tabClassName += ` ${tabClassName}--IsActive`;
-      }
+      const baseClassName = 'TabBar__Tab';
 
       return (
         <li
-          key={file.id}
-          className={tabClassName}
+          className={clsx(
+            baseClassName,
+            file.name === activeFileName && `${baseClassName}--IsActive`
+          )}
           onClick={(event) => {
             if (!(event.target instanceof HTMLButtonElement)) {
               setActiveFileName(file.name);
             }
           }}
+          key={file.id}
         >
           {file.name || 'untitled'}
           <button className="TabBar__Button--Close">Close</button>

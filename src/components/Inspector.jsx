@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import slugify from 'slugify';
 
 import './Inspector.scss';
@@ -52,18 +53,13 @@ const InspectorViewButton = ({
   text,
   isSongView,
   isActive,
-  setShowSongView
+  setShowSongView,
 }) => {
-  let inspectorViewButtonClass = 'Inspector__ViewButton';
-
-  // TODO Refactor using classnames utility
-  if (isActive) {
-    inspectorViewButtonClass += ` ${inspectorViewButtonClass}--IsActive`;
-  }
+  const baseClassName = 'Inspector__ViewButton';
 
   return (
     <div
-      className={inspectorViewButtonClass}
+      className={clsx(baseClassName, isActive && `${baseClassName}--IsActive`)}
       onClick={() => {
         setShowSongView(isSongView);
       }}
@@ -85,7 +81,7 @@ const InspectorTextField = ({ inputName, changeHandler }) => {
         type="text"
         id={inputId}
         className="Inspector__TextFieldInput"
-        onChange={event => changeHandler(event.target.value)}
+        onChange={(event) => changeHandler(event.target.value)}
       />
     </div>
   );

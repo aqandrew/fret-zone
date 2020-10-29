@@ -1,11 +1,11 @@
 // TODO Put these in their own separate files,
 // once we figure out what other constants should be accessible by multiple
 // components
-export const maximumFretNumber = 63;
+export const MAXIMUM_FRET_NUMBER = 63;
 
-export const sameFretNumberCutoffTime = 1000;
+export const SAME_FRET_NUMBER_CUTOFF_TIME = 1000;
 
-export const durationLengths = {
+export const DURATION_LENGTHS = {
   1: { name: 'Whole', abbreviation: 'w' },
   [1 / 2]: { name: 'Half', abbreviation: 'h' },
   [1 / 4]: { name: 'Quarter', abbreviation: 'q' },
@@ -15,7 +15,7 @@ export const durationLengths = {
   [1 / 64]: { name: 'Sixty-Fourth', abbreviation: 's' },
 };
 
-export const zoomOptions = [
+export const ZOOM_OPTIONS = [
   'Fit to Width',
   'Fit to Page',
   0.25,
@@ -33,28 +33,28 @@ export const zoomOptions = [
   'Custom...',
 ];
 
-export const modes = {
+export const VIEW_MODES = {
   page: 'Page',
   screen: 'Screen',
 };
 
-export const orientations = {
+export const ORIENTATIONS = {
   vertical: 'Vertical',
   horizontal: 'Horizontal',
   grid: 'Grid',
   parchment: 'Parchment',
 };
 
-export const displayModes = [
-  { mode: modes.page, orientation: orientations.vertical },
-  { mode: modes.page, orientation: orientations.horizontal },
-  { mode: modes.page, orientation: orientations.grid },
-  { mode: modes.page, orientation: orientations.parchment },
-  { mode: modes.screen, orientation: orientations.vertical },
-  { mode: modes.screen, orientation: orientations.horizontal },
+export const DISPLAY_MODES = [
+  { mode: VIEW_MODES.page, orientation: ORIENTATIONS.vertical },
+  { mode: VIEW_MODES.page, orientation: ORIENTATIONS.horizontal },
+  { mode: VIEW_MODES.page, orientation: ORIENTATIONS.grid },
+  { mode: VIEW_MODES.page, orientation: ORIENTATIONS.parchment },
+  { mode: VIEW_MODES.screen, orientation: ORIENTATIONS.vertical },
+  { mode: VIEW_MODES.screen, orientation: ORIENTATIONS.horizontal },
 ];
 
-export const notesSharp = [
+export const NOTES_SHARP = [
   'C',
   'C#',
   'D',
@@ -69,7 +69,7 @@ export const notesSharp = [
   'B',
 ];
 
-export const notesFlat = [
+export const NOTES_FLAT = [
   'C',
   'Db',
   'D',

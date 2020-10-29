@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { displayModes } from '../../constants';
+import { DISPLAY_MODES } from '../../constants';
 
 import './DisplayModes.scss';
 
@@ -8,16 +8,16 @@ const DisplayModes = ({ displayModeIndex, setDisplayModeIndex }) => (
   <select
     className="DisplayModes"
     title={
-      displayModes[displayModeIndex].mode +
+      DISPLAY_MODES[displayModeIndex].mode +
       ' - ' +
-      displayModes[displayModeIndex].orientation
+      DISPLAY_MODES[displayModeIndex].orientation
     }
     value={displayModeIndex}
     onChange={(event) => {
       setDisplayModeIndex(event.target.value);
     }}
   >
-    {displayModes.map((displayMode, i) => (
+    {DISPLAY_MODES.map((displayMode, i) => (
       <option value={i} key={i}>
         {displayMode.mode} - {displayMode.orientation}
       </option>

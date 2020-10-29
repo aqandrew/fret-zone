@@ -6,7 +6,7 @@ import AppStateContext from '../AppStateContext';
 import { useDocument } from '../hooks/useDocument';
 import RadioButton from './RadioButton';
 import CheckboxButton from './CheckboxButton';
-import { durationLengths } from '../constants';
+import { DURATION_LENGTHS } from '../constants';
 
 import './EditionPalette.scss';
 
@@ -27,10 +27,10 @@ const NoteSymbols = () => {
 
   return (
     <div className="NoteSymbols">
-      {Object.keys(durationLengths).map((length) => (
+      {Object.keys(DURATION_LENGTHS).map((length) => (
         <RadioButton
           name="duration"
-          buttonTitle={`${durationLengths[length].name} Note`}
+          buttonTitle={`${DURATION_LENGTHS[length].name} Note`}
           disabled={!selectedDuration}
           isChecked={selectedDuration?.length === +length}
           onChange={() =>

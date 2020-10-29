@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-import { zoomOptions } from '../../constants';
+import { ZOOM_OPTIONS } from '../../constants';
 import { formatPercentage, getZoomLevelFromSlider } from '../../utils';
 
 import './Zoom.scss';
@@ -37,7 +37,7 @@ const Zoom = ({ zoomLevel, setZoomLevel }) => {
         value={zoomLevel}
         onChange={handleDropdownChange}
       >
-        {zoomOptions.map((zoomOption, i) => (
+        {ZOOM_OPTIONS.map((zoomOption, i) => (
           <option value={zoomOption} key={i}>
             {isNaN(zoomOption) ? zoomOption : formatPercentage(zoomOption)}
           </option>

@@ -48,10 +48,12 @@ const App = () => {
     currentBarMaximumDuration,
     selectedPositionHasNote,
   } = useDocument(appState);
-  const { dispatchShortenDuration, dispatchLengthenDuration } = useActions(
-    appState,
-    dispatch
-  );
+  const {
+    dispatchAddTrack,
+    dispatchDeleteTrack,
+    dispatchShortenDuration,
+    dispatchLengthenDuration,
+  } = useActions(appState, dispatch);
 
   const dummyFileList = [
     { id: 0, name: '' },
@@ -71,80 +73,6 @@ const App = () => {
   const [showAddTrackModal, setShowAddTrackModal] = useState(false);
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(() => Date.now());
-
-  const handleDeleteTrack = () => {
-    // If a track that's not last is being deleted,
-    if (selectedTrackNumber < tracks.length - 1) {
-      const nextTracksFirstDurationAtSelectedMeasureNumber = durations.find(
-        (duration) =>
-          duration.id ===
-          measures.find(
-            (measure) =>
-              measure.id ===
-              tracks[selectedTrackNumber + 1].measures[selectedMeasureNumber]
-          ).durations[0]
-      );
-
-      // Select first duration of next track's measure at selectedMeasureNumber
-      dispatch({
-        type: actionTypes.SELECT_DURATION,
-        durationId: nextTracksFirstDurationAtSelectedMeasureNumber.id,
-      });
-    }
-    // Otherwise, select first duration of previous track's measure at selectedMeasureNumber
-    else if (selectedTrackNumber !== 0) {
-      const previousTracksFirstDurationAtSelectedMeasureNumber = durations.find(
-        (duration) =>
-          duration.id ===
-          measures.find(
-            (measure) =>
-              measure.id ===
-              tracks[selectedTrackNumber - 1].measures[selectedMeasureNumber]
-          ).durations[0]
-      );
-
-      dispatch({
-        type: actionTypes.SELECT_TRACK,
-        trackNumber: selectedTrackNumber - 1,
-      });
-      dispatch({
-        type: actionTypes.SELECT_DURATION,
-        durationId: previousTracksFirstDurationAtSelectedMeasureNumber.id,
-      });
-    }
-
-    dispatch({
-      type: actionTypes.DELETE_TRACK,
-      trackId: tracks[selectedTrackNumber].id,
-    });
-  };
-
-  const handleAddTrack = (trackToAdd) => {
-    let newTrackId = nanoid();
-    // TODO Turn ID array generation into a function
-    let measureIds =
-      tracks.length === 0
-        ? [nanoid()]
-        : tracks[0].measures.map((measure) => nanoid());
-    let durationIds =
-      tracks.length === 0
-        ? [nanoid()]
-        : tracks[0].measures.map((measure) => nanoid());
-
-    dispatch({
-      type: actionTypes.ADD_TRACK,
-      id: newTrackId,
-      measures: measureIds,
-      durationIds: durationIds,
-      durationLength: selectedDuration?.length,
-      ...trackToAdd,
-    });
-
-    return {
-      newTrackId: newTrackId,
-      durationIdToSelect: durationIds[selectedMeasureNumber],
-    };
-  };
 
   const dispatchSelectPreviousString = useCallback(() => {
     dispatch({
@@ -255,7 +183,7 @@ const App = () => {
       // If selectedMeasure is last,
       // Add a new measure
       if (selectedMeasureNumber === selectedTrack?.measures.length - 1) {
-        // TODO Use parallel arrays like in handleAddTrack instead
+        // TODO Use parallel arrays like in dispatchAddTrack instead
         // Create a mapping from track IDs to new measure IDs
         let trackMeasureIds = tracks.reduce((map, track) => {
           map[track.id] = {
@@ -916,7 +844,7 @@ const App = () => {
               setShowAddTrackModal(false);
 
               if (modalResult) {
-                const { durationIdToSelect } = handleAddTrack(modalResult);
+                const { durationIdToSelect } = dispatchAddTrack(modalResult);
 
                 dispatch({
                   type: actionTypes.SELECT_TRACK,
@@ -936,7 +864,7 @@ const App = () => {
               setShowDeleteTrackModal(false);
 
               if (modalResult) {
-                handleDeleteTrack();
+                dispatchDeleteTrack();
               }
             }}
           />

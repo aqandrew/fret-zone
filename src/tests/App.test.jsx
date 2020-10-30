@@ -91,10 +91,9 @@ describe('App', () => {
       expect(noteInput).toHaveValue('-');
     });
 
-    it('deletes a note from a chord without crashing', () => {
+    it(`deletes a note from a chord in the document's first duration without crashing`, () => {
       const { container } = render(<App />);
       createDefaultTrack();
-      const noteInput = screen.getByLabelText('Measure input (Selected)');
 
       fireEvent.keyDown(container, { key: '2' });
       fireEvent.keyDown(container, { key: 'ArrowDown' });

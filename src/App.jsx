@@ -432,7 +432,14 @@ const App = () => {
           type: actionTypes.ADD_REST,
           durationId: selectedDurationId,
         });
-      } else {
+      }
+      // Don't select a new duration if we're in the first duration of the document
+      else if (
+        !(
+          selectedMeasureNumber === 0 &&
+          selectedDurationId === selectedMeasure?.durations[0]
+        )
+      ) {
         needToSelectNewDuration = true;
       }
     } else {

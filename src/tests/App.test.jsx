@@ -57,4 +57,38 @@ describe('App', () => {
     // Expect additional measure's length also to be 0.0 initially
     expect(barCurrentDuration).toHaveTextContent('0.0:4.0');
   });
+
+  test('selecting strings', () => {
+    const { container } = render(<App />);
+    createDefaultTrack();
+    const durationColumn = screen.getByLabelText('Duration');
+
+    const expectNthStringToBeSelected = (n) => {
+      expect(durationColumn.childNodes[n].getAttribute('aria-label')).toMatch(
+        /Selected/
+      );
+    };
+
+    expectNthStringToBeSelected(0);
+
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    expectNthStringToBeSelected(5);
+
+    fireEvent.keyDown(container, { key: 'ArrowDown' });
+    expectNthStringToBeSelected(0);
+
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    expectNthStringToBeSelected(5);
+
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    fireEvent.keyDown(container, { key: 'ArrowUp' });
+    expectNthStringToBeSelected(0);
+  });
 });

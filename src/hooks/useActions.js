@@ -15,7 +15,7 @@ export const useActions = (state, dispatch) => {
     selectedDuration,
   } = useDocument(state);
 
-  const dispatchAddTrack = (trackToAdd) => {
+  const addTrack = (trackToAdd) => {
     let newTrackId = nanoid();
     // TODO Turn ID array generation into a function
     let measureIds =
@@ -42,7 +42,7 @@ export const useActions = (state, dispatch) => {
     };
   };
 
-  const dispatchDeleteTrack = () => {
+  const deleteTrack = () => {
     // If a track that's not last is being deleted,
     if (selectedTrackNumber < tracks.length - 1) {
       const nextTracksFirstDurationAtSelectedMeasureNumber = durations.find(
@@ -89,7 +89,7 @@ export const useActions = (state, dispatch) => {
     });
   };
 
-  const dispatchShortenDuration = (durationId) => {
+  const shortenDuration = (durationId) => {
     dispatch({
       type: actionTypes.SET_DURATION_LENGTH,
       durationId: durationId,
@@ -97,7 +97,7 @@ export const useActions = (state, dispatch) => {
     });
   };
 
-  const dispatchLengthenDuration = (durationId) => {
+  const lengthenDuration = (durationId) => {
     dispatch({
       type: actionTypes.SET_DURATION_LENGTH,
       durationId: durationId,
@@ -106,9 +106,9 @@ export const useActions = (state, dispatch) => {
   };
 
   return {
-    dispatchAddTrack,
-    dispatchDeleteTrack,
-    dispatchShortenDuration,
-    dispatchLengthenDuration,
+    addTrack,
+    deleteTrack,
+    shortenDuration,
+    lengthenDuration,
   };
 };

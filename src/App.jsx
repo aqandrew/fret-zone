@@ -48,12 +48,7 @@ const App = () => {
     currentBarMaximumDuration,
     selectedPositionHasNote,
   } = useDocument(appState);
-  const {
-    dispatchAddTrack,
-    dispatchDeleteTrack,
-    dispatchShortenDuration,
-    dispatchLengthenDuration,
-  } = useActions(appState, dispatch);
+  const actions = useActions(appState, dispatch);
 
   const dummyFileList = [
     { id: 0, name: '' },
@@ -183,7 +178,7 @@ const App = () => {
       // If selectedMeasure is last,
       // Add a new measure
       if (selectedMeasureNumber === selectedTrack?.measures.length - 1) {
-        // TODO Use parallel arrays like in dispatchAddTrack instead
+        // TODO Use parallel arrays like in actions.addTrack instead
         // Create a mapping from track IDs to new measure IDs
         let trackMeasureIds = tracks.reduce((map, track) => {
           map[track.id] = {
@@ -464,7 +459,7 @@ const App = () => {
                 selectedDuration?.length >
                 Math.min(...Object.keys(DURATION_LENGTHS))
               ) {
-                dispatchShortenDuration(selectedDurationId);
+                actions.shortenDuration(selectedDurationId);
               }
             }
 
@@ -480,7 +475,7 @@ const App = () => {
                 selectedDuration?.length <
                 Math.max(...Object.keys(DURATION_LENGTHS))
               ) {
-                dispatchLengthenDuration(selectedDurationId);
+                actions.lengthenDuration(selectedDurationId);
               }
             }
 
@@ -491,7 +486,7 @@ const App = () => {
               selectedDuration?.length >
               Math.min(...Object.keys(DURATION_LENGTHS))
             ) {
-              dispatchShortenDuration(selectedDurationId);
+              actions.shortenDuration(selectedDurationId);
             }
 
             break;
@@ -548,8 +543,7 @@ const App = () => {
       }
     },
     [
-      dispatchShortenDuration,
-      dispatchLengthenDuration,
+      actions,
       tracks,
       measures,
       selectedDurationId,
@@ -844,7 +838,7 @@ const App = () => {
               setShowAddTrackModal(false);
 
               if (modalResult) {
-                const { durationIdToSelect } = dispatchAddTrack(modalResult);
+                const { durationIdToSelect } = actions.addTrack(modalResult);
 
                 dispatch({
                   type: actionTypes.SELECT_TRACK,
@@ -864,7 +858,7 @@ const App = () => {
               setShowDeleteTrackModal(false);
 
               if (modalResult) {
-                dispatchDeleteTrack();
+                actions.deleteTrack();
               }
             }}
           />

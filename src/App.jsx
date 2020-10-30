@@ -46,6 +46,7 @@ const App = () => {
     selectedStringNumber,
     currentBarDuration,
     currentBarMaximumDuration,
+    selectedPositionHasNote,
   } = useDocument(appState);
 
   const dummyFileList = [
@@ -74,9 +75,8 @@ const App = () => {
     // If on an open string, or if there are no notes, return that string's pitch
     const openStringPitch = selectedTrack?.tuning[selectedStringNumber];
     let pitch = { ...openStringPitch };
-    const isNotePresent = isThereANoteAtSelectedPosition();
 
-    if (isNotePresent) {
+    if (selectedPositionHasNote) {
       let noteIndex = NOTES_SHARP.indexOf(pitch.note);
       // TODO Remove duplicated code between this and Workspace.jsx:DurationColumn
       const noteAtString = selectedDuration.notes
@@ -98,16 +98,8 @@ const App = () => {
         ) + 1;
     }
 
-    return <Pitch {...{ ...pitch, isNotePresent }} />;
+    return <Pitch {...{ ...pitch, selectedPositionHasNote }} />;
   };
-
-  const isThereANoteAtSelectedPosition = useCallback(
-    () =>
-      selectedDuration?.notes
-        .map((noteId) => notes.find((note) => note.id === noteId)?.string)
-        .includes(selectedStringNumber),
-    [notes, selectedDuration, selectedStringNumber]
-  );
 
   const dispatchDeleteTrack = () => {
     // If a track that's not last is being deleted,
@@ -414,7 +406,7 @@ const App = () => {
     let needToSelectNewDuration = false;
 
     // If there is a note at this selected duration/string,
-    if (isThereANoteAtSelectedPosition()) {
+    if (selectedPositionHasNote) {
       // Delete that note
       // TODO These lines are horribly inefficient
       const selectedNoteId = selectedDuration?.notes.find(
@@ -512,7 +504,7 @@ const App = () => {
     selectedDurationId,
     selectedDuration,
     selectedStringNumber,
-    isThereANoteAtSelectedPosition,
+    selectedPositionHasNote,
   ]);
 
   const dispatchAddNote = useCallback(

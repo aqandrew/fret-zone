@@ -4,15 +4,15 @@ import clsx from 'clsx';
 import './Pitch.scss';
 
 // Scientific pitch notation for a given pitch
-const Pitch = ({ note, octave, isNotePresent }) => {
+const Pitch = ({ note, octave, selectedPositionHasNote }) => {
   const baseClassName = 'Pitch';
 
   return (
     <label
       className={clsx(
         baseClassName,
-        // Explicitly checking if false here, because we don't want the modifier class if isNotePresent prop is undefined
-        isNotePresent === false && `${baseClassName}--IsOpenString`
+        // Explicitly checking if false here, because we don't want the modifier class if selectedPositionHasNote prop is undefined
+        selectedPositionHasNote === false && `${baseClassName}--IsOpenString`
       )}
     >
       {note}

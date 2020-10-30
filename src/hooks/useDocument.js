@@ -40,6 +40,10 @@ export const useDocument = (state) => {
       return totalDuration;
     }, 0) * currentBarMaximumDuration;
 
+  const selectedPositionHasNote = selectedDuration?.notes
+    .map((noteId) => notes.find((note) => note.id === noteId)?.string)
+    .includes(selectedStringNumber);
+
   return {
     tracks,
     measures,
@@ -54,5 +58,6 @@ export const useDocument = (state) => {
     selectedStringNumber,
     currentBarDuration,
     currentBarMaximumDuration,
+    selectedPositionHasNote,
   };
 };

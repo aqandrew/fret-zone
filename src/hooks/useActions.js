@@ -11,8 +11,10 @@ export const useActions = (state, dispatch) => {
     durations,
     measures,
     selectedTrackNumber,
+    selectedTrack,
     selectedMeasureNumber,
     selectedDuration,
+    selectedStringNumber,
   } = useDocument(state);
 
   const addTrack = (trackToAdd) => {
@@ -89,6 +91,23 @@ export const useActions = (state, dispatch) => {
     });
   };
 
+  const selectPreviousString = () => {
+    dispatch({
+      type: actionTypes.SELECT_STRING,
+      stringNumber:
+        selectedStringNumber === 0
+          ? selectedTrack?.tuning.length - 1
+          : selectedStringNumber - 1,
+    });
+  };
+
+  const selectNextString = () => {
+    dispatch({
+      type: actionTypes.SELECT_STRING,
+      stringNumber: (selectedStringNumber + 1) % selectedTrack?.tuning.length,
+    });
+  };
+
   const shortenDuration = (durationId) => {
     dispatch({
       type: actionTypes.SET_DURATION_LENGTH,
@@ -108,6 +127,8 @@ export const useActions = (state, dispatch) => {
   return {
     addTrack,
     deleteTrack,
+    selectPreviousString,
+    selectNextString,
     shortenDuration,
     lengthenDuration,
   };

@@ -69,23 +69,6 @@ const App = () => {
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(() => Date.now());
 
-  const dispatchSelectPreviousString = useCallback(() => {
-    dispatch({
-      type: actionTypes.SELECT_STRING,
-      stringNumber:
-        selectedStringNumber === 0
-          ? selectedTrack?.tuning.length - 1
-          : selectedStringNumber - 1,
-    });
-  }, [selectedTrack, selectedStringNumber]);
-
-  const dispatchSelectNextString = useCallback(() => {
-    dispatch({
-      type: actionTypes.SELECT_STRING,
-      stringNumber: (selectedStringNumber + 1) % selectedTrack?.tuning.length,
-    });
-  }, [selectedTrack, selectedStringNumber]);
-
   const dispatchSelectPreviousDuration = useCallback(() => {
     // If currently selected duration is NOT first in the measure,
     if (selectedDurationId !== selectedMeasure?.durations[0]) {
@@ -423,12 +406,12 @@ const App = () => {
         switch (event.key) {
           case 'ArrowUp':
             event.preventDefault();
-            dispatchSelectPreviousString();
+            actions.selectPreviousString();
 
             break;
           case 'ArrowDown':
             event.preventDefault();
-            dispatchSelectNextString();
+            actions.selectNextString();
 
             break;
           // Advance duration/measure
@@ -548,8 +531,6 @@ const App = () => {
       measures,
       selectedDurationId,
       selectedDuration,
-      dispatchSelectPreviousString,
-      dispatchSelectNextString,
       dispatchSelectPreviousDuration,
       dispatchSelectNextDuration,
       dispatchDeleteMeasure,

@@ -58,6 +58,9 @@ describe('App', () => {
     expect(barCurrentDuration).toHaveTextContent('0.0:4.0');
   });
 
+  // TODO Add addTrack test
+  // TODO Add deleteTrack test
+
   test('selecting strings', () => {
     const { container } = render(<App />);
     createDefaultTrack();

@@ -63,4 +63,45 @@ describe('manipulating notes', () => {
     fireEvent.keyDown(container, { key: '2' });
     expect(noteInput).toHaveValue('2');
   });
+
+  it('shortens and lengthens notes', () => {
+    const { container } = render(<App />);
+    createDefaultTrack();
+    const wholeRadio = screen.getByLabelText('Whole Note');
+    const halfRadio = screen.getByLabelText('Half Note');
+    const quarterRadio = screen.getByLabelText('Quarter Note');
+    const eighthRadio = screen.getByLabelText('Eighth Note');
+    const sixteenthRadio = screen.getByLabelText('Sixteenth Note');
+    const thirtySecondRadio = screen.getByLabelText('Thirty-Second Note');
+    const sixtyFourthRadio = screen.getByLabelText('Sixty-Fourth Note');
+
+    fireEvent.keyDown(container, { key: '7' });
+    expect(quarterRadio).toBeChecked();
+
+    fireEvent.keyDown(container, { key: '-' });
+    expect(halfRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '-' });
+    expect(wholeRadio).toBeChecked();
+
+    // Note can't be longer than a whole note
+    fireEvent.keyDown(container, { key: '-' });
+    expect(wholeRadio).toBeChecked();
+
+    fireEvent.keyDown(container, { key: '=' });
+    expect(halfRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '=' });
+    expect(quarterRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '=' });
+    expect(eighthRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '=' });
+    expect(sixteenthRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '=' });
+    expect(thirtySecondRadio).toBeChecked();
+    fireEvent.keyDown(container, { key: '=' });
+    expect(sixtyFourthRadio).toBeChecked();
+
+    // Similarly, note can't be shorter than a sixty-fourth note
+    fireEvent.keyDown(container, { key: '=' });
+    expect(sixtyFourthRadio).toBeChecked();
+  });
 });

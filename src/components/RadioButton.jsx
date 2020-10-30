@@ -6,15 +6,17 @@ const RadioButton = ({ name, buttonTitle, disabled, isChecked, onChange }) => {
 
   return (
     <div className="RadioButton">
-      <input
-        type="radio"
-        id={inputId}
-        disabled={disabled}
-        name={name}
-        checked={isChecked}
-        onChange={onChange}
-      />
-      <label htmlFor={inputId}>{buttonTitle}</label>
+      <label title={buttonTitle}>
+        <input
+          type="radio"
+          id={inputId}
+          disabled={disabled}
+          name={name}
+          checked={isChecked}
+          onChange={onChange}
+        />
+        {buttonTitle}
+      </label>
     </div>
   );
 };

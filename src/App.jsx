@@ -12,6 +12,7 @@ import {
   DURATION_LENGTHS,
 } from './constants';
 import { useDocument } from './hooks/useDocument';
+import { useActions } from './hooks/useActions';
 // import AppMenu from './components/AppMenu';
 import TabBar from './components/TabBar';
 import CheckboxButton from './components/CheckboxButton';
@@ -47,6 +48,10 @@ const App = () => {
     currentBarMaximumDuration,
     selectedPositionHasNote,
   } = useDocument(appState);
+  const { dispatchShortenDuration, dispatchLengthenDuration } = useActions(
+    appState,
+    dispatch
+  );
 
   const dummyFileList = [
     { id: 0, name: '' },
@@ -140,28 +145,6 @@ const App = () => {
       durationIdToSelect: durationIds[selectedMeasureNumber],
     };
   };
-
-  const dispatchShortenDuration = useCallback(
-    (durationId) => {
-      dispatch({
-        type: actionTypes.SET_DURATION_LENGTH,
-        durationId: durationId,
-        newLength: selectedDuration?.length / 2,
-      });
-    },
-    [selectedDuration]
-  );
-
-  const dispatchLengthenDuration = useCallback(
-    (durationId) => {
-      dispatch({
-        type: actionTypes.SET_DURATION_LENGTH,
-        durationId: durationId,
-        newLength: selectedDuration?.length * 2,
-      });
-    },
-    [selectedDuration]
-  );
 
   const dispatchSelectPreviousString = useCallback(() => {
     dispatch({

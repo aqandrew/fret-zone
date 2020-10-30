@@ -67,7 +67,7 @@ const App = () => {
   const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
   const [lastFretInputTime, setLastFretInputTime] = useState(() => Date.now());
 
-  const dispatchDeleteTrack = () => {
+  const handleDeleteTrack = () => {
     // If a track that's not last is being deleted,
     if (selectedTrackNumber < tracks.length - 1) {
       const nextTracksFirstDurationAtSelectedMeasureNumber = durations.find(
@@ -114,35 +114,32 @@ const App = () => {
     });
   };
 
-  const dispatchAddTrack = useCallback(
-    (trackToAdd) => {
-      let newTrackId = nanoid();
-      // TODO Turn ID array generation into a function
-      let measureIds =
-        tracks.length === 0
-          ? [nanoid()]
-          : tracks[0].measures.map((measure) => nanoid());
-      let durationIds =
-        tracks.length === 0
-          ? [nanoid()]
-          : tracks[0].measures.map((measure) => nanoid());
+  const handleAddTrack = (trackToAdd) => {
+    let newTrackId = nanoid();
+    // TODO Turn ID array generation into a function
+    let measureIds =
+      tracks.length === 0
+        ? [nanoid()]
+        : tracks[0].measures.map((measure) => nanoid());
+    let durationIds =
+      tracks.length === 0
+        ? [nanoid()]
+        : tracks[0].measures.map((measure) => nanoid());
 
-      dispatch({
-        type: actionTypes.ADD_TRACK,
-        id: newTrackId,
-        measures: measureIds,
-        durationIds: durationIds,
-        durationLength: selectedDuration?.length,
-        ...trackToAdd,
-      });
+    dispatch({
+      type: actionTypes.ADD_TRACK,
+      id: newTrackId,
+      measures: measureIds,
+      durationIds: durationIds,
+      durationLength: selectedDuration?.length,
+      ...trackToAdd,
+    });
 
-      return {
-        newTrackId: newTrackId,
-        durationIdToSelect: durationIds[selectedMeasureNumber],
-      };
-    },
-    [selectedMeasureNumber, selectedDuration, tracks]
-  );
+    return {
+      newTrackId: newTrackId,
+      durationIdToSelect: durationIds[selectedMeasureNumber],
+    };
+  };
 
   const dispatchShortenDuration = useCallback(
     (durationId) => {
@@ -275,7 +272,7 @@ const App = () => {
       // If selectedMeasure is last,
       // Add a new measure
       if (selectedMeasureNumber === selectedTrack?.measures.length - 1) {
-        // TODO Use parallel arrays like in dispatchAddTrack instead
+        // TODO Use parallel arrays like in handleAddTrack instead
         // Create a mapping from track IDs to new measure IDs
         let trackMeasureIds = tracks.reduce((map, track) => {
           map[track.id] = {
@@ -936,7 +933,7 @@ const App = () => {
               setShowAddTrackModal(false);
 
               if (modalResult) {
-                const { durationIdToSelect } = dispatchAddTrack(modalResult);
+                const { durationIdToSelect } = handleAddTrack(modalResult);
 
                 dispatch({
                   type: actionTypes.SELECT_TRACK,
@@ -956,7 +953,7 @@ const App = () => {
               setShowDeleteTrackModal(false);
 
               if (modalResult) {
-                dispatchDeleteTrack();
+                handleDeleteTrack();
               }
             }}
           />

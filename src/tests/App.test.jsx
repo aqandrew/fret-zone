@@ -11,13 +11,8 @@ import App from '../App';
 import { SAME_FRET_NUMBER_CUTOFF_TIME } from '../constants';
 
 const createDefaultTrack = () => {
-  fireEvent.click(screen.getByTitle('Add Track'));
-  const firstInput = getByLabelText(
-    screen.getByRole('dialog'),
-    'Clean Guitar',
-    { exact: false }
-  );
-  fireEvent.keyDown(firstInput, { key: 'Enter' });
+  // Assume this is one of the first actions taken
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Enter' });
 };
 
 describe('App', () => {

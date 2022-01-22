@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^7.2.1",
     "a11y-react-emoji": "^1.1.2",
     "clsx": "^1.1.1",
-    "nanoid": "^3.1.16",
+    "nanoid": "^3.1.31",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

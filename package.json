@@ -9,7 +9,7 @@
     "a11y-react-emoji": "^1.1.2",
     "clsx": "^1.1.1",
     "nanoid": "^3.1.16",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "4.0.0",

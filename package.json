@@ -3,9 +3,6 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"@testing-library/jest-dom": "^4.2.4",
-		"@testing-library/react": "^9.5.0",
-		"@testing-library/user-event": "^7.2.1",
 		"a11y-react-emoji": "^1.1.2",
 		"clsx": "^1.1.1",
 		"nanoid": "^3.1.16",
@@ -17,6 +14,7 @@
 	"scripts": {
 		"start": "vite",
 		"build": "vite build",
+		"test": "vitest",
 		"serve": "vite preview"
 	},
 	"eslintConfig": {
@@ -35,7 +33,12 @@
 		]
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "^5.16.5",
+		"@testing-library/react": "^9.5.0",
+		"@testing-library/user-event": "^7.2.1",
 		"@vitejs/plugin-react": "^4.0.1",
-		"vite": "^4.3.9"
+		"jsdom": "^22.1.0",
+		"vite": "^4.3.9",
+		"vitest": "^0.32.2"
 	}
 }

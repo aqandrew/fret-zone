@@ -7,5 +7,10 @@ export default defineConfig(() => {
 			outDir: 'build',
 		},
 		plugins: [react()],
+		test: {
+			globals: true,
+			environment: 'jsdom',
+			setupFiles: './src/tests/setup.js',
+		},
 	};
 });

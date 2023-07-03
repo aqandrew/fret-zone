@@ -6,11 +6,11 @@ Originally a project to practice [Thinking in React](https://reactjs.org/docs/th
 
 ## To run locally
 
-`yarn run start`
+`yarn start`
 
 ## To run tests
 
-`yarn run test`
+`yarn test`
 
 ## Keyboard shortcuts
 

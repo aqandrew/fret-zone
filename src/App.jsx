@@ -685,7 +685,7 @@ const App = () => {
                 </a>{' '}
                 • Made with <Emoji symbol="🤘🏽" /> by{' '}
                 <a
-                  href="https://twitter.com/aqandrew"
+                  href="https://aqandrew.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="TopBarText__Link"

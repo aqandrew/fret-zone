@@ -1,59 +1,59 @@
 .App {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: white;
-  font-size: 12px;
-  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	color: white;
+	font-size: 12px;
+	font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 
-  .TopBar {
-    background: #2a2a2a;
-    padding: 0 12px;
+	.TopBar {
+		background: #2a2a2a;
+		padding: 0 12px;
 
-    &Text {
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-columns: repeat(3, 1fr);
-      color: #898989;
-      padding-top: 2px;
-      padding-bottom: 10px;
+		&Text {
+			display: grid;
+			grid-auto-flow: column;
+			grid-template-columns: repeat(3, 1fr);
+			color: #898989;
+			padding-top: 2px;
+			padding-bottom: 10px;
 
-      &__ActiveFileName {
-        text-align: center;
-        grid-column: 2;
-      }
+			&__ActiveFileName {
+				text-align: center;
+				grid-column: 2;
+			}
 
-      &__Attribution {
-        text-align: right;
-        grid-column: 3;
-      }
+			&__Attribution {
+				text-align: right;
+				grid-column: 3;
+			}
 
-      &__Link {
-        color: white;
+			&__Link {
+				color: white;
 
-        &:visited {
-          color: white;
-        }
-      }
-    }
-  }
+				&:visited {
+					color: white;
+				}
+			}
+		}
+	}
 
-  &__Content {
-    &--Main {
-      // TODO Find less hacky solution than { height: 0 } for making Workspace scrollable without making page taller
-      height: 0;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+	&__Content {
+		&--Main {
+			// TODO Find less hacky solution than { height: 0 } for making Workspace scrollable without making page taller
+			height: 0;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
 
-    &--Center {
-      height: inherit;
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-    }
-  }
+		&--Center {
+			height: inherit;
+			flex: 1;
+			display: flex;
+			justify-content: space-between;
+		}
+	}
 }

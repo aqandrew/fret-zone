@@ -1,14 +1,14 @@
 .Pitch {
-  font-size: 16px;
-  font-weight: 500;
+	font-size: 16px;
+	font-weight: 500;
 
-  &--IsOpenString {
-    color: #39414e;
-  }
+	&--IsOpenString {
+		color: #39414e;
+	}
 
-  &__Octave {
-    margin-left: 3px;
-    font-size: 12px;
-    font-weight: normal;
-  }
+	&__Octave {
+		margin-left: 3px;
+		font-size: 12px;
+		font-weight: normal;
+	}
 }

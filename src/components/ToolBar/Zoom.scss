@@ -1,9 +1,9 @@
 .Zoom {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
-  &__Dropdown {
-    // TODO Share this height with .DisplayModes and .ToolBar__ButtonContainer > button
-    height: 22px;
-  }
+	&__Dropdown {
+		// TODO Share this height with .DisplayModes and .ToolBar__ButtonContainer > button
+		height: 22px;
+	}
 }

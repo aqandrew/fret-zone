@@ -1,61 +1,61 @@
 .TabBar {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  list-style-type: none;
+	display: flex;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	list-style-type: none;
 
-  &__Tab {
-    height: 22px;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    background: #424e5c;
-    user-select: none;
+	&__Tab {
+		height: 22px;
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		background: #424e5c;
+		user-select: none;
 
-    &:not(:last-child) {
-      border-right: 1px solid black;
-    }
+		&:not(:last-child) {
+			border-right: 1px solid black;
+		}
 
-    &--IsActive {
-      background: #5e6d7f;
-      font-weight: bold;
-    }
+		&--IsActive {
+			background: #5e6d7f;
+			font-weight: bold;
+		}
 
-    &:hover {
-      button {
-        visibility: visible;
-      }
-    }
+		&:hover {
+			button {
+				visibility: visible;
+			}
+		}
 
-    &:not(&--IsActive):hover {
-      background: #4a5768;
-    }
-  }
+		&:not(&--IsActive):hover {
+			background: #4a5768;
+		}
+	}
 
-  &__Button {
-    &--Close {
-      visibility: hidden;
-      position: absolute;
-      right: 2px;
-    }
+	&__Button {
+		&--Close {
+			visibility: hidden;
+			position: absolute;
+			right: 2px;
+		}
 
-    // TODO Share these styles w/TabBar__Tab to avoid repetition
-    &--AddTab {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0 7px 2px;
-      background: #424e5c;
-      font-weight: bold;
-      user-select: none;
+		// TODO Share these styles w/TabBar__Tab to avoid repetition
+		&--AddTab {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 0 7px 2px;
+			background: #424e5c;
+			font-weight: bold;
+			user-select: none;
 
-      &:hover {
-        background: #4a5768;
-      }
-    }
-  }
+			&:hover {
+				background: #4a5768;
+			}
+		}
+	}
 }

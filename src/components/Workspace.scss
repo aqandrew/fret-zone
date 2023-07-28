@@ -1,71 +1,71 @@
 .Workspace {
-  flex: 1;
-  width: 100%;
-  overflow: scroll;
-  background: #4e5158;
+	flex: 1;
+	width: 100%;
+	overflow: scroll;
+	background: #4e5158;
 
-  .Document {
-    &__Page {
-      width: 8.5in;
-      height: 11in;
-      margin: 0 auto;
-      padding: 1in 0.25in 0.25in;
-      background: white;
-      color: black;
-    }
+	.Document {
+		&__Page {
+			width: 8.5in;
+			height: 11in;
+			margin: 0 auto;
+			padding: 1in 0.25in 0.25in;
+			background: white;
+			color: black;
+		}
 
-    &__Title,
-    &__Artist {
-      margin-top: 0;
-      text-align: center;
-      // TODO Store document font families in Stylesheet
-      font-family: 'Times New Roman', Times, serif;
-    }
+		&__Title,
+		&__Artist {
+			margin-top: 0;
+			text-align: center;
+			// TODO Store document font families in Stylesheet
+			font-family: 'Times New Roman', Times, serif;
+		}
 
-    .TrackNotation {
-      &__TrackName {
-        &--Abbreviated {
-          // TODO Set margin dynamically, e.g. as percentage
-          // Or use { vertical-align: center; } on flex parent
-          margin-bottom: -5em;
-          writing-mode: vertical-lr;
-          transform: rotate(180deg);
-        }
-      }
-    }
-  }
+		.TrackNotation {
+			&__TrackName {
+				&--Abbreviated {
+					// TODO Set margin dynamically, e.g. as percentage
+					// Or use { vertical-align: center; } on flex parent
+					margin-bottom: -5em;
+					writing-mode: vertical-lr;
+					transform: rotate(180deg);
+				}
+			}
+		}
+	}
 
-  .Measure {
-    display: inline-flex;
-    border-right: 1px solid black;
+	.Measure {
+		display: inline-flex;
+		border-right: 1px solid black;
 
-    &__DurationColumn {
-      display: inline-flex;
-      flex-direction: column;
-      position: relative;
-    }
+		&__DurationColumn {
+			display: inline-flex;
+			flex-direction: column;
+			position: relative;
+		}
 
-    &__Input {
-      width: 14px;
-      border: 1px solid transparent;
-      border-radius: 2px;
-      text-align: center;
+		&__Input {
+			width: 14px;
+			border: 1px solid transparent;
+			border-radius: 2px;
+			text-align: center;
 
-      &:focus {
-        outline: none;
-      }
+			&:focus {
+				outline: none;
+			}
 
-      &--IsActive {
-        border-color: black;
-        background: #f7e5b7;
-      }
-    }
+			&--IsActive {
+				border-color: black;
+				background: #f7e5b7;
+			}
+		}
 
-    &__DurationMarker {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-  }
+		&__DurationMarker {
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	}
 }

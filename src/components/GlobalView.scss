@@ -7,164 +7,164 @@ $measuretable-row-background: #2a2d33;
 $default-guitar-color: #d66a67;
 
 .GlobalView {
-  display: flex;
-  background: $globalview-background;
-  border-top: 1px solid black;
+	display: flex;
+	background: $globalview-background;
+	border-top: 1px solid black;
 
-  .TrackControls {
-    width: 535px;
-    border-right: 1px solid $globalview-background;
+	.TrackControls {
+		width: 535px;
+		border-right: 1px solid $globalview-background;
 
-    &__Header,
-    &__Footer {
-      display: flex;
-      align-items: center;
-      user-select: none;
-    }
+		&__Header,
+		&__Footer {
+			display: flex;
+			align-items: center;
+			user-select: none;
+		}
 
-    &__Header {
-      height: $header-height;
-    }
+		&__Header {
+			height: $header-height;
+		}
 
-    &__Footer {
-      height: $footer-height;
-    }
+		&__Footer {
+			height: $footer-height;
+		}
 
-    &__Button--AddTrack {
-      position: absolute;
-      left: 4px;
-    }
+		&__Button--AddTrack {
+			position: absolute;
+			left: 4px;
+		}
 
-    &__Heading {
-      padding-left: 54px;
-    }
-  }
+		&__Heading {
+			padding-left: 54px;
+		}
+	}
 
-  .TrackControl {
-    height: 24px;
-    border-bottom: 1px solid $measuretable-row-background;
-    display: flex;
-    align-items: center;
-    background: $measuretable-row-background;
-    user-select: none;
+	.TrackControl {
+		height: 24px;
+		border-bottom: 1px solid $measuretable-row-background;
+		display: flex;
+		align-items: center;
+		background: $measuretable-row-background;
+		user-select: none;
 
-    &:hover {
-      background: #33373f;
-    }
+		&:hover {
+			background: #33373f;
+		}
 
-    &--IsActive {
-      background: #3c4049;
+		&--IsActive {
+			background: #3c4049;
 
-      &:hover {
-        background: #3e434c;
-      }
-    }
+			&:hover {
+				background: #3e434c;
+			}
+		}
 
-    &__ColorTab {
-      height: 100%;
-      width: 4px;
-      margin-right: 4px;
-      background: $default-guitar-color;
-    }
+		&__ColorTab {
+			height: 100%;
+			width: 4px;
+			margin-right: 4px;
+			background: $default-guitar-color;
+		}
 
-    &__TrackNumber {
-      margin-right: 4px;
-      color: #97a0ac;
-    }
-  }
+		&__TrackNumber {
+			margin-right: 4px;
+			color: #97a0ac;
+		}
+	}
 
-  .MeasureTable {
-    flex: 1;
-    overflow-x: auto;
+	.MeasureTable {
+		flex: 1;
+		overflow-x: auto;
 
-    &__Header {
-      height: $header-height;
-    }
+		&__Header {
+			height: $header-height;
+		}
 
-    &__MeasureNumber {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 1px;
-      height: 100%;
-      width: $measure-cell-width;
-      font-size: 10px;
-      user-select: none;
+		&__MeasureNumber {
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			margin-right: 1px;
+			height: 100%;
+			width: $measure-cell-width;
+			font-size: 10px;
+			user-select: none;
 
-      &:hover {
-        background: #505d67;
-      }
+			&:hover {
+				background: #505d67;
+			}
 
-      &:not(:first-child):not(:nth-child(4n)) {
-        color: $globalview-background;
+			&:not(:first-child):not(:nth-child(4n)) {
+				color: $globalview-background;
 
-        &:hover {
-          color: white;
-        }
-      }
+				&:hover {
+					color: white;
+				}
+			}
 
-      &--IsSelected {
-        &::after {
-          content: ' ';
-          display: block;
-          position: absolute;
-          margin-top: -16px;
-          border-top: 4px solid #6191d2;
-          border-left: 4px solid transparent;
-          border-right: 4px solid transparent;
-        }
+			&--IsSelected {
+				&::after {
+					content: ' ';
+					display: block;
+					position: absolute;
+					margin-top: -16px;
+					border-top: 4px solid #6191d2;
+					border-left: 4px solid transparent;
+					border-right: 4px solid transparent;
+				}
 
-        &:hover::after {
-          border-top-color: white;
-        }
-      }
-    }
+				&:hover::after {
+					border-top-color: white;
+				}
+			}
+		}
 
-    &__Footer {
-      height: $footer-height;
-    }
+		&__Footer {
+			height: $footer-height;
+		}
 
-    &__Row {
-      height: 24px;
-      border-bottom: 1px solid $measuretable-row-background;
-      display: flex;
-      align-items: center;
-      background: $measuretable-row-background;
-    }
+		&__Row {
+			height: 24px;
+			border-bottom: 1px solid $measuretable-row-background;
+			display: flex;
+			align-items: center;
+			background: $measuretable-row-background;
+		}
 
-    &__Cell {
-      height: 100%;
-      width: $measure-cell-width;
-      // TODO This should probably be set in JS
-      background: $default-guitar-color;
+		&__Cell {
+			height: 100%;
+			width: $measure-cell-width;
+			// TODO This should probably be set in JS
+			background: $default-guitar-color;
 
-      &:not(:last-child) {
-        border-right: 1px solid $globalview-background;
-      }
+			&:not(:last-child) {
+				border-right: 1px solid $globalview-background;
+			}
 
-      &:hover {
-        background: lighten(saturate($default-guitar-color, 12.89%), 16.67%);
-      }
+			&:hover {
+				background: lighten(saturate($default-guitar-color, 12.89%), 16.67%);
+			}
 
-      &--Empty {
-        background: #3b3d43;
+			&--Empty {
+				background: #3b3d43;
 
-        &:hover {
-          background: #5d626c;
-        }
-      }
+				&:hover {
+					background: #5d626c;
+				}
+			}
 
-      &--IsSelected {
-        &::after {
-          content: ' ';
-          display: block;
-          margin: 4px;
-          width: 16px;
-          height: 16px;
-          border-radius: 2px;
-          background: black;
-        }
-      }
-    }
-  }
+			&--IsSelected {
+				&::after {
+					content: ' ';
+					display: block;
+					margin: 4px;
+					width: 16px;
+					height: 16px;
+					border-radius: 2px;
+					background: black;
+				}
+			}
+		}
+	}
 }

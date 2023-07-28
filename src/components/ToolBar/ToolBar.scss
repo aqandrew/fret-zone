@@ -1,135 +1,135 @@
 .ToolBar {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 
-  &__Group {
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 6px;
+	&__Group {
+		display: grid;
+		grid-auto-flow: column;
+		grid-gap: 6px;
 
-    > button {
-      height: 22px;
-    }
-  }
+		> button {
+			height: 22px;
+		}
+	}
 
-  &__ButtonContainer {
-    display: flex;
+	&__ButtonContainer {
+		display: flex;
 
-    > button {
-      height: 22px;
-    }
-  }
+		> button {
+			height: 22px;
+		}
+	}
 
-  .NavigationAndPlayback {
-    display: flex;
-  }
+	.NavigationAndPlayback {
+		display: flex;
+	}
 
-  .LCD {
-    width: 317px;
-    display: grid;
-    grid-template-columns: repeat(18, 1fr);
-    grid-template-rows: 1fr 1fr minmax(min-content, max-content);
+	.LCD {
+		width: 317px;
+		display: grid;
+		grid-template-columns: repeat(18, 1fr);
+		grid-template-rows: 1fr 1fr minmax(min-content, max-content);
 
-    &__Control {
-      &--CurrentTrack {
-        grid-column: span 13;
-        display: flex;
-        align-items: center;
-        position: relative;
-        padding-left: 4px;
-        color: white;
+		&__Control {
+			&--CurrentTrack {
+				grid-column: span 13;
+				display: flex;
+				align-items: center;
+				position: relative;
+				padding-left: 4px;
+				color: white;
 
-        &::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: #2d343f;
-        }
-      }
+				&::before {
+					content: '';
+					position: absolute;
+					left: 0;
+					width: 4px;
+					height: 100%;
+					background: #2d343f;
+				}
+			}
 
-      &--CountIn {
-        grid-column: span 1;
-      }
+			&--CountIn {
+				grid-column: span 1;
+			}
 
-      &--Metronome {
-        grid-column: span 1;
-      }
+			&--Metronome {
+				grid-column: span 1;
+			}
 
-      &--MetronomeSettings {
-        grid-column: span 1;
-      }
+			&--MetronomeSettings {
+				grid-column: span 1;
+			}
 
-      &--PitchAtCursor {
-        grid-column: span 2;
-        display: grid;
-        place-items: center;
-      }
+			&--PitchAtCursor {
+				grid-column: span 2;
+				display: grid;
+				place-items: center;
+			}
 
-      &--BarPosition,
-      &--BarPosition ~ button,
-      &--BarPosition ~ div {
-        grid-row: 2;
-        font-size: 11px;
-      }
+			&--BarPosition,
+			&--BarPosition ~ button,
+			&--BarPosition ~ div {
+				grid-row: 2;
+				font-size: 11px;
+			}
 
-      &--BarPosition {
-        grid-column: span 3;
-      }
+			&--BarPosition {
+				grid-column: span 3;
+			}
 
-      &--BarCurrentDuration {
-        grid-column: span 4;
+			&--BarCurrentDuration {
+				grid-column: span 4;
 
-        .DurationSymbol {
-          font-size: 6px;
-        }
-      }
+				.DurationSymbol {
+					font-size: 6px;
+				}
+			}
 
-      &--Time {
-        grid-column: span 5;
-        display: grid;
-        place-items: center;
-      }
+			&--Time {
+				grid-column: span 5;
+				display: grid;
+				place-items: center;
+			}
 
-      &--TripletFeel {
-        grid-column: span 2;
-      }
+			&--TripletFeel {
+				grid-column: span 2;
+			}
 
-      &--Tempo {
-        grid-column: span 3;
-      }
+			&--Tempo {
+				grid-column: span 3;
+			}
 
-      &--TimeSignature {
-        grid-column: span 1;
-      }
+			&--TimeSignature {
+				grid-column: span 1;
+			}
 
-      &--TimeScrubber {
-        grid-row: 3;
-        grid-column: 1 / -1; // Span all columns
-      }
-    }
+			&--TimeScrubber {
+				grid-row: 3;
+				grid-column: 1 / -1; // Span all columns
+			}
+		}
 
-    button {
-      color: white;
-    }
+		button {
+			color: white;
+		}
 
-    &__Control {
-      background: #191c21;
-      user-select: none;
+		&__Control {
+			background: #191c21;
+			user-select: none;
 
-      &:hover {
-        background: #2f333d;
-      }
+			&:hover {
+				background: #2f333d;
+			}
 
-      &--CurrentTrack {
-        font-size: 14px;
-        font-weight: 800;
-      }
+			&--CurrentTrack {
+				font-size: 14px;
+				font-weight: 800;
+			}
 
-      &--NoHover:hover {
-        background: #191c21;
-      }
-    }
-  }
+			&--NoHover:hover {
+				background: #191c21;
+			}
+		}
+	}
 }

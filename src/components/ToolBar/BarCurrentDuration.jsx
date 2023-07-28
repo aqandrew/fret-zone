@@ -6,36 +6,32 @@ import { useDocument } from '../../hooks/useDocument';
 import { roundDurationLength } from '../../utils';
 
 const BarCurrentDuration = () => {
-  const appState = useContext(AppStateContext);
-  const {
-    tracks,
-    measures,
-    currentBarDuration,
-    currentBarMaximumDuration,
-  } = useDocument(appState);
+	const appState = useContext(AppStateContext);
+	const { tracks, measures, currentBarDuration, currentBarMaximumDuration } =
+		useDocument(appState);
 
-  let barDuration = 0;
-  let barMaximumDuration = 1;
+	let barDuration = 0;
+	let barMaximumDuration = 1;
 
-  if (tracks.length && measures.length) {
-    barDuration = currentBarDuration;
-    barMaximumDuration = currentBarMaximumDuration;
-  }
+	if (tracks.length && measures.length) {
+		barDuration = currentBarDuration;
+		barMaximumDuration = currentBarMaximumDuration;
+	}
 
-  return (
-    <button
-      className="LCD__Control LCD__Control--BarCurrentDuration"
-      title="Bar current duration"
-    >
-      <Emoji
-        symbol={barDuration === barMaximumDuration ? '✅' : '⚠️'}
-        className="DurationSymbol"
-      />
-      {roundDurationLength(barDuration) +
-        ':' +
-        roundDurationLength(barMaximumDuration)}
-    </button>
-  );
+	return (
+		<button
+			className="LCD__Control LCD__Control--BarCurrentDuration"
+			title="Bar current duration"
+		>
+			<Emoji
+				symbol={barDuration === barMaximumDuration ? '✅' : '⚠️'}
+				className="DurationSymbol"
+			/>
+			{roundDurationLength(barDuration) +
+				':' +
+				roundDurationLength(barMaximumDuration)}
+		</button>
+	);
 };
 
 export default BarCurrentDuration;

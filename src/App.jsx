@@ -19,6 +19,7 @@ import EditionPalette from './components/EditionPalette';
 import Workspace from './components/Workspace';
 import Inspector from './components/Inspector';
 import GlobalView from './components/GlobalView';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import AddTrackModal from './components/AddTrackModal';
 import DeleteTrackModal from './components/DeleteTrackModal';
 
@@ -58,10 +59,14 @@ const App = () => {
 	const [displayModeIndex, setDisplayModeIndex] = useState(0);
 	const [documentTitle, setDocumentTitle] = useState('');
 	const [documentArtist, setDocumentArtist] = useState('');
+	const [showKeyboardShortcutsModal, setShowKeyboardShortcutsModal] =
+		useState(false);
 	const [showAddTrackModal, setShowAddTrackModal] = useState(true);
 	const [showDeleteTrackModal, setShowDeleteTrackModal] = useState(false);
 	const [lastFretInputTime, setLastFretInputTime] = useState(() => Date.now());
 
+	// TODO move this to reducers.js
+	//   call multiple actions: SELECT_DURATION, SELECT_TRACK, DELETE_TRACK
 	const dispatchDeleteTrack = () => {
 		// If a track that's not last is being deleted,
 		if (selectedTrackNumber < tracks.length - 1) {
@@ -668,7 +673,11 @@ const App = () => {
 							<span className="TopBarText__ActiveFileName">
 								{activeFileName || 'untitled'}
 							</span>
-							<span className="TopBarText__Attribution">
+							<span className="TopBarText__Info">
+								<button onClick={() => setShowKeyboardShortcutsModal(true)}>
+									Keyboard shortcuts
+								</button>{' '}
+								•{' '}
 								<a
 									href="https://github.com/dawneraq/fret-zone"
 									target="_blank"
@@ -726,6 +735,10 @@ const App = () => {
 							/>
 						)}
 					</div>
+					<KeyboardShortcutsModal
+						show={showKeyboardShortcutsModal}
+						onClose={() => setShowKeyboardShortcutsModal(false)}
+					/>
 					<AddTrackModal
 						show={showAddTrackModal}
 						onClose={(modalResult) => {

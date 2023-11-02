@@ -32,6 +32,11 @@ const AddTrackModal = ({ show, onClose }) => {
 			onClose={onClose}
 			onConfirm={confirmAddTrack}
 		>
+			<p>
+				<strong>Note:</strong> If you've just opened FretZone, click OK to
+				create a new track. Then input notes using number/arrow keys.
+			</p>
+			<p>See keyboard shortcuts at the top for more information.</p>
 			{/* TODO Change this to a list-select input */}
 			<input
 				type="radio"

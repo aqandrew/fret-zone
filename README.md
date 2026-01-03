@@ -4,17 +4,18 @@ Guitar Pro tab editor for web, built with React.
 
 Originally a project to practice [Thinking in React](https://reactjs.org/docs/thinking-in-react.html).
 
-# First time setup
+## Pre-requisites
 
-Install these system packages:
-- Yarn 1.22.x
 - Node.js 25+
+- Yarn 1.22.x
 
-The install local dependencies in the project root:
+## To run locally
+
+Install local dependencies
 
 `yarn install`
 
-## To run locally
+Run the app
 
 `yarn start`
 
